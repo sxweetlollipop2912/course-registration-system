@@ -49,6 +49,7 @@ int main() {
                                                   FullName("Ten", "Ho"),
                                                   Course::Session(s11, s12),
                                                   Course::Session(s21, s22),
+                                                  4,
                                                   50));
     semester1.ptr<Semester>()->addCourse(cs162);
 

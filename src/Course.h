@@ -34,8 +34,9 @@ public:
            const FullName &teacher_name,
            const Session &session1,
            const Session &session2,
-           const int credits = 50)
-    : semester{semester}, id{id}, name{name}, teacher_name{teacher_name}, credits{credits} {
+           const int credits,
+           const int max_students = 50)
+    : semester{semester}, id{id}, name{name}, teacher_name{teacher_name}, credits{credits}, max_students{max_students} {
         sessions.push_back(session1);
         sessions.push_back(session2);
     }
