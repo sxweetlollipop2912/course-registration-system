@@ -4,6 +4,11 @@
 
 using std::string;
 
+enum class DataType {
+    Account,
+    Other
+};
+
 enum class UserType {
     Staff,
     Student,

@@ -14,9 +14,13 @@ public:
     string password;
     UserType user_type;
 
-    Account() : username{}, password{}, user_type{UserType::Unknown} {}
+    Account() : username{}, password{}, user_type{UserType::Unknown} {
+        data_type = DataType::Account;
+    }
     Account(const string &username, const string &password, const UserType user_type)
-            : username{username}, password{password}, user_type{user_type} {}
+            : username{username}, password{password}, user_type{user_type} {
+        data_type = DataType::Account;
+    }
 
     bool checkPassword(const string& input) const;
 };
@@ -24,7 +28,7 @@ public:
 
 class Student : public Account {
 public:
-    int student_id, social_id;
+    string student_id, social_id;
     FullName name;
     Gender gender;
     tm birth;
@@ -42,6 +46,15 @@ public:
     Student() : student_id{}, social_id{}, name{}, birth{}, classroom{} {
         this->user_type = UserType::Student;
         gender = Gender::Unknown;
+    }
+    Student(const string &student_id,
+            const string &social_id,
+            const FullName &name,
+            const Gender gender,
+            const tm &birth,
+            const DataIter classroom) :
+            student_id{student_id}, social_id{social_id}, name{name}, gender{gender}, birth{birth}, classroom{classroom}  {
+        this->user_type = UserType::Student;
     }
 };
 

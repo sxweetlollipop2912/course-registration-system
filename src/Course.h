@@ -42,13 +42,13 @@ public:
     }
 
     /// Returns empty DataIter if no student is found.
-    DataIter findStudentByID(const int student_id);
+    DataIter getStudentByID(const string &student_id);
     /// False if a student with the same student_id is already added, otherwise true.
     bool addStudent(const DataIter& student);
     /// False if no such student is found, otherwise true.
     bool removeStudent(const DataIter& student);
     /// False if no student with such student_id is found, otherwise true.
-    bool removeStudent(const int student_id);
+    bool removeStudent(const string &student_id);
 
 };
 

@@ -1,7 +1,7 @@
 #include "Class.h"
 #include "Account.h"
 
-DataIter Class::getStudentByID(const int student_id) {
+DataIter Class::getStudentByID(const string &student_id) {
     auto it = students.find_if([&](const DataIter &ref) {
         auto studentOnList = ref.ptr<Student>();
 
@@ -10,7 +10,7 @@ DataIter Class::getStudentByID(const int student_id) {
         return false;
     });
 
-    if (it == students.end()) return *it;
+    if (it != students.end()) return *it;
     return {};
 }
 
@@ -36,7 +36,7 @@ bool Class::removeStudent(const DataIter &student) {
     return false;
 }
 
-bool Class::removeStudent(const int student_id) {
+bool Class::removeStudent(const string &student_id) {
     auto it = students.find_if([&](const DataIter &ref) {
         auto studentOnList = ref.ptr<Student>();
 

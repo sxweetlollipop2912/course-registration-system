@@ -11,7 +11,7 @@ DataIter SchoolYear::getSemesterByNo(const int no) {
         return false;
     });
 
-    if (it == semesters.end()) return *it;
+    if (it != semesters.end()) return *it;
     return {};
 }
 

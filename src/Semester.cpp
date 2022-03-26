@@ -1,7 +1,7 @@
 #include "Semester.h"
 #include "Course.h"
 
-DataIter Semester::getCourseByID(const string course_id) {
+DataIter Semester::getCourseByID(const string &course_id) {
     auto it = courses.find_if([&](const DataIter &ref) {
         auto courseOnList = ref.ptr<Course>();
 
@@ -10,7 +10,7 @@ DataIter Semester::getCourseByID(const string course_id) {
         return false;
     });
 
-    if (it == courses.end()) return *it;
+    if (it != courses.end()) return *it;
     return {};
 }
 
@@ -37,7 +37,7 @@ bool Semester::removeCourse(const DataIter &course) {
     return false;
 }
 
-bool Semester::removeCourse(const string course_id) {
+bool Semester::removeCourse(const string &course_id) {
     auto it = courses.find_if([&](const DataIter &ref) {
         auto courseOnList = ref.ptr<Course>();
 

@@ -7,6 +7,7 @@
 #include <iostream>
 
 #include "List.h"
+#include "Enums.h"
 
 using std::string, std::stringstream, std::random_device, std::mt19937_64, std::uniform_int_distribution, std::make_shared, std::shared_ptr, std::static_pointer_cast, std::dynamic_pointer_cast;
 
@@ -15,7 +16,7 @@ class DataIter;
 class Database;
 
 class Data {
-private:
+public:
     class UID {
     private:
         static mt19937_64 rng;
@@ -34,13 +35,12 @@ private:
     };
 
     UID uid;
-public:
-    Data() = default;
+    DataType data_type;
+
+    Data() : data_type{DataType::Other} {}
 
     bool operator ==(const Data& obj) const;
-    virtual void write() {
-        std::cout << "hi\n";
-    }
+    virtual void write() {std::cout << "hi\n";}
 };
 
 
