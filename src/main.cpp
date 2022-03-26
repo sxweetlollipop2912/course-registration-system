@@ -6,6 +6,8 @@
 #include "SchoolYear.h"
 #include "Semester.h"
 #include "Course.h"
+#include "Account.h"
+#include "Class.h"
 #include "List.h"
 
 using std::make_shared, std::tm, std::dynamic_pointer_cast;
@@ -54,6 +56,24 @@ int main() {
     semester1.ptr<Semester>()->addCourse(cs162);
 
 
+    /// Create a class 21CTT1
+    auto class_ctt1 = database.add(make_shared<Class>("21CTT1"));
+    default_year.ptr<SchoolYear>()->addClass(class_ctt1);
+
+
+    /// Create a student, id 21122211
+    // mock date
+    tm birth{};
+    auto student = database.add(make_shared<Student>("21122211",
+                                                     "012345678912",
+                                                     FullName("Ten", "Ho"),
+                                                     Gender::Male,
+                                                     birth,
+                                                     default_year.ptr<SchoolYear>()->getClassByName("21CTT1")));
+    class_ctt1.ptr<Class>()->addStudent(student);
+    student.ptr<Student>()->enroll(semester1.ptr<Semester>()->getCourseByID("CS162"));
+
+
     /// -------------- Output ---
 
     std::cout << "Schoolyear " << default_year.ptr<SchoolYear>()->start_year << ' ' << default_year.ptr<SchoolYear>()->end_year << ": ";
@@ -72,6 +92,22 @@ int main() {
 
             std::mktime(&c_ptr->sessions[0].start);
             std::cout << "          1st session starts on (test output): " << std::asctime(&c_ptr->sessions[0].start) << '\n';
+        }
+    }
+
+    std::cout << "\nClasses:\n";
+    for(auto c : default_year.ptr<SchoolYear>()->classes) {
+        auto c_ptr = c.ptr<Class>();
+        std::cout << "  " << c_ptr->name << ": " << c_ptr->students.size() << " student(s)\n";
+
+        for(auto s : c_ptr->students) {
+            auto s_ptr = s.ptr<Student>();
+            std::cout << "      " << s_ptr->student_id << " - " << s_ptr->name.last << ' ' << s_ptr->name.first << ", ";
+            std::cout << " enrolling in " << s_ptr->courses.size() << " course(s):\n";
+            for(auto course : s_ptr->courses) {
+                auto course_ptr = course.ptr<Course>();
+                std::cout << "          " << course_ptr->name << '\n';
+            }
         }
     }
 }
