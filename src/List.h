@@ -13,8 +13,8 @@
 
 #include "Node.h"
 
-/// See this function for examples, call it to see how they run.
-void examples();
+/// See this function for list_examples, call it to see how they run.
+void list_examples();
 
 template <class T>
 class List {
@@ -627,6 +627,7 @@ public:
     }
     bool operator==(const iterator& it) const { return it.ptr == ptr; }
     bool operator!=(const iterator& it) const { return it.ptr != ptr; }
+    explicit operator bool() const { return ptr; }
     void swap(iterator& other) { std::swap(this->ptr, other.ptr); }
 };
 
@@ -708,5 +709,6 @@ public:
     }
     bool operator==(const const_iterator& it) const { return it.ptr == ptr; }
     bool operator!=(const const_iterator& it) const { return it.ptr != ptr; }
+    explicit operator bool() const { return ptr; }
     void swap(const_iterator& other) { std::swap(this->ptr, other.ptr); }
 };

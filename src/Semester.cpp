@@ -14,6 +14,17 @@ DataIter Semester::getCourseByID(const string &course_id) {
     return {};
 }
 
+DataIter Semester::getCourseByUID(const Data::UID &uid) {
+    auto it = courses.find_if([&](const DataIter &ref) {
+        if (uid == ref.uid()) return true;
+
+        return false;
+    });
+
+    if (it != courses.end()) return *it;
+    return {};
+}
+
 bool Semester::addCourse(const DataIter &course) {
     /// Check by course_id if this course is not already added.
     auto course_id = course.ptr<Course>()->id;
@@ -26,8 +37,10 @@ bool Semester::addCourse(const DataIter &course) {
     return false;
 }
 
-bool Semester::removeCourse(const DataIter &course) {
-    auto it = courses.find(course);
+bool Semester::removeCourse(const Data::UID &course_uid) {
+    auto it = courses.find_if([&](const DataIter &iter) {
+        return iter.uid() == course_uid;
+    });
     if (it != courses.end()) {
         courses.remove(it);
 

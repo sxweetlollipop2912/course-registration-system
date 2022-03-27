@@ -25,8 +25,10 @@ bool Class::addStudent(const DataIter &student) {
     return false;
 }
 
-bool Class::removeStudent(const DataIter &student) {
-    auto it = students.find(student);
+bool Class::removeStudent(const Data::UID &student_uid) {
+    auto it = students.find_if([&](const DataIter &iter) {
+        return iter.uid() == student_uid;
+    });
     if (it != students.end()) {
         students.remove(it);
 

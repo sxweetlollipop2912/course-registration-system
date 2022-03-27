@@ -6,6 +6,7 @@ using std::string;
 
 enum class DataType {
     Account,
+    SchoolYear,
     Other
 };
 

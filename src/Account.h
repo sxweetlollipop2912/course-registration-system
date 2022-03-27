@@ -36,12 +36,12 @@ public:
     List<DataIter> courses;
     List<DataIter> scores;
 
-    bool enroll(const DataIter &course);
-    bool disenroll(const DataIter &course);
+    bool addCourse(const DataIter &course);
+    bool removeCourse(const Data::UID &course_uid);
     bool setScore(const DataIter &score);
-    bool removeScore(const DataIter &score);
+    bool removeScore(const Data::UID &score_uid);
     /// Returns empty DataIter if no score is found.
-    DataIter getScore(const DataIter &course) const;
+    DataIter getScore(const Data::UID &course_uid) const;
 
     Student() : student_id{}, social_id{}, name{}, birth{}, classroom{} {
         this->user_type = UserType::Student;
@@ -51,9 +51,8 @@ public:
             const string &social_id,
             const FullName &name,
             const Gender gender,
-            const tm &birth,
-            const DataIter classroom) :
-            student_id{student_id}, social_id{social_id}, name{name}, gender{gender}, birth{birth}, classroom{classroom}  {
+            const tm &birth) :
+            student_id{student_id}, social_id{social_id}, name{name}, gender{gender}, birth{birth}  {
         this->user_type = UserType::Student;
     }
 };

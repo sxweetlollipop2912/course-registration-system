@@ -4,12 +4,21 @@
 
 
 DataIter SchoolYear::getSemesterByNo(const int no) {
-    auto it = semesters.find_if([&](const DataIter &ref) {
-        auto semesterOnList = ref.ptr<Semester>();
+    auto it = semesters.find_if([&](const DataIter &iter) {
+        auto semesterOnList = iter.ptr<Semester>();
 
         if (no == semesterOnList->no) return true;
 
         return false;
+    });
+
+    if (it != semesters.end()) return *it;
+    return {};
+}
+
+DataIter SchoolYear::getSemesterByUID(const Data::UID &uid) {
+    auto it = semesters.find_if([&](const DataIter &iter) {
+        return uid == iter.uid();
     });
 
     if (it != semesters.end()) return *it;
@@ -28,8 +37,10 @@ bool SchoolYear::addSemester(const DataIter &semester) {
     return false;
 }
 
-bool SchoolYear::removeSemester(const DataIter &semester) {
-    auto it = semesters.find(semester);
+bool SchoolYear::removeSemester(const Data::UID &semester_uid) {
+    auto it = semesters.find_if([&](const DataIter &iter) {
+        return iter.uid() == semester_uid;
+    });
     if (it != semesters.end()) {
         semesters.remove(it);
 
@@ -41,12 +52,10 @@ bool SchoolYear::removeSemester(const DataIter &semester) {
 
 
 bool SchoolYear::removeSemester(const int no) {
-    auto it = semesters.find_if([&](const DataIter &ref) {
-        auto semesterOnList = ref.ptr<Semester>();
+    auto it = semesters.find_if([&](const DataIter &iter) {
+        auto semesterOnList = iter.ptr<Semester>();
 
-        if (no == semesterOnList->no) return true;
-
-        return false;
+        return no == semesterOnList->no;
     });
     if (it != semesters.end()) {
         semesters.remove(it);
@@ -59,12 +68,19 @@ bool SchoolYear::removeSemester(const int no) {
 
 
 DataIter SchoolYear::getClassByName(const string &name) {
-    auto it = classes.find_if([&](const DataIter &ref) {
-        auto classOnList = ref.ptr<Class>();
+    auto it = classes.find_if([&](const DataIter &iter) {
+        auto classOnList = iter.ptr<Class>();
 
-        if (name == classOnList->name) return true;
+        return name == classOnList->name;
+    });
 
-        return false;
+    if (it != classes.end()) return *it;
+    return {};
+}
+
+DataIter SchoolYear::getClassByUID(const Data::UID &uid) {
+    auto it = classes.find_if([&](const DataIter &iter) {
+        return uid == iter.uid();
     });
 
     if (it != classes.end()) return *it;
@@ -83,8 +99,10 @@ bool SchoolYear::addClass(const DataIter &classroom) {
     return false;
 }
 
-bool SchoolYear::removeClass(const DataIter &classroom) {
-    auto it = classes.find(classroom);
+bool SchoolYear::removeClass(const Data::UID &class_uid) {
+    auto it = classes.find_if([&](const DataIter &iter) {
+        return iter.uid() == class_uid;
+    });
     if (it != classes.end()) {
         classes.remove(it);
 
@@ -96,12 +114,10 @@ bool SchoolYear::removeClass(const DataIter &classroom) {
 
 
 bool SchoolYear::removeClass(const string &name) {
-    auto it = classes.find_if([&](const DataIter &ref) {
-        auto classOnList = ref.ptr<Class>();
+    auto it = classes.find_if([&](const DataIter &iter) {
+        auto classOnList = iter.ptr<Class>();
 
-        if (name == classOnList->name) return true;
-
-        return false;
+        return name == classOnList->name;
     });
     if (it != classes.end()) {
         classes.remove(it);

@@ -28,15 +28,14 @@ public:
     List<DataIter> students;
 
     Course() = default;
-    Course(const DataIter& semester,
-           const string &id,
+    Course(const string &id,
            const string &name,
            const FullName &teacher_name,
            const Session &session1,
            const Session &session2,
            const int credits,
            const int max_students = 50)
-    : semester{semester}, id{id}, name{name}, teacher_name{teacher_name}, credits{credits}, max_students{max_students} {
+    : id{id}, name{name}, teacher_name{teacher_name}, credits{credits}, max_students{max_students} {
         sessions.push_back(session1);
         sessions.push_back(session2);
     }
@@ -46,7 +45,7 @@ public:
     /// False if a student with the same student_id is already added, otherwise true.
     bool addStudent(const DataIter& student);
     /// False if no such student is found, otherwise true.
-    bool removeStudent(const DataIter& student);
+    bool removeStudent(const Data::UID& student_uid);
     /// False if no student with such student_id is found, otherwise true.
     bool removeStudent(const string &student_id);
 

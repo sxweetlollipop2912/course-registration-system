@@ -19,8 +19,10 @@ public:
     /// False if a student with the same student_id is already added, otherwise true.
     bool addStudent(const DataIter &student);
     /// False if no such student is found, otherwise true.
-    bool removeStudent(const DataIter &student);
+    bool removeStudent(const Data::UID &student_uid);
     /// False if no student with such student_id is found, otherwise true.
     bool removeStudent(const string &student_id);
     void sortStudent();
+
+    bool operator ==(const Class &other) const {return name == other.name;}
 };

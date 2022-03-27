@@ -4,7 +4,7 @@
 using std::dynamic_pointer_cast, std::make_shared;
 
 
-bool Student::enroll(const DataIter &course) {
+bool Student::addCourse(const DataIter &course) {
     /// If course is already enrolled.
     if (courses.find(course) != courses.end()) return false;
 
@@ -15,8 +15,10 @@ bool Student::enroll(const DataIter &course) {
     return true;
 }
 
-bool Student::disenroll(const DataIter& course) {
-    auto it = courses.find(course);
+bool Student::removeCourse(const Data::UID &course_uid) {
+    auto it = courses.find_if([&](const DataIter &iter) {
+        return iter.uid() == course_uid;
+    });
     if (it != courses.end()) {
         courses.remove(it);
 
@@ -42,8 +44,10 @@ bool Student::setScore(const DataIter &score) {
     return true;
 }
 
-bool Student::removeScore(const DataIter &score) {
-    auto it = scores.find(score);
+bool Student::removeScore(const Data::UID &score_uid) {
+    auto it = scores.find_if([&](const DataIter &iter) {
+        return iter.uid() == score_uid;
+    });
     if (it != scores.end()) {
         scores.remove(it);
 
@@ -53,12 +57,12 @@ bool Student::removeScore(const DataIter &score) {
     return false;
 }
 
-DataIter Student::getScore(const DataIter &course) const {
+DataIter Student::getScore(const Data::UID &course_uid) const {
     /// Check if score of that course already exists.
     auto it = scores.find_if([&](const DataIter& ref) {
         auto score = ref.ptr<CourseScore>();
 
-        if (course == score->course) return true;
+        if (course_uid == score->course.uid()) return true;
 
         return false;
     });

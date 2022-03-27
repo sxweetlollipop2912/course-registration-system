@@ -22,12 +22,13 @@ public:
         static mt19937_64 rng;
         static uniform_int_distribution<int> dis;
         static uniform_int_distribution<int> dis2;
+    public:
         string id;
 
-        static string gen();
-    public:
         UID() : id{UID::gen()} {}
         UID(const UID& uid) : id{uid.id} {}
+
+        static string gen();
 
         operator string() const;
         UID& operator =(const UID& uid);
@@ -47,18 +48,32 @@ public:
 class DataIter {
     friend class Database;
 private:
+    shared_ptr<Data> data_ptr;
     List<shared_ptr<Data>>::iterator iterator;
 public:
     DataIter() = default;
-    DataIter(List<shared_ptr<Data>>::iterator iterator) : iterator{iterator} {}
+    DataIter(List<shared_ptr<Data>>::iterator iterator) : data_ptr{nullptr}, iterator{iterator} {
+        if ((bool)iterator) data_ptr = *iterator;
+    }
 
     bool empty() const;
+    Data::UID uid() const;
     template <class T>
     shared_ptr<T> ptr() const {
-        return dynamic_pointer_cast<T>(*iterator);
+        if ((bool)iterator)
+            return dynamic_pointer_cast<T>(*iterator);
+        return shared_ptr<T>(nullptr);
     }
-    DataIter& operator =(const DataIter& ref) = default;
-    bool operator ==(const DataIter& ref) const;
+    DataIter& operator =(const DataIter& iter) = default;
+    bool operator ==(const DataIter& iter) const;
+    operator bool() const;
+
+    template <class T>
+    operator shared_ptr<T>() {
+        if ((bool)iterator)
+            return dynamic_pointer_cast<T>(*iterator);
+        return shared_ptr<T>(nullptr);
+    }
 };
 
 
@@ -68,10 +83,19 @@ private:
 public:
     Database() = default;
 
+    int size() const;
+
     template <class T>
     DataIter add(const shared_ptr<T>& ptr) {
         auto dataPtr = static_pointer_cast<Data>(ptr);
         return data.insert(data.end(), dataPtr);
     }
-    void remove(const DataIter& dataIter);
+    /// This method doesn't check if `data_iter` is an element of database.
+    void remove(const DataIter& data_iter);
+    /// Returns empty DataIter if no data by this UID is found.
+    DataIter getByUID(const Data::UID &uid);
+    /// Returns empty DataIter if no data satisfying `func` is found.
+    DataIter get(std::function<bool(const shared_ptr<Data>&)> func);
+    /// Removes unused data from database. Doesn't work in cases of cyclic dependencies.
+    void clean();
 };

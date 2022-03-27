@@ -20,15 +20,19 @@ DataIter Course::getStudentByID(const string &student_id) {
 bool Course::addStudent(const DataIter &student) {
     /// Check by student_id if this student is not already added.
     auto student_id = student.ptr<Student>()->student_id;
-    if (getStudentByID(student_id).empty())
-        return false;
+    if (getStudentByID(student_id).empty()) {
+        students.push_back(student);
 
-    students.push_back(student);
-    return true;
+        return true;
+    }
+
+    return false;
 }
 
-bool Course::removeStudent(const DataIter &student) {
-    auto it = students.find(student);
+bool Course::removeStudent(const Data::UID& student_uid) {
+    auto it = students.find_if([&](const DataIter &iter) {
+        return iter.uid() == student_uid;
+    });
     if (it != students.end()) {
         students.remove(it);
 
