@@ -28,7 +28,7 @@ bool Student::removeCourse(const Data::UID &course_uid) {
     return false;
 }
 
-bool Student::setScore(const DataIter &score) {
+bool Student::addScore(const DataIter &score) {
     /// Check if score of that course already exists.
     if (scores.any_of([&](const DataIter& ref) {
         auto scoreToSet = score.ptr<CourseScore>();

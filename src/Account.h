@@ -38,7 +38,7 @@ public:
 
     bool addCourse(const DataIter &course);
     bool removeCourse(const Data::UID &course_uid);
-    bool setScore(const DataIter &score);
+    bool addScore(const DataIter &score);
     bool removeScore(const Data::UID &score_uid);
     /// Returns empty DataIter if no score is found.
     DataIter getScore(const Data::UID &course_uid) const;

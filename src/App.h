@@ -16,9 +16,7 @@ private:
     Data::UID default_year_uid, default_semester_uid;
 public:
     Database database;
-    /// default year
     DataIter default_year;
-    /// default semester
     DataIter default_semester;
 
     App() {
