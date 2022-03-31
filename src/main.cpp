@@ -10,6 +10,7 @@
 #include "Class.h"
 #include "App.h"
 #include "List.h"
+#include "Utils.h"
 
 using std::make_shared, std::tm, std::dynamic_pointer_cast, std::to_string;
 
@@ -83,8 +84,15 @@ int main() {
         app.addDefaultSchoolYear(default_year);
 
 
-        /// Create semester 1, spans from October 1 2021 to December 31 2021
-        auto semester1 = make_shared<Semester>(1, tm{}, tm{});
+        /// Create a registration session spanning from October 1st, 2021 to October 1st, 2022.
+        app.year()->reg_session.start = Utils::mktm(1, 10, 2021);
+        app.year()->reg_session.end = Utils::mktm(1, 10, 2022);
+
+
+        /// Create semester 1, spanning from October 1 2021 to December 31 2021
+        auto semester1 = make_shared<Semester>(1,
+                                               Utils::mktm(1, 10, 2021),
+                                               Utils::mktm(31, 12, 2021));
         app.addDefaultSemester(semester1);
 
 
@@ -112,23 +120,27 @@ int main() {
                                                     "012345678912",
                                                     FullName("Ten", "Ho"),
                                                     Gender::Male,
-                                                    tm{});
+                                                    Utils::mktm(1, 1, 2003));
             auto student = app.addStudent(student_ptr, "21CTT1");
             app.enroll(student, "CS" + to_string(i));
         }
+
+        /// Check if registration session is ongoing.
+        std::cout << "Is registration session ongoing: " << app.year()->reg_session.isOngoing() << '\n';
+
 
         output(app);
         std::cout << "data count 1: " << app.database.size() << '\n';
 
 
         /// Remove course CS0.
-        app.removeCourse(app.semester()->getCourseByID("CS0").uid());
+        app.deleteCourse(app.semester()->getCourseByID("CS0").uid());
         output(app);
         std::cout << "data count 2: " << app.database.size() << '\n';
 
 
         /// Remove student with id 1.
-        app.removeStudent(ctt1->getStudentByID("1"));
+        app.deleteStudent(ctt1->getStudentByID("1"));
         output(app);
         std::cout << "data count 3: " << app.database.size() << '\n';
 
@@ -145,13 +157,13 @@ int main() {
 
 
         /// Remove semester 1 from 2021-2022 schoolyear.
-        app.removeSemester(app.semester()->uid);
+        app.deleteSemester(app.semester()->uid);
         output(app);
         std::cout << "data count 5: " << app.database.size() << '\n';
 
 
         /// Remove 2021-2022 schoolyear.
-        app.removeSchoolYear();
+        app.deleteSchoolYear();
         output(app);
         std::cout << "data count 6: " << app.database.size() << '\n';
     }

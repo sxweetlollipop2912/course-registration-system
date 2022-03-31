@@ -5,17 +5,19 @@
 #include "Enums.h"
 #include "Database.h"
 #include "List.h"
+#include "RegistrationSession.h"
 
 class SchoolYear : public Data {
 public:
     int start_year, end_year;
+    RegistrationSession reg_session;
     List<DataIter> semesters;
     List<DataIter> classes;
 
-    SchoolYear() : start_year{}, end_year{} {
+    SchoolYear() : start_year{}, end_year{}, reg_session{} {
         this->data_type = DataType::SchoolYear;
     }
-    SchoolYear(const int start_year, const int end_year) : start_year{start_year}, end_year{end_year} {
+    SchoolYear(const int start_year, const int end_year) : start_year{start_year}, end_year{end_year}, reg_session{} {
         this->data_type = DataType::SchoolYear;
     }
 
