@@ -48,6 +48,8 @@ public:
 class DataIter {
     friend class Database;
 private:
+    /// For smart pointer counting purposes.
+    /// This is quite dumb tbh.
     shared_ptr<Data> data_ptr;
     List<shared_ptr<Data>>::iterator iterator;
 public:
@@ -78,6 +80,7 @@ public:
 
 
 class Database {
+    friend class App;
 private:
     List<shared_ptr<Data>> data;
 public:
@@ -90,7 +93,7 @@ public:
         auto dataPtr = static_pointer_cast<Data>(ptr);
         return data.insert(data.end(), dataPtr);
     }
-    /// This method doesn't check if `data_iter` is an element of database.
+    /// Note: This method doesn't check if `data_iter` is an element of database.
     void remove(const DataIter& data_iter);
     /// Returns empty DataIter if no data by this UID is found.
     DataIter getByUID(const Data::UID &uid);
