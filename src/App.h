@@ -34,6 +34,7 @@ public:
 
     void load();
     void save();
+    List<DataIter> getAllYears();
 
 
     /// Sets a schoolyear in database to default.\n
@@ -51,6 +52,10 @@ public:
     /// True if succeeded, false if:\n
     /// > Another schoolyear with identical start_year and end_year already sits in database.
     bool addDefaultSchoolYear(const shared_ptr<SchoolYear> &year);
+    /// Exits default schoolyear.\n\n
+    /// True if succeeded, false if:\n
+    /// > No default schoolyear has been set.
+    bool exitDefaultSchoolYear();
     /// Deletes default schoolyear. Also deletes all semesters and courses in that schoolyear.\n\n
     /// True if succeeded, false if:\n
     /// > No default schoolyear has been set.
@@ -75,6 +80,10 @@ public:
     /// > Another semester with the same no. already exists.\n
     /// > Default schoolyear has not been set.
     bool addDefaultSemester(const shared_ptr<Semester> &semester);
+    /// Exits default semester.\n\n
+    /// True if succeeded, false if:\n
+    /// > No default semester has been set.
+    bool exitDefaultSemester();
     /// Deletes default semester. Also deletes all courses in that semester.\n
     /// Needs UID.\n\n
     /// True if succeeded, false if:\n

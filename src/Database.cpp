@@ -61,6 +61,15 @@ DataIter Database::get(std::function<bool(const shared_ptr<Data> &)> func) {
     return {};
 }
 
+List<DataIter> Database::getAll(std::function<bool(const shared_ptr<Data> &)> func) {
+    List<DataIter> list;
+    for(auto it = data.begin(); it != data.end(); ++it) {
+       if (func(*it)) list.push_back(it);
+    }
+
+    return list;
+}
+
 void Database::clean() {
     for(auto it = data.begin(); it != data.end();) {
         /// Remove if data is not used anywhere.

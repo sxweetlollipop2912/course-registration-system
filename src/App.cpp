@@ -2,6 +2,12 @@
 
 using std::shared_ptr, std::dynamic_pointer_cast;
 
+List<DataIter> App::getAllYears() {
+    return database.getAll([](const shared_ptr<Data> &ptr) {
+        return ptr->data_type == DataType::SchoolYear;
+    });
+}
+
 bool App::setDefaultSchoolYear(const Data::UID &year_uid) {
     auto year_iter = database.getByUID(year_uid);
     if (!year_iter)
@@ -128,7 +134,7 @@ DataIter App::addStudent(const shared_ptr<Student> &student, const string &class
     if (database.data.find_if([&](const shared_ptr<Data> &ptr) {
         if (ptr->data_type != DataType::Account)
             return false;
-        if (dynamic_pointer_cast<Account>(ptr)->user_type != UserType::Student)
+        if (dynamic_pointer_cast<Account>(ptr)->getUserType() != UserType::Student)
             return false;
         return dynamic_pointer_cast<Student>(ptr)->student_id == student->student_id;
     }) != database.data.end())
@@ -334,4 +340,25 @@ bool App::disenroll(const DataIter &student, const string &course_id) {
         return false;
 
     return student.ptr<Student>()->removeCourse(course.uid()) && course.ptr<Course>()->removeStudent(student.uid());
+}
+
+bool App::exitDefaultSchoolYear() {
+    if (!year())
+        return false;
+
+    exitDefaultSemester();
+    default_year = DataIter();
+    default_year_uid = Data::UID();
+
+    return true;
+}
+
+bool App::exitDefaultSemester() {
+    if (!semester())
+        return false;
+
+    default_semester = DataIter();
+    default_semester_uid = Data::UID();
+
+    return true;
 }

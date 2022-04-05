@@ -75,3 +75,7 @@ DataIter Student::getScore(const Data::UID &course_uid) const {
 bool Account::checkPassword(const string &input) const {
     return input == password;
 }
+
+UserType Account::getUserType() const {
+    return user_type;
+}
