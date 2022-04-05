@@ -9,10 +9,11 @@
 using std::tm, std::string;
 
 class Account : public Data {
+protected:
+    UserType user_type;
 public:
     string username;
     string password;
-    UserType user_type;
 
     Account() : username{}, password{}, user_type{UserType::Unknown} {
         data_type = DataType::Account;
@@ -23,6 +24,7 @@ public:
     }
 
     bool checkPassword(const string& input) const;
+    UserType getUserType() const;
 };
 
 

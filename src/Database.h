@@ -99,6 +99,8 @@ public:
     DataIter getByUID(const Data::UID &uid);
     /// Returns empty DataIter if no data satisfying `func` is found.
     DataIter get(std::function<bool(const shared_ptr<Data>&)> func);
+    /// Returns empty DataIter if no data satisfying `func` is found.
+    List<DataIter> getAll(std::function<bool(const shared_ptr<Data>&)> func);
     /// Removes unused data from database. Doesn't work in cases of cyclic dependencies.
     void clean();
 };
