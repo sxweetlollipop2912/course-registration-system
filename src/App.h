@@ -13,12 +13,16 @@ using std::shared_ptr, std::string;
 /// All methods work on default_year and default_semester,
 /// unless default year or default semester is replaced by method's parameters.\n\n
 ///
-/// Methods with DataIter returning types:\n
+/// Methods with DataIter returning types (adding methods):\n
 /// If unsuccessful: returns empty DataIter. Otherwise, returns DataIter pointing to newly added data.
 class App {
 private:
     /// For loading purposes, since year and semester pointers cannot be saved.
     Data::UID default_year_uid, default_semester_uid;
+
+    void deleteSchoolYear(const DataIter &year);
+    void deleteSemester(const DataIter &semester);
+    void deleteCourse(const DataIter &course);
 public:
     Database database;
     DataIter default_year;
@@ -59,7 +63,7 @@ public:
     /// Deletes default schoolyear. Also deletes all semesters and courses in that schoolyear.\n\n
     /// True if succeeded, false if:\n
     /// > No default schoolyear has been set.
-    bool deleteSchoolYear();
+    bool deleteDefaultSchoolYear();
 
 
     /// Sets a semester in database to default.\n
@@ -84,11 +88,10 @@ public:
     /// True if succeeded, false if:\n
     /// > No default semester has been set.
     bool exitDefaultSemester();
-    /// Deletes default semester. Also deletes all courses in that semester.\n
-    /// Needs UID.\n\n
+    /// Deletes default semester. Also deletes all courses in that semester.\n\n
     /// True if succeeded, false if:\n
     /// > No default semester has been set
-    bool deleteSemester(const Data::UID &semester_uid);
+    bool deleteDefaultSemester();
 
     /// Adds a new course to database and default semester.\n
     /// Needs a shared ptr of that course.\n\n
@@ -116,6 +119,8 @@ public:
     /// > No class with such UID is found in default schoolyear.\n
     /// > Default schoolyear has not been set.
     bool removeClassFromYear(const Data::UID &class_uid);
+    /// Deletes a class entirely. Also deletes all students in that class.
+    void deleteClass(const DataIter &classroom);
 
     /// Adds a new student to database and to a class in default schoolyear.\n
     /// Needs a shared ptr of that student, name of the class.\n\n

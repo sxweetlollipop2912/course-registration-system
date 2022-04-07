@@ -195,14 +195,7 @@ bool App::deleteCourse(const Data::UID &course_uid) {
     if (!course)
         return false;
 
-    /// Remove course from default semester.
-    semester()->removeCourse(course_uid);
-    /// Remove course from all enrolled students.
-    for(const auto& student_iter : course.ptr<Course>()->students) {
-        student_iter.ptr<Student>()->removeCourse(course.uid());
-    }
-
-    database.remove(course);
+    deleteCourse(course);
 
     return true;
 }
@@ -241,54 +234,21 @@ bool App::removeClassFromYear(const Data::UID &class_uid) {
     return true;
 }
 
-bool App::deleteSemester(const Data::UID &semester_uid) {
-    if (!year())
+bool App::deleteDefaultSemester() {
+    if (!semester())
         return false;
 
-    auto semester_iter = year()->getSemesterByUID(semester_uid);
-    if (!semester_iter)
-        return false;
-
-    auto semester_ptr = semester_iter.ptr<Semester>();
-    for(const auto& course_iter : semester_ptr->courses) {
-        /// Remove course from all enrolled students.
-        for(const auto& student_iter : course_iter.ptr<Course>()->students) {
-            student_iter.ptr<Student>()->removeCourse(course_iter.uid());
-        }
-    }
-    /// Remove all courses from semester.
-    semester_ptr->courses.clear();
-    /// Remove semester from default schoolyear.
-    year()->removeSemester(semester_iter.uid());
-
-    if (semester_uid == default_semester.uid())
-        default_semester = {};
-
-    database.remove(semester_iter);
+    deleteSemester(default_semester);
+    default_semester = {};
 
     return true;
 }
 
-bool App::deleteSchoolYear() {
+bool App::deleteDefaultSchoolYear() {
     if (!year())
         return false;
 
-    for(const auto& semester_iter : year()->semesters) {
-        auto semester_ptr = semester_iter.ptr<Semester>();
-
-        for(const auto& course_iter : semester_ptr->courses) {
-            /// Remove course from all enrolled students.
-            for(const auto& student_iter : course_iter.ptr<Course>()->students) {
-                student_iter.ptr<Student>()->removeCourse(course_iter.uid());
-            }
-        }
-        /// Remove all courses from semester.
-        semester_ptr->courses.clear();
-        database.remove(semester_iter);
-    }
-
-    year()->semesters.clear();
-    database.remove(default_year);
+    deleteSchoolYear(default_year);
     default_year = default_semester = {};
 
     return true;
@@ -362,3 +322,59 @@ bool App::exitDefaultSemester() {
 
     return true;
 }
+
+void App::deleteSchoolYear(const DataIter &year) {
+    auto year_ptr = year.ptr<SchoolYear>();
+
+    for(const auto& semester : year_ptr->semesters) {
+        deleteSemester(semester);
+    }
+
+    database.remove(year);
+}
+
+void App::deleteSemester(const DataIter &semester) {
+    auto semester_ptr = semester.ptr<Semester>();
+
+    semester_ptr->school_year.ptr<SchoolYear>()->removeSemester(semester.uid());
+    for(const auto& course : semester_ptr->courses) {
+        deleteCourse(course);
+    }
+
+    database.remove(semester);
+}
+
+void App::deleteCourse(const DataIter &course) {
+    auto course_ptr = course.ptr<Course>();
+
+    course_ptr->semester.ptr<Semester>()->removeCourse(course.uid());
+    for(const auto& student : course_ptr->students) {
+        student.ptr<Student>()->removeCourse(course.uid());
+    }
+
+    database.remove(course);
+}
+
+void App::deleteClass(const DataIter &classroom) {
+    auto class_ptr = classroom.ptr<Class>();
+
+    for(const auto& student : class_ptr->students) {
+        auto student_ptr = student.ptr<Student>();
+
+        /// Remove student from all courses.
+        for(const auto& course : student_ptr->courses) {
+            auto course_ptr = course.ptr<Course>();
+            course_ptr->removeStudent(student.uid());
+        }
+
+        database.remove(student);
+    }
+
+    /// Remove class from schoolyears.
+    for(const auto& year : getAllYears()) {
+        year.ptr<SchoolYear>()->removeClass(classroom.uid());
+    }
+
+    database.remove(classroom);
+}
+

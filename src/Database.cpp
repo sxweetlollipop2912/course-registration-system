@@ -1,5 +1,7 @@
 #include "Database.h"
 
+#include <utility>
+
 auto Data::UID::rng = mt19937_64(random_device()());
 auto Data::UID::dis = uniform_int_distribution<int>(0, 15);
 auto Data::UID::dis2 = uniform_int_distribution<int>(8, 11);
@@ -43,6 +45,11 @@ void Database::remove(const DataIter &data_iter) {
     data.remove(data_iter.iterator);
 }
 
+void Database::remove(const List<DataIter> &data_iters) {
+    for(const auto& data_iter : data_iters)
+        remove(data_iter);
+}
+
 DataIter Database::getByUID(const Data::UID &uid) {
     auto it = data.find_if([&](const shared_ptr<Data> &ptr) {
         return ptr->uid == uid;
@@ -54,14 +61,14 @@ DataIter Database::getByUID(const Data::UID &uid) {
 }
 
 DataIter Database::get(std::function<bool(const shared_ptr<Data> &)> func) {
-    auto it = data.find_if(func);
+    auto it = data.find_if(std::move(func));
 
     if (it != data.end()) return it;
 
     return {};
 }
 
-List<DataIter> Database::getAll(std::function<bool(const shared_ptr<Data> &)> func) {
+List<DataIter> Database::getAll(const std::function<bool(const shared_ptr<Data> &)>& func) {
     List<DataIter> list;
     for(auto it = data.begin(); it != data.end(); ++it) {
        if (func(*it)) list.push_back(it);
