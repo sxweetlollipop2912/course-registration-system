@@ -1,3 +1,7 @@
+# Project-specifics
+TestingScenes.*
+.DS_Store
+
 ## CMake
 CMakeLists.txt.user
 CMakeCache.txt

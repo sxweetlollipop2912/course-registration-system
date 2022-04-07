@@ -6,8 +6,9 @@
 #include "../Enums.h"
 #include "Database.h"
 #include "../Constants.h"
+#include "Course.h"
 
-using std::tm, std::string;
+using std::tm, std::string, std::shared_ptr;
 
 class Account : public Data {
 protected:
@@ -30,6 +31,10 @@ public:
 
 
 class Student : public Account {
+private:
+    /// Returns ptr to the added score.
+    shared_ptr<CourseScore> addScore(const CourseScore &score);
+    bool removeScore(const Data::UID &course_id);
 public:
     string student_id, social_id;
     FullName name;
@@ -37,14 +42,17 @@ public:
     tm birth;
     DataIter classroom;
     List<DataIter> courses;
-    List<DataIter> scores;
+    List<shared_ptr<CourseScore>> scores;
 
     bool addCourse(const DataIter &course);
     bool removeCourse(const Data::UID &course_uid);
-    bool addScore(const DataIter &score);
-    bool removeScore(const Data::UID &score_uid);
-    /// Returns empty DataIter if no score is found.
-    DataIter getScore(const Data::UID &course_uid) const;
+    /// This replaces if another score has already existed.\n
+    /// Returns ptr to the added score.
+    shared_ptr<CourseScore> replaceScore(const CourseScore &score);
+    /// Returns nullptr if no score is found.
+    shared_ptr<CourseScore> getScore(const Data::UID &course_uid);
+    /// Returns nullptr if no score is found.
+    shared_ptr<const CourseScore> getScore(const Data::UID &course_uid) const;
 
     Student() : student_id{}, social_id{}, name{}, birth{}, classroom{} {
         this->user_type = UserType::Student;

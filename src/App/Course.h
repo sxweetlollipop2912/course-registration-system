@@ -23,7 +23,7 @@ public:
     DataIter semester;
     string name, id;
     FullName teacher_name;
-    int credits, max_students;
+    int credits{}, max_students{};
     List<Session> sessions;
     List<DataIter> students;
 
@@ -55,9 +55,10 @@ public:
 class CourseScore : public Data {
 public:
     DataIter course;
-    double midterm, final, total, other;
+    double midterm{}, final{}, total{}, other{};
 
     CourseScore() = default;
-    CourseScore(const DataIter& course, const double midterm, const double final, const double total, const double other)
+    CourseScore(const DataIter &course): course{course} {}
+    CourseScore(const DataIter &course, const double midterm, const double final, const double total, const double other)
     : course{course}, midterm{midterm}, final{final}, total{total}, other{other} {}
 };

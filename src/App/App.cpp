@@ -16,12 +16,12 @@ DataIter App::addStaff(const shared_ptr<Staff> &staff) {
     return addAccount(static_pointer_cast<Account>(staff));
 }
 
-bool App::loggedIn() const {
+bool App::isLoggedIn() const {
     return user_iter;
 }
 
 UserType App::userType() const {
-    if (!loggedIn())
+    if (!isLoggedIn())
         return UserType::Unknown;
 
     return user_iter.ptr<Account>()->getUserType();
@@ -332,6 +332,7 @@ bool App::enroll(const DataIter &student, const Data::UID &course_uid) {
     auto course = semester()->getCourseByUID(course_uid);
     if (!course)
         return false;
+    /// If student is not in default schoolyear.
     if (!year()->getClassByUID(student.ptr<Student>()->classroom.uid()))
         return false;
 
@@ -345,6 +346,7 @@ bool App::enroll(const DataIter &student, const string &course_id) {
     auto course = semester()->getCourseByID(course_id);
     if (!course)
         return false;
+    /// If student is not in default schoolyear.
     if (!year()->getClassByUID(student.ptr<Student>()->classroom.uid()))
         return false;
 

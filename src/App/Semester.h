@@ -5,14 +5,16 @@
 #include "../Enums.h"
 #include "Database.h"
 #include "List.h"
+#include "RegistrationSession.h"
 
 using std::tm, std::string;
 
 class Semester : public Data {
 public:
     DataIter school_year;
-    int no;
-    tm start, end;
+    RegistrationSession reg_session{};
+    int no{};
+    tm start{}, end{};
     List<DataIter> courses;
 
     Semester() = default;

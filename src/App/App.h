@@ -37,7 +37,7 @@ public:
         default_semester_iter = database.getByUID(default_semester_uid);
     }
 
-    bool loggedIn() const;
+    bool isLoggedIn() const;
     /// Returns UserType of current user.\n\n
     /// Returns:\n
     /// > UserType::Student if current user is a student.\n
