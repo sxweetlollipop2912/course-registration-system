@@ -11,11 +11,13 @@
 #include "App.h"
 #include "List.h"
 #include "Utils.h"
+#include "Constants.h"
 
 using std::make_shared, std::tm, std::dynamic_pointer_cast, std::to_string;
 
 void output(App &app) {
     std::cout << "\n------------ OUTPUT ------------\n\n";
+    std::cout << "Username: " << app.user()->username << ", pass: " << app.user()->password << "\n\n";
 
     if (app.year()) {
         std::cout << "Schoolyear " << app.year()->start_year << ' ' << app.year()->end_year << ": ";
@@ -27,7 +29,7 @@ void output(App &app) {
         std::cout << "  Default semester: no. " << semester->no << ": ";
         std::cout << semester->courses.size() << " course(s):\n";
 
-        for (auto c: semester->courses) {
+        for (const auto& c: semester->courses) {
             auto c_ptr = c.ptr<Course>();
             std::cout << "      Course " << c_ptr->id << '\n';
             std::cout << "          name: " << c_ptr->name << '\n';
@@ -41,16 +43,16 @@ void output(App &app) {
 
     if (app.year()) {
         std::cout << "Classes:\n";
-        for (auto c: app.year()->classes) {
+        for (const auto& c: app.year()->classes) {
             auto c_ptr = c.ptr<Class>();
             std::cout << "  " << c_ptr->name << ": " << c_ptr->students.size() << " student(s)\n";
 
-            for (auto s: c_ptr->students) {
+            for (const auto& s: c_ptr->students) {
                 auto s_ptr = s.ptr<Student>();
                 std::cout << "      " << s_ptr->student_id << " - " << s_ptr->name.last << ' ' << s_ptr->name.first
                           << ", ";
                 std::cout << "enrolling in " << s_ptr->courses.size() << " course(s):\n";
-                for (auto course: s_ptr->courses) {
+                for (const auto& course: s_ptr->courses) {
                     auto course_ptr = course.ptr<Course>();
                     std::cout << "          " << course_ptr->id << '\n';
                 }
@@ -60,11 +62,11 @@ void output(App &app) {
 
     if (app.semester()) {
         std::cout << "Courses:\n";
-        for (auto c: app.semester()->courses) {
+        for (const auto& c: app.semester()->courses) {
             auto c_ptr = c.ptr<Course>();
             std::cout << "  " << c_ptr->id << ": " << c_ptr->students.size() << " student(s)\n";
 
-            for (auto s: c_ptr->students) {
+            for (const auto& s: c_ptr->students) {
                 auto s_ptr = s.ptr<Student>();
                 std::cout << "      " << s_ptr->student_id << " - " << s_ptr->name.last << ' ' << s_ptr->name.first
                           << ", ";
@@ -77,6 +79,10 @@ void output(App &app) {
 int main() {
     //list_examples();
     App app;
+    /// Add admin account ("admin", "admin").
+    app.addStaff(make_shared<Staff>(Const::ADMIN_USERNAME, Const::ADMIN_PASS));
+    /// Login with admin account.
+    app.login(Const::ADMIN_USERNAME, Const::ADMIN_PASS);
 
     {
         /// Create year 2021 - 2022
@@ -157,13 +163,13 @@ int main() {
 
 
         /// Remove semester 1 from 2021-2022 schoolyear.
-        app.deleteSemester(app.semester()->uid);
+        app.deleteDefaultSemester();
         output(app);
         std::cout << "data count 5: " << app.database.size() << '\n';
 
 
         /// Remove 2021-2022 schoolyear.
-        app.deleteSchoolYear();
+        app.deleteDefaultSchoolYear();
         output(app);
         std::cout << "data count 6: " << app.database.size() << '\n';
     }

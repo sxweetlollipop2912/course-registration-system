@@ -20,25 +20,58 @@ private:
     /// For loading purposes, since year and semester pointers cannot be saved.
     Data::UID default_year_uid, default_semester_uid;
 
+    DataIter addAccount(const shared_ptr<Account> &account);
+
     void deleteSchoolYear(const DataIter &year);
     void deleteSemester(const DataIter &semester);
     void deleteCourse(const DataIter &course);
 public:
     Database database;
-    DataIter default_year;
-    DataIter default_semester;
+    DataIter default_year_iter;
+    DataIter default_semester_iter;
+    DataIter user_iter;
 
     App() {
-        default_year = database.getByUID(default_year_uid);
-        default_semester = database.getByUID(default_semester_uid);
+        user_iter = {};
+        default_year_iter = database.getByUID(default_year_uid);
+        default_semester_iter = database.getByUID(default_semester_uid);
     }
 
-    shared_ptr<SchoolYear> year() {return default_year.ptr<SchoolYear>();}
-    shared_ptr<Semester> semester() {return default_semester.ptr<Semester>();}
+    bool loggedIn() const;
+    /// Returns UserType of current user.\n\n
+    /// Returns:\n
+    /// > UserType::Student if current user is a student.\n
+    /// > UserType::Staff if current user is a staff.\n
+    /// > UserType::Unknown if no user has logged in.\n
+    UserType userType() const;
+
+    shared_ptr<Account> user() {return user_iter.ptr<Account>();}
+    shared_ptr<SchoolYear> year() {return default_year_iter.ptr<SchoolYear>();}
+    shared_ptr<Semester> semester() {return default_semester_iter.ptr<Semester>();}
 
     void load();
     void save();
     List<DataIter> getAllYears();
+
+    /// Attempt to login given username and password.\n\n
+    /// Returns DataIter to the Account if succeeded, or empty DataIter if:\n
+    /// > Given username does not exist.\n
+    /// > Given username and password don't match.\n
+    /// NOTE: returning DataIter is the same as App.user_iter.\n
+    DataIter login(const string &username, const string &password);
+    /// Attempt to logout.\n\n
+    /// True if succeeded, false if:\n
+    /// > No user is logged in.\n
+    bool logout();
+    /// Attempt to change password.\n\n
+    /// True if succeeded, false if:\n
+    /// > No user is logged in.\n
+    /// > ?\n
+    bool changePassword(const string &password);
+    /// Add a staff account.\n\n
+    /// Returns DataIter to Staff if succeeded, or empty DataIter if:\n
+    /// > username already exists.\n
+    DataIter addStaff(const shared_ptr<Staff> &staff);
 
 
     /// Sets a schoolyear in database to default.\n
