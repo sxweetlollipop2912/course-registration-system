@@ -12,6 +12,7 @@ CTestTestfile.cmake
 _deps
 
 /cmake-build-debug/
+/cmake-build-release/
 /.idea/
 CMakeLists.txt
 
@@ -417,17 +418,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-
-# VS Code files for those working on multiple tools
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-*.code-workspace
-
-# Local History for Visual Studio Code
-.history/
 
 # Windows Installer files from build outputs
 *.cab

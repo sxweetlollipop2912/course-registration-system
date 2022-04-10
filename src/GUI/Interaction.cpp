@@ -20,7 +20,7 @@ void Textbox::set_box_color(const sf::Color& color)
 	box.setFillColor(color);
 }
 
-void Textbox::draw(sf::RenderWindow& window) {
+void Textbox::draw(sf::RenderWindow& window) const {
 	window.draw(box);
 	window.draw(text);
 }
@@ -35,7 +35,7 @@ bool Textbox::inside(const float& x, const float& y)
 	return (left <= x && x < right && up <= y && y < down);
 }
 
-void Button::draw(sf::RenderWindow& window) {
+void Button::draw(sf::RenderWindow& window) const {
 	if (use_image) {
 		if (idle) {
 
@@ -54,7 +54,7 @@ void Button::draw(sf::RenderWindow& window) {
 	}
 }
 
-bool Button::inside(const float& x, const float& y) {
+bool Button::inside(const float& x, const float& y) const {
 	return (left <= x && x < right && up <= y && y < down);
 }
 
@@ -64,16 +64,16 @@ void Interaction::add_button(const Button& button) {
 
 void Interaction::interact(const sf::Event& event) { // check if it is mouse moved or press first?
 	if (event.type == sf::Event::MouseMoved) {
-		float x = event.mouseMove.x;
-		float y = event.mouseMove.y;
+		int x = event.mouseMove.x;
+		int y = event.mouseMove.y;
 
 		for (Button& button : buttons) {
 			button.idle = !button.inside(x, y);
 		}
 	}
 	else {
-		float x = event.mouseButton.x;
-		float y = event.mouseButton.y;
+		int x = event.mouseButton.x;
+		int y = event.mouseButton.y;
 
 		for (Button button : buttons) {
 			if (button.inside(x, y)) {

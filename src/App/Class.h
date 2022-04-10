@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Enums.h"
+#include "../Enums.h"
 #include "Database.h"
 #include "List.h"
 

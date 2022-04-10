@@ -7,7 +7,7 @@
 #include <iostream>
 
 #include "List.h"
-#include "Enums.h"
+#include "../Enums.h"
 
 using std::string, std::stringstream, std::random_device, std::mt19937_64, std::uniform_int_distribution, std::make_shared, std::shared_ptr, std::static_pointer_cast, std::dynamic_pointer_cast;
 

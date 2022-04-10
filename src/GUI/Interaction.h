@@ -21,13 +21,13 @@ public:
 		text.setPosition(position + off_set);
 	}
 
-	Textbox(){}
+	Textbox() = default;
 
 	void set_text(const std::string& _text);
 	void set_text_style(const sf::Uint32& char_style);
 	void set_outline(const sf::Color& color, const float& thickness = 2);
 	void set_box_color(const sf::Color& color);
-	void draw(sf::RenderWindow& window);
+	void draw(sf::RenderWindow& window) const;
 	bool inside(const float& x, const float& y);
 };
 
@@ -40,7 +40,7 @@ public:
 	sf::Image idle_image, hover_image;
 	Textbox idle_textbox, hover_textbox;
 
-	Button(const Textbox& _idle_textbox, const Textbox& _hover_textbox)
+	Button(const Textbox& _idle_textbox, const Textbox& _hover_textbox) : trigger{nullptr}
 	{
 		left = _idle_textbox.box.getPosition().x - _idle_textbox.box.getOrigin().x;
 		up = _idle_textbox.box.getPosition().y - _idle_textbox.box.getOrigin().y;
@@ -50,8 +50,8 @@ public:
 		hover_textbox = _hover_textbox;
 	}
 
-	void draw(sf::RenderWindow& window);
-	bool inside(const float& x, const float& y);
+	void draw(sf::RenderWindow& window) const;
+	bool inside(const float& x, const float& y) const;
 
 	void (*trigger) (float x, float y);
 };

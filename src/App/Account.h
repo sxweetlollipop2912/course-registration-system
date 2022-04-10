@@ -3,9 +3,9 @@
 #include <string>
 #include <ctime>
 
-#include "Enums.h"
+#include "../Enums.h"
 #include "Database.h"
-#include "Constants.h"
+#include "../Constants.h"
 
 using std::tm, std::string;
 
@@ -58,7 +58,7 @@ public:
             student_id{student_id}, social_id{social_id}, name{name}, gender{gender}, birth{birth}  {
         this->user_type = UserType::Student;
         this->username = student_id;
-        this->password = Const::DEFAULT_PASS;
+        this->password = ACCOUNT::DEFAULT_PASS;
     }
 };
 
@@ -68,7 +68,7 @@ public:
     Staff(const string &username) {
         this->user_type = UserType::Staff;
         this->username = username;
-        this->password = Const::DEFAULT_PASS;
+        this->password = ACCOUNT::DEFAULT_PASS;
     }
     Staff(const string &username, const string &password) {
         this->user_type = UserType::Staff;
