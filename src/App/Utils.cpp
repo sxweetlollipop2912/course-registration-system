@@ -1,6 +1,8 @@
+#include <random>
+
 #include "Utils.h"
 
-using std::chrono::system_clock;
+using std::chrono::system_clock, std::mt19937_64, std::random_device, std::uniform_int_distribution;
 
 tm Utils::now() {
     auto now = system_clock::to_time_t(system_clock::now());
@@ -18,4 +20,11 @@ tm Utils::mktm(const int day, const int month, const int year, const int hour, c
     auto mk = mktime(&time);
 
     return *localtime(&mk);
+}
+
+int Utils::random(const int min, const int max) {
+    auto rng = mt19937_64(random_device()());
+    auto dis = uniform_int_distribution<int>(min, max);
+
+    return dis(rng);
 }

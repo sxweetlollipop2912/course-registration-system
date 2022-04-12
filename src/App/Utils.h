@@ -10,4 +10,6 @@ namespace Utils {
     tm now();
     /// Returns std::tm of desired time.
     tm mktm(const int day, const int month, const int year, const int hour = 0, const int minute = 0, const int second = 0);
+    /// Returns a random integer from [min, max].
+    int random(const int min, const int max);
 }
