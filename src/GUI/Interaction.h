@@ -1,7 +1,16 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
-#include <vector>
+#include "List.h"
+
+class Outline {
+public:
+	sf::Color color = sf::Color::White;
+	float thickness = 0;
+
+	Outline(const sf::Color& _color, const float& _thickness) : color(_color), thickness(_thickness) {}
+	Outline() = default;
+};
 
 class Textbox {
 public:
@@ -9,8 +18,7 @@ public:
 	sf::RectangleShape box;
 
 	Textbox(const std::string &_text, const sf::Font& font, const int &char_size, const sf::Color& char_color,
-		const sf::Vector2f& position, const sf::Vector2f& box_size, const sf::Color& box_color,
-		const sf::Vector2f& off_set = sf::Vector2f(0, 0)) {
+		const sf::Vector2f& position, const sf::Vector2f& box_size, const sf::Color& box_color) {
 		text.setString(_text);
 		text.setFont(font);
 		text.setCharacterSize(char_size);
@@ -18,51 +26,116 @@ public:
 		box.setPosition(position);
 		box.setSize(box_size);
 		box.setFillColor(box_color);
-		text.setPosition(position + off_set);
+		align_center();
 	}
 
 	Textbox() = default;
 
 	void set_text(const std::string& _text);
+	void set_font(const sf::Font& font);
+	void set_text_size(const int& char_size);
+	void set_text_color(const sf::Color& char_color);
 	void set_text_style(const sf::Uint32& char_style);
-	void set_outline(const sf::Color& color, const float& thickness = 2);
+
+	void align_left(const float& offset = 5);
+	void align_center();
+	void align_right(const float& offset = 5);
+
+	void set_box_position(const sf::Vector2f& position);
+	void set_box_origin(const sf::Vector2f& origin);
+	void set_box_size(const sf::Vector2f& box_size);
 	void set_box_color(const sf::Color& color);
-	void draw(sf::RenderWindow& window) const;
-	bool inside(const float& x, const float& y);
+
+	void set_outline(const sf::Color& color, const float& thickness = -2);
+	void set_outline(const Outline &outline);
+
+	void draw(sf::RenderWindow& window);
+	bool inside(const int& x, const int& y);
 };
 
-class Button {
+class Input_Textbox {
 public:
-	float left, right, up, down;
+	Textbox textbox;
+	std::string cur_text;
+	int length_limit = (int)1e9;
+	Outline idle_outline, selected_outline;
 	bool idle = true;
-	bool use_image = false;
+	float align_offset = 5;
 
-	sf::Image idle_image, hover_image;
-	Textbox idle_textbox, hover_textbox;
-
-	Button(const Textbox& _idle_textbox, const Textbox& _hover_textbox) : trigger{nullptr}
-	{
-		left = _idle_textbox.box.getPosition().x - _idle_textbox.box.getOrigin().x;
-		up = _idle_textbox.box.getPosition().y - _idle_textbox.box.getOrigin().y;
-		right = left + _idle_textbox.box.getSize().x;
-		down = up + _idle_textbox.box.getSize().y;
-		idle_textbox = _idle_textbox;
-		hover_textbox = _hover_textbox;
+	Input_Textbox(const Textbox& _textbox, const sf::Color& selected_outline_color, 
+				const float& selected_outline_thickness = -2, const int& _length_limit = 1e9) {
+		textbox = _textbox;
+		set_selected_outline(selected_outline_color, selected_outline_thickness);
+		length_limit = _length_limit;
 	}
 
-	void draw(sf::RenderWindow& window) const;
-	bool inside(const float& x, const float& y) const;
+	Input_Textbox() = default;
 
-	void (*trigger) (float x, float y);
+	void set_lenth_limit(int limit);
+	void set_idle_outline(const sf::Color& color, const float& thickness = -2);
+	void set_selected_outline(const sf::Color& color, const float& thickness = -2);
+	void set_align_offset(const float& offset);
+	void add_char(char c);
+	void pop_char();
+	void draw(sf::RenderWindow& window);
+	bool inside(const int& x, const int& y);
+};
+
+class Button_Textbox {
+public:
+	Textbox textbox;
+	Outline idle_outline, hover_outline;
+	bool idle = true;
+
+	Button_Textbox(const Textbox& _textbox, const sf::Color& hover_outline_color, const float& hover_outline_thickness = -2) {
+		textbox = _textbox;
+		set_hover_outline(hover_outline_color, hover_outline_thickness);
+	}
+
+	Button_Textbox() = default;
+
+	void set_idle_outline(const sf::Color& color, const float& thickness = -2);
+	void set_hover_outline(const sf::Color& color, const float& thickness = -2);
+	void draw(sf::RenderWindow& window);
+	bool inside(const int& x, const int& y);
+};
+
+class Button_Sprite {
+public:
+	sf::Sprite idle_sprite, hover_sprite;
+	bool idle = true;
+
+	Button_Sprite(const sf::Sprite& _idle_sprite, const sf::Sprite& _hover_sprite) : idle_sprite(_idle_sprite), hover_sprite(_hover_sprite) {}
+	Button_Sprite() = default;
+
+	void draw(sf::RenderWindow& window);
+	bool inside(const int& x, const int& y);
+};
+
+template <class T>
+class Button_List {
+public:
+	List<T> list_button;
+	std::function<void(int)> trigger;
+
+	void add_button(const T& button);
+	void draw(sf::RenderWindow& window);
+	void update_hover(const int& x, const int& y);
+	void update_trigger(const int& x, const int& y);
 };
 
 class Interaction {
 public:
-	std::vector<Button> buttons; // implement using vector for now, change to list later
+	List<Input_Textbox> list_inptb;
+	List<Button_List<Button_Textbox>> type1_buttons;
+	List<Button_List<Button_Sprite>> type2_buttons;
+	Input_Textbox* selected_textbox = NULL;
 
-	void add_button(const Button& button);
-
-	void interact(const sf::Event& event);
-
+	void add_input_textbox(const Input_Textbox& inptb);
+	void add_button_list(const Button_List<Button_Textbox>& button_list);
+	void add_button_list(const Button_List<Button_Sprite>& button_list);
+	void add_button(const Button_Textbox& button, const std::function<void(int)>& trigger);
+	void add_button(const Button_Sprite& button, const std::function<void(int)>& trigger);
+	void interact(sf::RenderWindow& window);
 	void draw(sf::RenderWindow& window);
 };
