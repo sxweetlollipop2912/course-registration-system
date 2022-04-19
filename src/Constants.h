@@ -19,8 +19,8 @@ namespace ACCOUNT {
 }
 
 namespace GUI {
-    const int WINDOW_WIDTH = 1200;
-    const int WINDOW_HEIGHT = 900;
+	const int windowWidth = 1200;
+	const int windowHeight = 900;
 
-    const int DEFAULT_CHAR_SIZE = 25;
+	const int defaultCharSize = 25;
 }
