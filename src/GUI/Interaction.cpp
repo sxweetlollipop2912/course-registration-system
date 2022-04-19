@@ -59,7 +59,7 @@ void Textbox::set_outline(const sf::Color& color, const float& thickness) {
 	box.setOutlineThickness(thickness);
 }
 
-void Textbox::set_outline(const Outline& outline) {
+void Textbox::set_outline(const Outline &outline) {
 	box.setOutlineColor(outline.color);
 	box.setOutlineThickness(outline.thickness);
 }
@@ -75,7 +75,7 @@ bool Textbox::inside(const int& x, const int& y) {
 	up = box.getPosition().y - box.getOrigin().y;
 	right = left + box.getSize().x;
 	down = up + box.getSize().y;
-	return (left <= x && x < right&& up <= y && y < down);
+	return (left <= x && x < right && up <= y && y < down);
 }
 
 void Input_Textbox::set_lenth_limit(int limit) {
@@ -94,20 +94,29 @@ void Input_Textbox::set_align_offset(const float& offset) {
 	align_offset = offset;
 }
 
+void Input_Textbox::set_hide_text(const bool& hide) {
+	hide_text = hide;
+}
+
 void Input_Textbox::add_char(char c) {
-	if (cur_text.length() == length_limit)
+	if (text.length() == length_limit)
 		return;
-	cur_text += c;
+	text += c;
 }
 
 void Input_Textbox::pop_char() {
-	if (cur_text.empty())
+	if (text.empty())
 		return;
-	cur_text.pop_back();
+	text.pop_back();
 }
 
 void Input_Textbox::draw(sf::RenderWindow& window) {
-	textbox.set_text(cur_text);
+	if (hide_text) {
+		std::string replace_text(text.size(), '*');
+		textbox.set_text(replace_text);
+	}
+	else
+		textbox.set_text(text);
 	textbox.align_left(align_offset);
 	if (idle)
 		textbox.set_outline(idle_outline);
@@ -153,7 +162,7 @@ bool Button_Sprite::inside(const int& x, const int& y) {
 	up = idle_sprite.getPosition().y - idle_sprite.getOrigin().y;
 	right = left + idle_sprite.getGlobalBounds().width;
 	down = up + idle_sprite.getGlobalBounds().height;
-	return (left <= x && x < right&& up <= y && y < down);
+	return (left <= x && x < right && up <= y && y < down);
 }
 
 template <class T>
@@ -165,14 +174,14 @@ template <class T>
 void Button_List<T>::draw(sf::RenderWindow& window) {
 	list_button.for_each([&](T& button) {
 		button.draw(window);
-		});
+	});
 }
 
 template <class T>
 void Button_List<T>::update_hover(const int& x, const int& y) {
 	list_button.for_each([&](T& button) {
 		button.idle = !button.inside(x, y);
-		});
+	});
 }
 
 template <class T>
@@ -182,11 +191,11 @@ void Button_List<T>::update_trigger(const int& x, const int& y) {
 		if (button.inside(x, y))
 			trigger(i);
 		i++;
-		});
+	});
 }
 
-void Interaction::add_input_textbox(const Input_Textbox& inptb) {
-	list_inptb.push_back(inptb);
+void Interaction::add_input_textbox(Input_Textbox& inptb) {
+	list_inptb.push_back(&inptb);
 }
 
 void Interaction::add_button_list(const Button_List<Button_Textbox>& button_list) {
@@ -222,10 +231,10 @@ void Interaction::interact(sf::RenderWindow& window) {
 		int y = event.mouseMove.y;
 		type1_buttons.for_each([&](Button_List<Button_Textbox>& button_list) {
 			button_list.update_hover(x, y);
-			});
+		});
 		type2_buttons.for_each([&](Button_List<Button_Sprite>& button_list) {
 			button_list.update_hover(x, y);
-			});
+		});
 	}
 	else if (event.type == sf::Event::MouseButtonPressed) {
 		int x = event.mouseButton.x;
@@ -233,21 +242,18 @@ void Interaction::interact(sf::RenderWindow& window) {
 		if (event.mouseButton.button == sf::Mouse::Left) {
 			type1_buttons.for_each([&](Button_List<Button_Textbox>& button_list) {
 				button_list.update_trigger(x, y);
-				});
+			});
 			type2_buttons.for_each([&](Button_List<Button_Sprite>& button_list) {
 				button_list.update_trigger(x, y);
-				});
-			bool selected = false;
-			list_inptb.for_each([&](Input_Textbox& inptb) {
-				if (inptb.inside(x, y)) {
-					inptb.idle = false;
-					selected_textbox = &inptb;
-					selected = true;
+			});
+			list_inptb.for_each([&](Input_Textbox*& inptb) {
+				if (inptb->inside(x, y)) {
+					inptb->idle = false;
+					selected_textbox = inptb;
 				}
 				else
-					inptb.idle = true;
-				});
-			if (!selected) selected_textbox = NULL;
+					inptb->idle = true;
+			});
 		}
 	}
 	else if (event.type == sf::Event::TextEntered) {
@@ -263,11 +269,11 @@ void Interaction::interact(sf::RenderWindow& window) {
 void Interaction::draw(sf::RenderWindow& window) {
 	type1_buttons.for_each([&](Button_List<Button_Textbox>& button_list) {
 		button_list.draw(window);
-		});
+	});
 	type2_buttons.for_each([&](Button_List<Button_Sprite>& button_list) {
 		button_list.draw(window);
-		});
-	list_inptb.for_each([&](Input_Textbox& inptb) {
-		inptb.draw(window);
-		});
+	});
+	list_inptb.for_each([&](Input_Textbox*& inptb) {
+		inptb->draw(window);
+	});
 }

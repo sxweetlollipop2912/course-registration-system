@@ -56,14 +56,15 @@ public:
 class Input_Textbox {
 public:
 	Textbox textbox;
-	std::string cur_text;
-	int length_limit = (int)1e9;
+	std::string text;
+	int length_limit = 1000;
 	Outline idle_outline, selected_outline;
 	bool idle = true;
 	float align_offset = 5;
+	bool hide_text = false;
 
-	Input_Textbox(const Textbox& _textbox, const sf::Color& selected_outline_color, 
-				const float& selected_outline_thickness = -2, const int& _length_limit = 1e9) {
+	Input_Textbox(const Textbox& _textbox, const int& _length_limit, const sf::Color& selected_outline_color,
+		const float& selected_outline_thickness = -2) {
 		textbox = _textbox;
 		set_selected_outline(selected_outline_color, selected_outline_thickness);
 		length_limit = _length_limit;
@@ -75,6 +76,7 @@ public:
 	void set_idle_outline(const sf::Color& color, const float& thickness = -2);
 	void set_selected_outline(const sf::Color& color, const float& thickness = -2);
 	void set_align_offset(const float& offset);
+	void set_hide_text(const bool& hide = true);
 	void add_char(char c);
 	void pop_char();
 	void draw(sf::RenderWindow& window);
@@ -126,12 +128,12 @@ public:
 
 class Interaction {
 public:
-	List<Input_Textbox> list_inptb;
+	List<Input_Textbox*> list_inptb;
 	List<Button_List<Button_Textbox>> type1_buttons;
 	List<Button_List<Button_Sprite>> type2_buttons;
 	Input_Textbox* selected_textbox = NULL;
 
-	void add_input_textbox(const Input_Textbox& inptb);
+	void add_input_textbox(Input_Textbox& inptb);
 	void add_button_list(const Button_List<Button_Textbox>& button_list);
 	void add_button_list(const Button_List<Button_Sprite>& button_list);
 	void add_button(const Button_Textbox& button, const std::function<void(int)>& trigger);
