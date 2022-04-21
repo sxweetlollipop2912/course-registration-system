@@ -16,9 +16,11 @@ class Textbox {
 public:
 	sf::Text text;
 	sf::RectangleShape box;
+	sf::Font font;
 
-	Textbox(const std::string &_text, const sf::Font& font, const int &char_size, const sf::Color& char_color,
+	Textbox(const std::string &_text, const int &char_size, const sf::Color& char_color,
 		const sf::Vector2f& position, const sf::Vector2f& box_size, const sf::Color& box_color) {
+		font.loadFromFile("Fonts/arial.ttf");
 		text.setString(_text);
 		text.setFont(font);
 		text.setCharacterSize(char_size);
