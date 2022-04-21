@@ -16,12 +16,14 @@ protected:
 public:
     string username;
     string password;
+    FullName name;
+    Gender gender;
 
-    Account() : username{}, password{}, user_type{UserType::Unknown} {
+    Account() : username{}, password{}, name{}, gender{}, user_type{UserType::Unknown} {
         data_type = DataType::Account;
     }
-    Account(const string &username, const string &password, const UserType user_type)
-            : username{username}, password{password}, user_type{user_type} {
+    Account(const string &username, const string &password, const FullName &name, const Gender &gender, const UserType user_type)
+            : username{username}, password{password}, name{name}, gender{gender}, user_type{user_type} {
         data_type = DataType::Account;
     }
 
@@ -37,12 +39,26 @@ private:
     bool removeScore(const Data::UID &course_id);
 public:
     string student_id, social_id;
-    FullName name;
-    Gender gender;
     tm birth;
     DataIter classroom;
     List<DataIter> courses;
     List<shared_ptr<Score>> scores;
+
+    Student() : student_id{}, social_id{}, birth{}, classroom{} {
+        this->password = ACCOUNT::DEFAULT_PASS;
+        this->user_type = UserType::Student;
+    }
+    Student(const string &student_id,
+            const string &social_id,
+            const FullName &name,
+            const Gender gender,
+            const tm &birth) :
+            Account(student_id, ACCOUNT::DEFAULT_PASS, name, gender, UserType::Student),
+            student_id{student_id}, social_id{social_id}, birth{birth}  {}
+
+    /// Returns a default Student if an exception was thrown.\n
+    /// Otherwise returns Student with parsed info (there might have been failed parsing attempts).
+    static Student tryParse(const List<string> &headers, const List<string> &row);
 
     List<DataIter> overlappingCourses(const List<Course::Session> &sessions) const;
     /// Returns false if course is already added.
@@ -60,34 +76,14 @@ public:
     shared_ptr<const Score> getScore(const Data::UID &course_uid) const;
     /// Returns nullptr if no score is found.
     shared_ptr<const Score> getScore(const string &course_id) const;
-
-    Student() : student_id{}, social_id{}, name{}, birth{}, classroom{} {
-        this->user_type = UserType::Student;
-        gender = Gender::Unknown;
-    }
-    Student(const string &student_id,
-            const string &social_id,
-            const FullName &name,
-            const Gender gender,
-            const tm &birth) :
-            student_id{student_id}, social_id{social_id}, name{name}, gender{gender}, birth{birth}  {
-        this->user_type = UserType::Student;
-        this->username = student_id;
-        this->password = ACCOUNT::DEFAULT_PASS;
-    }
 };
 
 
 class Staff : public Account {
 public:
-    Staff(const string &username) {
-        this->user_type = UserType::Staff;
-        this->username = username;
-        this->password = ACCOUNT::DEFAULT_PASS;
-    }
-    Staff(const string &username, const string &password) {
-        this->user_type = UserType::Staff;
-        this->username = username;
-        this->password = password;
-    }
+    Staff(const string &username, const FullName &name = {}, const Gender &gender = Gender::Unknown) :
+    Account(username, ACCOUNT::DEFAULT_PASS, name, gender, UserType::Staff) {}
+
+    Staff(const string &username, const string &password, const FullName &name = {}, const Gender &gender = Gender::Unknown) :
+            Account(username, password, name, gender, UserType::Staff) {}
 };

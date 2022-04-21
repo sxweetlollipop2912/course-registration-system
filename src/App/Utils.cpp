@@ -71,6 +71,28 @@ string Utils::sessionToStr(const tm &session) {
     return s;
 }
 
+void Utils::toLowerStr(string &s) {
+    std::transform(s.begin(), s.end(), s.begin(),
+                   [](char c) -> char {
+                       if (c <= 'Z' && c >= 'A')
+                           return (char)(c - ('Z' - 'z'));
+                       return c;
+                   });
+}
+
+void Utils::trimStr(string &s) {
+    int st = 0;
+    while (st < (int)s.size() && s[st] == ' ') ++st;
+    s.erase(0, st);
+
+    int en = (int)s.size() - 1;
+    while (en >= 0 && s[en] == ' ') --en;
+    s.erase(en + 1, s.size());
+
+    for(int pos = (int)s.find("  "); pos != string::npos; pos = (int)s.find("  "))
+        s.erase(pos, 1);
+}
+
 int Utils::random(const int min, const int max) {
     auto rng = mt19937_64(random_device()());
     auto dis = uniform_int_distribution<int>(min, max);

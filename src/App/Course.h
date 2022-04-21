@@ -5,6 +5,7 @@
 #include "../Enums.h"
 #include "Database.h"
 #include "List.h"
+#include "CSV.h"
 
 using std::string, std::tm;
 
@@ -52,6 +53,8 @@ public:
     /// False if no student with such student_id is found, otherwise true.
     bool removeStudent(const string &student_id);
 
+    /// Returns number of successful parsing attempt (attempts without any exception).\n
+    int tryParseScore(const CSVData &csv);
 };
 
 
