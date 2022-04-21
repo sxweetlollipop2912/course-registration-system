@@ -3,17 +3,17 @@
 using std::dynamic_pointer_cast, std::make_shared;
 
 
-shared_ptr<CourseScore> Student::addScore(const CourseScore &score) {
+shared_ptr<Score> Student::addScore(const Score &score) {
     if (getScore(score.course.uid()))
-        return {};
+        return nullptr;
 
-    scores.push_back(make_shared<CourseScore>(score));
+    scores.push_back(make_shared<Score>(score));
 
     return scores.back();
 }
 
 bool Student::removeScore(const Data::UID &course_uid) {
-    auto it = scores.find_if([&](const shared_ptr<CourseScore> &score) {
+    auto it = scores.find_if([&](const shared_ptr<Score> &score) {
         return score->course.uid() == course_uid;
     });
 
@@ -33,7 +33,7 @@ bool Student::addCourse(const DataIter &course) {
     /// TODO: Check for overlapping course sessions.
 
     courses.push_back(course);
-    scores.push_back(make_shared<CourseScore>(course));
+    scores.push_back(make_shared<Score>(course));
 
     return true;
 }
@@ -53,31 +53,53 @@ bool Student::removeCourse(const Data::UID &course_uid) {
     return false;
 }
 
-shared_ptr<CourseScore> Student::replaceScore(const CourseScore &score) {
+shared_ptr<Score> Student::replaceScore(const Score &score) {
     removeScore(score.course.uid());
-    scores.push_back(make_shared<CourseScore>(score));
+    scores.push_back(make_shared<Score>(score));
 
     return scores.back();
 }
 
-shared_ptr<CourseScore> Student::getScore(const Data::UID &course_uid) {
+shared_ptr<Score> Student::getScore(const Data::UID &course_uid) {
     /// Check if score of that course already exists.
-    auto it = scores.find_if([&](const shared_ptr<CourseScore> &score) {
+    auto it = scores.find_if([&](const shared_ptr<Score> &score) {
         return course_uid == score->course.uid();
     });
 
-    if (it == scores.end()) return {};
+    if (it == scores.end()) return nullptr;
 
     return *it;
 }
 
-shared_ptr<const CourseScore> Student::getScore(const Data::UID &course_uid) const {
+shared_ptr<Score> Student::getScore(const string &course_id) {
     /// Check if score of that course already exists.
-    auto it = scores.find_if([&](const shared_ptr<CourseScore> &score) {
+    auto it = scores.find_if([&](const shared_ptr<Score> &score) {
+        return course_id == score->course.ptr<Course>()->id;
+    });
+
+    if (it == scores.end()) return nullptr;
+
+    return *it;
+}
+
+shared_ptr<const Score> Student::getScore(const Data::UID &course_uid) const {
+    /// Check if score of that course already exists.
+    auto it = scores.find_if([&](const shared_ptr<Score> &score) {
         return course_uid == score->course.uid();
     });
 
-    if (it == scores.end()) return {};
+    if (it == scores.end()) return nullptr;
+
+    return *it;
+}
+
+shared_ptr<const Score> Student::getScore(const string &course_id) const {
+    /// Check if score of that course already exists.
+    auto it = scores.find_if([&](const shared_ptr<Score> &score) {
+        return course_id == score->course.ptr<Course>()->id;
+    });
+
+    if (it == scores.end()) return nullptr;
 
     return *it;
 }

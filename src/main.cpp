@@ -70,14 +70,15 @@ void output(App &app) {
                 auto s_ptr = s.ptr<Student>();
                 std::cout << "      " << s_ptr->student_id << " - " << s_ptr->name.last << ' ' << s_ptr->name.first
                           << ", ";
-                std::cout << "class " << s_ptr->classroom.ptr<Class>()->name << '\n';
+                std::cout << "class " << s_ptr->classroom.ptr<Class>()->name << ", ";
+                std::cout << "final score: " << app.getScoreOfStudent(s_ptr->student_id, c_ptr->uid)->final << '\n';
             }
         }
     }
 }
 
 int main() {
-    //list_examples();
+//    list_examples();
 
 //    App app;
 //    Scenes scenes(app);

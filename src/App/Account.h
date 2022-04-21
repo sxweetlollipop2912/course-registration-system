@@ -33,7 +33,7 @@ public:
 class Student : public Account {
 private:
     /// Returns ptr to the added score.
-    shared_ptr<CourseScore> addScore(const CourseScore &score);
+    shared_ptr<Score> addScore(const Score &score);
     bool removeScore(const Data::UID &course_id);
 public:
     string student_id, social_id;
@@ -42,17 +42,21 @@ public:
     tm birth;
     DataIter classroom;
     List<DataIter> courses;
-    List<shared_ptr<CourseScore>> scores;
+    List<shared_ptr<Score>> scores;
 
     bool addCourse(const DataIter &course);
     bool removeCourse(const Data::UID &course_uid);
     /// This replaces if another score has already existed.\n
     /// Returns ptr to the added score.
-    shared_ptr<CourseScore> replaceScore(const CourseScore &score);
+    shared_ptr<Score> replaceScore(const Score &score);
     /// Returns nullptr if no score is found.
-    shared_ptr<CourseScore> getScore(const Data::UID &course_uid);
+    shared_ptr<Score> getScore(const Data::UID &course_uid);
     /// Returns nullptr if no score is found.
-    shared_ptr<const CourseScore> getScore(const Data::UID &course_uid) const;
+    shared_ptr<Score> getScore(const string &course_id);
+    /// Returns nullptr if no score is found.
+    shared_ptr<const Score> getScore(const Data::UID &course_uid) const;
+    /// Returns nullptr if no score is found.
+    shared_ptr<const Score> getScore(const string &course_id) const;
 
     Student() : student_id{}, social_id{}, name{}, birth{}, classroom{} {
         this->user_type = UserType::Student;

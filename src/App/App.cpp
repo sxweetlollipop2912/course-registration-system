@@ -461,3 +461,35 @@ void App::deleteClass(const DataIter &classroom) {
 
     database.remove(classroom);
 }
+
+shared_ptr<Score> App::getScoreOfStudent(const string &student_id, const string &course_id) {
+    auto student_iter = getStudentByID(student_id);
+    if (!student_iter)
+        return nullptr;
+
+    auto student_ptr = student_iter.ptr<Student>();
+    auto score_ptr = student_ptr->getScore(course_id);
+
+    return score_ptr;
+}
+
+shared_ptr<Score> App::getScoreOfStudent(const string &student_id, const Data::UID &course_uid) {
+    auto student_iter = getStudentByID(student_id);
+    if (!student_iter)
+        return nullptr;
+
+    auto student_ptr = student_iter.ptr<Student>();
+    auto score_ptr = student_ptr->getScore(course_uid);
+
+    return score_ptr;
+}
+
+DataIter App::getStudentByID(const string &student_id) {
+    auto student_iter = database.get([&](const shared_ptr<Data> &ptr) {
+        return ptr->data_type == DataType::Account &&
+                dynamic_pointer_cast<Account>(ptr)->getUserType() == UserType::Student &&
+                dynamic_pointer_cast<Student>(ptr)->student_id == student_id;
+    });
+
+    return student_iter;
+}

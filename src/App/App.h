@@ -161,6 +161,9 @@ public:
     /// Deletes a class entirely. Also deletes all students in that class.
     void deleteClass(const DataIter &classroom);
 
+    /// Gets a DataIter of a student by studentID.\n\n
+    /// Returns empty DataIter if no student is found.
+    DataIter getStudentByID(const string &student_id);
     /// Adds a new student to database and to a class.\n
     /// Needs a shared ptr of that student, name of the class.\n\n
     /// Returns DataIter of the new course if succeeded, or empty DataIter if:\n
@@ -205,4 +208,17 @@ public:
     /// > Student has not enrolled in that course.\n
     /// > Default semester has not been set.
     bool disenroll(const DataIter &student, const string &course_id);
+
+    /// Gets a pointer of a student's score of a course.\n\n
+    /// Returns nullptr if:\n
+    /// > Student is not found.\n
+    /// > Course is not found.\n
+    /// > Student hasn't enrolled in the course.
+    shared_ptr<Score> getScoreOfStudent(const string &student_id, const string &course_id);
+    /// Gets a pointer of a student's score of a course.\n\n
+    /// Returns nullptr if:\n
+    /// > Student is not found.\n
+    /// > Course is not found.\n
+    /// > Student hasn't enrolled in the course.
+    shared_ptr<Score> getScoreOfStudent(const string &student_id, const Data::UID &course_uid);
 };

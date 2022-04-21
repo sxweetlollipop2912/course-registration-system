@@ -9,7 +9,7 @@
 using std::string, std::tm;
 
 class Course;
-class CourseScore;
+class Score;
 
 class Course : public Data {
 public:
@@ -52,13 +52,13 @@ public:
 };
 
 
-class CourseScore : public Data {
+class Score : public Data {
 public:
     DataIter course;
     double midterm{}, final{}, total{}, other{};
 
-    CourseScore() = default;
-    CourseScore(const DataIter &course): course{course} {}
-    CourseScore(const DataIter &course, const double midterm, const double final, const double total, const double other)
+    Score() = default;
+    Score(const DataIter &course): course{course} {}
+    Score(const DataIter &course, const double midterm, const double final, const double total, const double other)
     : course{course}, midterm{midterm}, final{final}, total{total}, other{other} {}
 };
