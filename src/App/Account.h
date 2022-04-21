@@ -44,7 +44,10 @@ public:
     List<DataIter> courses;
     List<shared_ptr<Score>> scores;
 
+    List<DataIter> overlappingCourses(const List<Course::Session> &sessions) const;
+    /// Returns false if course is already added.
     bool addCourse(const DataIter &course);
+    /// Returns false if no course is found.
     bool removeCourse(const Data::UID &course_uid);
     /// This replaces if another score has already existed.\n
     /// Returns ptr to the added score.

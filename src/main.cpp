@@ -35,9 +35,8 @@ void output(App &app) {
             std::cout << "          name: " << c_ptr->name << '\n';
             std::cout << "          teacher: " << c_ptr->teacher_name.last << ' ' << c_ptr->teacher_name.first << '\n';
 
-            std::mktime(&c_ptr->sessions[0].start);
-            std::cout << "          1st session starts on (test output): " << std::asctime(&c_ptr->sessions[0].start)
-                      << '\n';
+            std::cout << "          1st session: " << Utils::sessionToStr(c_ptr->sessions[0].start) << " - " << Utils::sessionToStr(c_ptr->sessions[0].end) << '\n';
+            std::cout << "          2nd session: " << Utils::sessionToStr(c_ptr->sessions[1].start) << " - " << Utils::sessionToStr(c_ptr->sessions[1].end) << '\n';
         }
     }
 
@@ -112,8 +111,8 @@ int main() {
             auto course = make_shared<Course>("CS" + to_string(i),
                                              "Intro to CS",
                                              FullName("Ten", "Ho"),
-                                             Course::Session(tm{}, tm{}),
-                                             Course::Session(tm{}, tm{}),
+                                             Course::Session(Utils::mksession(2, 7, 30), Utils::mksession(2, 9, 10)),
+                                             Course::Session(Utils::mksession(7, 7, 30), Utils::mksession(7, 9, 10)),
                                              4,
                                              50);
             app.addCourse(course);
@@ -138,10 +137,17 @@ int main() {
 
         /// Check if registration session is ongoing.
         std::cout << "Is registration session ongoing: " << app.semester()->reg_session.isOngoing() << '\n';
-
+        std::cout << Utils::tmToStr(app.semester()->reg_session.start) << " - " << Utils::tmToStr(app.semester()->reg_session.end) << '\n';
 
         output(app);
         std::cout << "data count 1: " << app.database.size() << '\n';
+
+
+        /// Enroll student 0 to CS0 (fail, due to overlapping courses).
+        /// 0
+        std::cout << '\n' << app.enroll(app.getStudentByID("0"), "CS0") << '\n';
+        /// 1
+        std::cout << app.getOverlappingCourses(app.getStudentByID("0"), app.semester()->getCourseByID("CS0").ptr<Course>()->sessions).size() << "\n\n";
 
 
         /// Remove course CS0.

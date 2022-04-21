@@ -26,11 +26,24 @@ bool Student::removeScore(const Data::UID &course_uid) {
     return false;
 }
 
+List<DataIter> Student::overlappingCourses(const List<Course::Session> &sessions) const {
+    return courses.filter([&](const DataIter &iter) {
+        auto course_ptr = iter.ptr<Course>();
+
+        return course_ptr->sessions.any_of([&](const Course::Session &s1) {
+            return sessions.any_of([&](const Course::Session &s2) {
+                if (s1 == s2)
+                    return true;
+
+                return s1.inRange(s2.start) || s1.inRange(s2.end) || s2.inRange(s1.start) || s2.inRange(s1.end);
+            });
+        });
+    });
+}
+
 bool Student::addCourse(const DataIter &course) {
     /// If course is already enrolled.
     if (courses.find(course) != courses.end()) return false;
-
-    /// TODO: Check for overlapping course sessions.
 
     courses.push_back(course);
     scores.push_back(make_shared<Score>(course));

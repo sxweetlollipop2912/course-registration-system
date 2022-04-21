@@ -347,12 +347,19 @@ bool App::deleteDefaultSchoolYear() {
     return true;
 }
 
+List<DataIter> App::getOverlappingCourses(const DataIter &student, const List<Course::Session> sessions) const {
+    return student.ptr<Student>()->overlappingCourses(sessions);
+}
+
 bool App::enroll(const DataIter &student, const Data::UID &course_uid) {
     if (!semester())
         return false;
     /// If no such course is found in default semester.
     auto course = semester()->getCourseByUID(course_uid);
     if (!course)
+        return false;
+    /// If there are overlapping courses.
+    if (!student.ptr<Student>()->overlappingCourses(course.ptr<Course>()->sessions).empty())
         return false;
 
     return student.ptr<Student>()->addCourse(course) && course.ptr<Course>()->addStudent(student);
@@ -364,6 +371,9 @@ bool App::enroll(const DataIter &student, const string &course_id) {
     /// If no such course is found in default semester.
     auto course = semester()->getCourseByID(course_id);
     if (!course)
+        return false;
+    /// If there are overlapping courses.
+    if (!student.ptr<Student>()->overlappingCourses(course.ptr<Course>()->sessions).empty())
         return false;
 
     return student.ptr<Student>()->addCourse(course) && course.ptr<Course>()->addStudent(student);

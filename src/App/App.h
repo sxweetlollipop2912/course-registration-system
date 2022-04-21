@@ -185,15 +185,22 @@ public:
     /// True if succeeded, false if:\n
     /// > Course is not found in default semester.\n
     /// > Student has already enrolled in that course.\n
-    /// > Default semester has not been set.
+    /// > There are conflicts with enrolled courses' sessions.\n
+    /// > Default semester has not been set.\n\n
+    /// NOTE: call app.getOverlappingCourses to get a list of conflicting courses, if any.
     bool enroll(const DataIter &student, const Data::UID &course_uid);
     /// Enrolls student to a course in default semester.\n
     /// Needs DataIter of that student, course_id.\n\n
     /// True if succeeded, false if:\n
     /// > Course is not found in default semester.\n
     /// > Student has already enrolled in that course.\n
-    /// > Default semester has not been set.
+    /// > There are conflicts with enrolled courses' sessions.\n
+    /// > Default semester has not been set.\n\n
+    /// NOTE: call app.getOverlappingCourses to get a list of conflicting courses, if any.
     bool enroll(const DataIter &student, const string &course_id);
+    /// Gets a list of courses that conflict with provided sessions.\n\n
+    /// Returns an empty list if there are no conflicting courses.
+    List<DataIter> getOverlappingCourses(const DataIter &student, const List<Course::Session> sessions) const;
     /// Disenrolls student from a course in default semester.\n
     /// Needs DataIter of that student, UID of the course.\n\n
     /// True if succeeded, false if:\n

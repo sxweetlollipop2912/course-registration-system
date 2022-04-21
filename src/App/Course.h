@@ -18,6 +18,9 @@ public:
         tm start, end;
         Session() = default;
         Session(const tm &start, const tm &end) : start{start}, end{end} {}
+
+        bool inRange(const tm &time) const;
+        bool operator==(const Session &s) const;
     };
 
     DataIter semester;

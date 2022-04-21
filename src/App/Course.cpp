@@ -59,3 +59,12 @@ bool Course::removeStudent(const string &student_id) {
     return false;
 }
 
+bool Course::Session::inRange(const tm &time) const {
+    tm tmp = time, tmp_st = start, tmp_en = end;
+    return mktime(&tmp_st) < mktime(&tmp) && mktime(&tmp_en) > mktime(&tmp);
+}
+
+bool Course::Session::operator==(const Session &s) const {
+    tm s_st = s.start, s_en = s.end, tmp_st = start, tmp_en = end;
+    return mktime(&s_st) == mktime(&tmp_st) && mktime(&s_en) == mktime(&tmp_en);
+}
