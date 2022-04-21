@@ -52,6 +52,7 @@ public:
     void load();
     void save();
     List<DataIter> getAllYears();
+    List<DataIter> getAllClasses();
 
     /// Attempt to login given username and password.\n\n
     /// Returns DataIter to the Account if succeeded, or empty DataIter if:\n
@@ -139,13 +140,18 @@ public:
     /// > Default semester has not been set.
     bool deleteCourse(const Data::UID &course_uid);
 
-    /// Adds a new class to database and default schoolyear.\n
+    /// Gets a DataIter of a class by name.\n\n
+    /// Returns empty DataIter if no class is found.
+    DataIter getClassByName(const string &name);
+    /// Gets a DataIter of a class by UID.\n\n
+    /// Returns empty DataIter if no class is found.
+    DataIter getClassByUID(const Data::UID &uid);
+    /// Adds a new class to database.\n
     /// Needs a shared ptr of that class.\n\n
     /// Returns DataIter of the new course if succeeded, or empty DataIter if:\n
     /// > Another class with the same name already exists.
-    /// > Default schoolyear has not been set.
     DataIter addClass(const shared_ptr<Class> &classroom);
-    /// Removes a class from default schoolyear. Does not delete that class entirely.\n
+    /// Removes all connections of a class from default schoolyear. Does not delete that class entirely.\n
     /// NOTE: This also removes the students from all courses belong to default schoolyear.\n
     /// Needs UID.\n\n
     /// True if succeeded, false if:\n
@@ -155,33 +161,26 @@ public:
     /// Deletes a class entirely. Also deletes all students in that class.
     void deleteClass(const DataIter &classroom);
 
-    /// Adds a new student to database and to a class in default schoolyear.\n
+    /// Adds a new student to database and to a class.\n
     /// Needs a shared ptr of that student, name of the class.\n\n
     /// Returns DataIter of the new course if succeeded, or empty DataIter if:\n
-    /// > Another student with the same student_id already exists in database.\n
-    /// > Class is not found in default schoolyear.\n
-    /// > Default schoolyear has not been set.
+    /// > Another student with the same student_id already exists in database.
     DataIter addStudent(const shared_ptr<Student> &student, const string &class_name);
     /// Adds a new student to database and to a class in default schoolyear.\n
     /// Needs a shared ptr of that student, uid of the class.\n\n
     /// Returns DataIter of the new course if succeeded, or empty DataIter if:\n
-    /// > Another student with the same student_id already exists in database.\n
-    /// > Class is not found in default schoolyear.\n
-    /// > Default schoolyear has not been set.
+    /// > Another student with the same student_id already exists in database.
     DataIter addStudent(const shared_ptr<Student> &student, const Data::UID &class_uid);
-    /// Deletes a student in default schoolyear.\n
-    /// Note: This method deletes student from class and from all courses, even those in previous schoolyears.\n
+    /// Deletes a student.\n
+    /// Note: This method deletes student from class and from all courses.\n
     /// Needs DataIter of that student.\n\n
     /// True if succeeded, false if:\n
-    /// > Student's class is not in default schoolyear.\n
-    /// > Student does not belong to a class.\n
-    /// > Default schoolyear has not been set.
+    /// > Student does not belong to any class.
     bool deleteStudent(const DataIter &student);
     /// Enrolls student to a course in default semester.\n
     /// Needs DataIter of that student, UID of the course.\n\n
     /// True if succeeded, false if:\n
     /// > Course is not found in default semester.\n
-    /// > Student does not belong to default schoolyear.\n
     /// > Student has already enrolled in that course.\n
     /// > Default semester has not been set.
     bool enroll(const DataIter &student, const Data::UID &course_uid);
@@ -189,7 +188,6 @@ public:
     /// Needs DataIter of that student, course_id.\n\n
     /// True if succeeded, false if:\n
     /// > Course is not found in default semester.\n
-    /// > Student does not belong to default schoolyear.\n
     /// > Student has already enrolled in that course.\n
     /// > Default semester has not been set.
     bool enroll(const DataIter &student, const string &course_id);
