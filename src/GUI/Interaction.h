@@ -20,7 +20,7 @@ public:
 
 	Textbox(const std::string &_text, const int &char_size, const sf::Color& char_color,
 		const sf::Vector2f& position, const sf::Vector2f& box_size, const sf::Color& box_color) {
-		font.loadFromFile("Fonts/arial.ttf");
+		font.loadFromFile("assets/fonts/arial.ttf");
 		text.setString(_text);
 		text.setFont(font);
 		text.setCharacterSize(char_size);

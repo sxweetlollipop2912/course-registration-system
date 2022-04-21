@@ -246,6 +246,7 @@ void Interaction::interact(sf::RenderWindow& window) {
 			type2_buttons.for_each([&](Button_List<Button_Sprite>& button_list) {
 				button_list.update_trigger(x, y);
 			});
+			selected_textbox = NULL;
 			list_inptb.for_each([&](Input_Textbox*& inptb) {
 				if (inptb->inside(x, y)) {
 					inptb->idle = false;
