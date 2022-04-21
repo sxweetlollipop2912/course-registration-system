@@ -33,6 +33,12 @@ List<DataIter> App::getAllYears() {
     });
 }
 
+List<DataIter> App::getAllClasses() {
+    return database.getAll([](const shared_ptr<Data> &ptr) {
+        return ptr->data_type == DataType::Class;
+    });
+}
+
 DataIter App::login(const string &username, const string &password) {
     auto account = database.get([&](const shared_ptr<Data> &ptr) {
         return ptr->data_type == DataType::Account && dynamic_pointer_cast<Account>(ptr)->username == username;
@@ -147,10 +153,8 @@ bool App::addDefaultSemester(const shared_ptr<Semester> &semester) {
 }
 
 DataIter App::addClass(const shared_ptr<Class> &classroom) {
-    if (!year())
-        return {};
-    /// If class with the same name is already added to default schoolyear.
-    if (year()->getClassByName(classroom->name))
+    /// If class with the same name already exists.
+    if (getClassByName(classroom->name))
         return {};
 
     for(const auto& student_iter : classroom->students) {
@@ -175,7 +179,6 @@ DataIter App::addClass(const shared_ptr<Class> &classroom) {
     }
 
     auto data = database.add(classroom);
-    year()->addClass(data);
 
     return data;
 }
@@ -194,10 +197,7 @@ DataIter App::addCourse(const shared_ptr<Course> &course) {
 }
 
 DataIter App::addStudent(const shared_ptr<Student> &student, const string &class_name) {
-    if (!year())
-        return {};
-
-    auto classroom = year()->getClassByName(class_name);
+    auto classroom = getClassByName(class_name);
     if (!classroom)
         return {};
 
@@ -219,11 +219,18 @@ DataIter App::addStudent(const shared_ptr<Student> &student, const string &class
 }
 
 DataIter App::addStudent(const shared_ptr<Student> &student, const Data::UID &class_uid) {
-    if (!year())
+    auto classroom = getClassByUID(class_uid);
+    if (!classroom)
         return {};
 
-    auto classroom = year()->getClassByUID(class_uid);
-    if (!classroom || classroom.ptr<Class>()->getStudentByID(student->student_id))
+    /// If another student with the same student_id already exists in database.
+    if (database.data.find_if([&](const shared_ptr<Data> &ptr) {
+        if (ptr->data_type != DataType::Account)
+            return false;
+        if (dynamic_pointer_cast<Account>(ptr)->getUserType() != UserType::Student)
+            return false;
+        return dynamic_pointer_cast<Student>(ptr)->student_id == student->student_id;
+    }) != database.data.end())
         return {};
 
     student->classroom = classroom;
@@ -237,11 +244,7 @@ bool App::deleteStudent(const DataIter &student) {
     auto student_ptr = student.ptr<Student>();
     auto classroom_ptr = student_ptr->classroom.ptr<Class>();
 
-    if (!year())
-        return false;
     if (!classroom_ptr)
-        return false;
-    if (year()->classes.find(student_ptr->classroom) == year()->classes.end())
         return false;
 
     /// Remove student from class
@@ -271,11 +274,33 @@ bool App::deleteCourse(const Data::UID &course_uid) {
     return true;
 }
 
+DataIter App::getClassByName(const string &name) {
+    auto classes = getAllClasses();
+
+    auto it = classes.find_if([&](const DataIter &iter) {
+        return name == iter.ptr<Class>()->name;
+    });
+
+    if (it != classes.end()) return *it;
+    return {};
+}
+
+DataIter App::getClassByUID(const Data::UID &uid) {
+    auto classes = getAllClasses();
+
+    auto it = classes.find_if([&](const DataIter &iter) {
+        return uid == iter.uid();
+    });
+
+    if (it != classes.end()) return *it;
+    return {};
+}
+
 bool App::removeClassFromYear(const Data::UID &class_uid) {
     if (!year())
         return false;
 
-    auto class_ptr = year()->getClassByUID(class_uid).ptr<Class>();
+    auto class_ptr = getClassByUID(class_uid).ptr<Class>();
     if (!class_ptr)
         return false;
 
@@ -298,9 +323,6 @@ bool App::removeClassFromYear(const Data::UID &class_uid) {
             return semester_ptr->school_year == default_year_iter;
         });
     }
-
-    /// Remove class from schoolyear.
-    year()->removeClass(class_uid);
 
     return true;
 }
@@ -332,9 +354,6 @@ bool App::enroll(const DataIter &student, const Data::UID &course_uid) {
     auto course = semester()->getCourseByUID(course_uid);
     if (!course)
         return false;
-    /// If student is not in default schoolyear.
-    if (!year()->getClassByUID(student.ptr<Student>()->classroom.uid()))
-        return false;
 
     return student.ptr<Student>()->addCourse(course) && course.ptr<Course>()->addStudent(student);
 }
@@ -345,9 +364,6 @@ bool App::enroll(const DataIter &student, const string &course_id) {
     /// If no such course is found in default semester.
     auto course = semester()->getCourseByID(course_id);
     if (!course)
-        return false;
-    /// If student is not in default schoolyear.
-    if (!year()->getClassByUID(student.ptr<Student>()->classroom.uid()))
         return false;
 
     return student.ptr<Student>()->addCourse(course) && course.ptr<Course>()->addStudent(student);
@@ -441,11 +457,6 @@ void App::deleteClass(const DataIter &classroom) {
         }
 
         database.remove(student);
-    }
-
-    /// Remove class from schoolyears.
-    for (const auto &year: getAllYears()) {
-        year.ptr<SchoolYear>()->removeClass(classroom.uid());
     }
 
     database.remove(classroom);

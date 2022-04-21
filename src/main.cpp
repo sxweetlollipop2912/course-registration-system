@@ -43,7 +43,7 @@ void output(App &app) {
 
     if (app.year()) {
         std::cout << "Classes:\n";
-        for (const auto& c: app.year()->classes) {
+        for (const auto& c: app.getAllClasses()) {
             auto c_ptr = c.ptr<Class>();
             std::cout << "  " << c_ptr->name << ": " << c_ptr->students.size() << " student(s)\n";
 
@@ -70,7 +70,7 @@ void output(App &app) {
                 auto s_ptr = s.ptr<Student>();
                 std::cout << "      " << s_ptr->student_id << " - " << s_ptr->name.last << ' ' << s_ptr->name.first
                           << ", ";
-                std::cout << "class" << s_ptr->classroom.ptr<Class>()->name << '\n';
+                std::cout << "class " << s_ptr->classroom.ptr<Class>()->name << '\n';
             }
         }
     }

@@ -11,8 +11,12 @@ public:
     string name;
     List<DataIter> students;
 
-    Class() = default;
-    Class(const string &name) : name{name} {}
+    Class() {
+        data_type = DataType::Class;
+    }
+    Class(const string &name) : name{name} {
+        data_type = DataType::Class;
+    }
 
     /// Returns empty DataIter if no student is found.
     DataIter getStudentByID(const string &student_id);
