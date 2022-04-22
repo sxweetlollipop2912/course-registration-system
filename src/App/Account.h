@@ -61,6 +61,9 @@ public:
     static Student tryParse(const List<string> &headers, const List<string> &row);
 
     List<DataIter> overlappingCourses(const List<Course::Session> &sessions) const;
+    /// Returns empty DataIter if no course is found.
+    DataIter getCourse(const string &course_id);
+    DataIter getCourse(const Data::UID &uid);
     /// Returns false if course is already added.
     bool addCourse(const DataIter &course);
     /// Returns false if no course is found.

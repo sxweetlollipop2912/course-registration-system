@@ -1,7 +1,7 @@
 #include "Class.h"
 #include "Account.h"
 
-DataIter Class::getStudentByID(const string &student_id) {
+DataIter Class::getStudent(const string &student_id) {
     auto it = students.find_if([&](const DataIter &ref) {
         auto studentOnList = ref.ptr<Student>();
 
@@ -17,7 +17,7 @@ DataIter Class::getStudentByID(const string &student_id) {
 bool Class::addStudent(const DataIter &student) {
     /// Check by student_id if this student is not already added.
     auto student_id = student.ptr<Student>()->student_id;
-    if (getStudentByID(student_id).empty()) {
+    if (getStudent(student_id).empty()) {
         students.push_back(student);
 
         return true;

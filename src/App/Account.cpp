@@ -112,6 +112,24 @@ List<DataIter> Student::overlappingCourses(const List<Course::Session> &sessions
     });
 }
 
+DataIter Student::getCourse(const string &course_id) {
+    auto it = courses.find_if([&](const DataIter &ref) {
+        return course_id == ref.ptr<Course>()->id;
+    });
+
+    if (it != courses.end()) return *it;
+    return {};
+}
+
+DataIter Student::getCourse(const Data::UID &uid) {
+    auto it = courses.find_if([&](const DataIter &ref) {
+        return uid == ref.uid();
+    });
+
+    if (it != courses.end()) return *it;
+    return {};
+}
+
 bool Student::addCourse(const DataIter &course) {
     /// If course is already enrolled.
     if (courses.find(course) != courses.end()) return false;

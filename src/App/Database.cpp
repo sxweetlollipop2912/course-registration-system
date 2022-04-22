@@ -50,7 +50,7 @@ void Database::remove(const List<DataIter> &data_iters) {
         remove(data_iter);
 }
 
-DataIter Database::getByUID(const Data::UID &uid) {
+DataIter Database::get(const Data::UID &uid) {
     auto it = data.find_if([&](const shared_ptr<Data> &ptr) {
         return ptr->uid == uid;
     });

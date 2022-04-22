@@ -33,8 +33,8 @@ public:
 
     App() {
         user_iter = {};
-        default_year_iter = database.getByUID(default_year_uid);
-        default_semester_iter = database.getByUID(default_semester_uid);
+        default_year_iter = database.get(default_year_uid);
+        default_semester_iter = database.get(default_semester_uid);
     }
 
     bool isLoggedIn() const;
@@ -142,10 +142,10 @@ public:
 
     /// Gets a DataIter of a class by name.\n\n
     /// Returns empty DataIter if no class is found.
-    DataIter getClassByName(const string &name);
+    DataIter getClass(const string &name);
     /// Gets a DataIter of a class by UID.\n\n
     /// Returns empty DataIter if no class is found.
-    DataIter getClassByUID(const Data::UID &uid);
+    DataIter getClass(const Data::UID &uid);
     /// Adds a new class to database.\n
     /// Needs a shared ptr of that class.\n\n
     /// Returns DataIter of the new course if succeeded, or empty DataIter if:\n

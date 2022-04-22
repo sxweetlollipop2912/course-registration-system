@@ -5,7 +5,7 @@
 using std::shared_ptr, std::min, std::exception, std::stod;
 
 
-DataIter Course::getStudentByID(const string &student_id) {
+DataIter Course::getStudent(const string &student_id) {
     auto it = students.find_if([&](const DataIter &ref) {
         auto studentOnList = ref.ptr<Student>();
 
@@ -21,7 +21,7 @@ DataIter Course::getStudentByID(const string &student_id) {
 bool Course::addStudent(const DataIter &student) {
     /// Check by student_id if this student is not already added.
     auto student_id = student.ptr<Student>()->student_id;
-    if (getStudentByID(student_id).empty()) {
+    if (getStudent(student_id).empty()) {
         students.push_back(student);
 
         return true;
@@ -113,7 +113,7 @@ int Course::tryParseScore(const CSVData &csv) {
                 }
             }
 
-            auto student = getStudentByID(student_id);
+            auto student = getStudent(student_id);
             if (student) {
                 *student.ptr<Student>()->getScore(this->uid) = score;
 

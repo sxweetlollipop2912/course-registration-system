@@ -19,7 +19,7 @@ public:
     }
 
     /// Returns empty DataIter if no student is found.
-    DataIter getStudentByID(const string &student_id);
+    DataIter getStudent(const string &student_id);
     /// False if a student with the same student_id is already added, otherwise true.
     bool addStudent(const DataIter &student);
     /// False if no such student is found, otherwise true.

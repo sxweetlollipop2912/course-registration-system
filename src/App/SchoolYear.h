@@ -19,9 +19,9 @@ public:
     }
 
     /// Returns empty DataIter if no semester is found.
-    DataIter getSemesterByNo(const int no);
+    DataIter getSemester(const int no);
     /// Returns empty DataIter if no semester is found.
-    DataIter getSemesterByUID(const Data::UID &uid);
+    DataIter getSemester(const Data::UID &uid);
     /// False if a semester with the same no. is already added, otherwise true.
     bool addSemester(const DataIter &semester);
     /// False if no such semester is found, otherwise true.
