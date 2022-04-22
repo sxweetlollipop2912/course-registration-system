@@ -5,6 +5,7 @@
 #include "../Enums.h"
 #include "Database.h"
 #include "List.h"
+#include "CSV.h"
 
 using std::string, std::tm;
 
@@ -44,7 +45,7 @@ public:
     }
 
     /// Returns empty DataIter if no student is found.
-    DataIter getStudentByID(const string &student_id);
+    DataIter getStudent(const string &student_id);
     /// False if a student with the same student_id is already added, otherwise true.
     bool addStudent(const DataIter& student);
     /// False if no such student is found, otherwise true.
@@ -52,6 +53,8 @@ public:
     /// False if no student with such student_id is found, otherwise true.
     bool removeStudent(const string &student_id);
 
+    /// Returns number of successful parsing attempt (attempts without any exception).\n
+    int tryParseScore(const CSVData &csv);
 };
 
 

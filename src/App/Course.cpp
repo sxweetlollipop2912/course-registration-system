@@ -1,10 +1,13 @@
+#include <iostream>
+
 #include "Course.h"
 #include "Account.h"
+#include "Utils.h"
 
-using std::shared_ptr;
+using std::shared_ptr, std::min, std::exception, std::stod, std::cerr;
 
 
-DataIter Course::getStudentByID(const string &student_id) {
+DataIter Course::getStudent(const string &student_id) {
     auto it = students.find_if([&](const DataIter &ref) {
         auto studentOnList = ref.ptr<Student>();
 
@@ -20,7 +23,7 @@ DataIter Course::getStudentByID(const string &student_id) {
 bool Course::addStudent(const DataIter &student) {
     /// Check by student_id if this student is not already added.
     auto student_id = student.ptr<Student>()->student_id;
-    if (getStudentByID(student_id).empty()) {
+    if (getStudent(student_id).empty()) {
         students.push_back(student);
 
         return true;
@@ -57,6 +60,78 @@ bool Course::removeStudent(const string &student_id) {
     }
 
     return false;
+}
+
+int Course::tryParseScore(const CSVData &csv) {
+    int count = 0;
+
+    auto rows = csv.getData();
+    auto headers = csv.getHeaders();
+
+    for(const auto &row : rows) {
+        string student_id;
+        FullName student_name;
+        Score score;
+
+        try {
+            for (int i = 0; i < min(headers.size(), row.size()); i++) {
+                auto header = headers[i];
+                auto data = row[i];
+
+                if (header.find("student") != string::npos && header.find("id") != string::npos) {
+                    student_id = data;
+                }
+
+                else if (header.find("name") != string::npos && header.find("full") != string::npos) {
+                    student_name.first = data;
+                }
+
+                else if (header.find("midterm") != string::npos) {
+                    for (int pos = (int) header.find(' '); pos != string::npos; pos = (int) header.find(' '))
+                        header.erase(pos, 1);
+
+                    score.midterm = stod(data);
+                }
+
+                else if (header.find("final") != string::npos) {
+                    for (int pos = (int) header.find(' '); pos != string::npos; pos = (int) header.find(' '))
+                        header.erase(pos, 1);
+
+                    score.final = stod(data);
+                }
+
+                else if (header.find("total") != string::npos) {
+                    for (int pos = (int) header.find(' '); pos != string::npos; pos = (int) header.find(' '))
+                        header.erase(pos, 1);
+
+                    score.total = stod(data);
+                }
+
+                else if (header.find("other") != string::npos) {
+                    for (int pos = (int) header.find(' '); pos != string::npos; pos = (int) header.find(' '))
+                        header.erase(pos, 1);
+
+                    score.other = stod(data);
+                }
+            }
+
+            auto student = getStudent(student_id);
+            if (student) {
+                auto student_score = student.ptr<Student>()->getScore(this->uid);
+                student_score->final = score.final;
+                student_score->midterm = score.midterm;
+                student_score->total = score.total;
+                student_score->other = score.other;
+
+                ++count;
+            }
+        }
+        catch (exception &e) {
+            cerr << e.what() << std::endl;
+        }
+    }
+
+    return count;
 }
 
 bool Course::Session::inRange(const tm &time) const {

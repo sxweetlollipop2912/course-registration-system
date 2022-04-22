@@ -3,7 +3,7 @@
 #include "Class.h"
 
 
-DataIter SchoolYear::getSemesterByNo(const int no) {
+DataIter SchoolYear::getSemester(const int no) {
     auto it = semesters.find_if([&](const DataIter &iter) {
         auto semesterOnList = iter.ptr<Semester>();
 
@@ -16,7 +16,7 @@ DataIter SchoolYear::getSemesterByNo(const int no) {
     return {};
 }
 
-DataIter SchoolYear::getSemesterByUID(const Data::UID &uid) {
+DataIter SchoolYear::getSemester(const Data::UID &uid) {
     auto it = semesters.find_if([&](const DataIter &iter) {
         return uid == iter.uid();
     });
@@ -28,7 +28,7 @@ DataIter SchoolYear::getSemesterByUID(const Data::UID &uid) {
 bool SchoolYear::addSemester(const DataIter &semester) {
     /// Check by semester no. if semester is already added.
     auto no = semester.ptr<Semester>()->no;
-    if (getSemesterByNo(no).empty()) {
+    if (getSemester(no).empty()) {
         semesters.push_back(semester);
 
         return true;

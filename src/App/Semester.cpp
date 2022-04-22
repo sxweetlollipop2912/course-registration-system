@@ -1,24 +1,18 @@
 #include "Semester.h"
 #include "Course.h"
 
-DataIter Semester::getCourseByID(const string &course_id) {
+DataIter Semester::getCourse(const string &course_id) {
     auto it = courses.find_if([&](const DataIter &ref) {
-        auto courseOnList = ref.ptr<Course>();
-
-        if (course_id == courseOnList->id) return true;
-
-        return false;
+        return course_id == ref.ptr<Course>()->id;
     });
 
     if (it != courses.end()) return *it;
     return {};
 }
 
-DataIter Semester::getCourseByUID(const Data::UID &uid) {
+DataIter Semester::getCourse(const Data::UID &uid) {
     auto it = courses.find_if([&](const DataIter &ref) {
-        if (uid == ref.uid()) return true;
-
-        return false;
+        return uid == ref.uid();
     });
 
     if (it != courses.end()) return *it;
@@ -28,7 +22,7 @@ DataIter Semester::getCourseByUID(const Data::UID &uid) {
 bool Semester::addCourse(const DataIter &course) {
     /// Check by course_id if this course is not already added.
     auto course_id = course.ptr<Course>()->id;
-    if (getCourseByID(course_id).empty()) {
+    if (getCourse(course_id).empty()) {
         courses.push_back(course);
 
         return true;

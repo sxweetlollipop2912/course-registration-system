@@ -98,11 +98,11 @@ public:
     /// Note: This method can't check if any of `data_iters` is an element of database.
     void remove(const List<DataIter> &data_iters);
     /// Returns empty DataIter if no data by this UID is found.
-    DataIter getByUID(const Data::UID &uid);
+    DataIter get(const Data::UID &uid);
     /// Returns empty DataIter if no data satisfying `func` is found.
     DataIter get(std::function<bool(const shared_ptr<Data>&)> func);
     /// Returns empty DataIter if no data satisfying `func` is found.
     List<DataIter> getAll(const std::function<bool(const shared_ptr<Data>&)>& func);
-    /// Removes unused data from database. Doesn't work in cases of cyclic dependencies.
+    /// Removes unused data from database. Doesn't work in case of cyclic dependencies.
     void clean();
 };
