@@ -25,6 +25,12 @@ DataIter SchoolYear::getSemester(const Data::UID &uid) {
     return {};
 }
 
+void SchoolYear::sortSemesters() {
+    semesters.sort([](const DataIter &s1, const DataIter &s2) {
+        return s1.ptr<Semester>()->no < s2.ptr<Semester>()->no;
+    });
+}
+
 bool SchoolYear::addSemester(const DataIter &semester) {
     /// Check by semester no. if semester is already added.
     auto no = semester.ptr<Semester>()->no;

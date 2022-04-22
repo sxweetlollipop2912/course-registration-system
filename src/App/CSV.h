@@ -5,6 +5,7 @@
 #include <sstream>
 
 #include "List.h"
+#include "Constants.h"
 
 using std::string, std::stringstream, std::ostream, std::ofstream, std::runtime_error;
 
@@ -45,7 +46,6 @@ namespace CSVIO {
 
         int size() const;
         void push(const string &);
-        bool set(const string &, const string &);
 
         template<typename T>
         const T getValue(int pos) const {
@@ -60,13 +60,6 @@ namespace CSVIO {
         }
         string operator[](int) const;
         string operator[](const string &valueName) const;
-        friend ostream& operator<<(ostream& os, const Row &row);
-        friend ofstream& operator<<(ofstream& os, const Row &row);
-    };
-
-    enum DataType {
-        eFILE = 0,
-        ePURE = 1
     };
 
     class Parser {
@@ -76,30 +69,63 @@ namespace CSVIO {
 
     private:
         string _file;
-        const DataType _type;
         const char _sep;
         List<string> _originalFile;
         List<string> _header;
         List<Row *> _content;
 
     public:
-        Parser(const string &, const DataType &type = eFILE, char sep = ',');
+        Parser(const string &, char sep = CSV::SEPARATOR);
         ~Parser();
 
         Row &getRow(int row) const;
         int rowCount() const;
         int columnCount() const;
         List<string> getHeader() const;
-        string getHeaderElement(int pos) const;
-        string getFileName() const;
-
-        bool deleteRow(int row);
-        bool addRow(int pos, const List<string> &);
-        void sync() const;
 
         Row &operator[](int row) const;
     };
 
+    class CSVWriter {
+    private:
+        string separator;
+        int columnNum;
+        int valueCount;
+        bool firstRow;
+        stringstream ss;
+        
+    public:
+        CSVWriter();
+        ~CSVWriter();
+
+        CSVWriter& add(string str);
+        template<typename T>
+        CSVWriter& add(T str) {
+            if (this->columnNum > -1) {
+                //if autoNewRow is enabled, check if we need a line break
+                if (this->valueCount == this->columnNum) {
+                    this->newRow();
+                }
+            }
+            if(valueCount > 0)
+                this->ss << this->separator;
+            this->ss << str;
+            this->valueCount++;
+
+            return *this;
+        }
+        string toString();
+        CSVWriter& newRow();
+        bool writeToFile(const string &filename, bool append = false);
+        //you can use this reset method in destructor if you're in heap mem.
+        void resetContent();
+
+        template<typename T>
+        CSVWriter& operator<<(const T &t) {return this->add(t);}
+        friend std::ostream& operator<<(std::ostream &os, CSVWriter &csv) {
+            return os << csv.toString();
+        }
+    };
+
     CSVData tryParse(const string &file_path);
-    bool write(const CSVData &data, const string &file_path);
 }

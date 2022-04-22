@@ -32,5 +32,6 @@ public:
     /// Returns empty DataIter if no course is found.
     DataIter getCourse(const string &course_id);
     DataIter getCourse(const Data::UID &uid);
+    /// Sorts courses by course ID.
     void sortCourse();
 };

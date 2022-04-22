@@ -31,4 +31,6 @@ public:
     DataIter getSemester(const int no);
     /// Returns empty DataIter if no semester is found.
     DataIter getSemester(const Data::UID &uid);
+    /// Sorts semesters by no.
+    void sortSemesters();
 };

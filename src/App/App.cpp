@@ -1,6 +1,7 @@
 #include "App.h"
+#include "Utils.h"
 
-using std::shared_ptr, std::dynamic_pointer_cast, std::static_pointer_cast;
+using std::shared_ptr, std::dynamic_pointer_cast, std::static_pointer_cast, std::min, std::stoi, std::exception, std::cerr;
 
 DataIter App::addAccount(const shared_ptr<Account> &account) {
     if (database.data.find_if([&](const shared_ptr<Data> &ptr) {
@@ -196,6 +197,21 @@ DataIter App::addCourse(const shared_ptr<Course> &course) {
     return data;
 }
 
+int App::addStudents(const CSVData &csv, const DataIter &classroom) {
+    int count = 0;
+
+    auto rows = csv.getData();
+    auto headers = csv.getHeaders();
+
+    for(const auto& row : rows) {
+        auto student = make_shared<Student>(CSV::CSVToStudent(headers, row));
+        if (student->valid())
+            count += (bool)addStudent(student, classroom);
+    }
+
+    return count;
+}
+
 int App::addStudents(const CSVData &csv, const string &class_name) {
     int count = 0;
 
@@ -203,7 +219,7 @@ int App::addStudents(const CSVData &csv, const string &class_name) {
     auto headers = csv.getHeaders();
 
     for(const auto& row : rows) {
-        auto student = make_shared<Student>(Student::tryParse(headers, row));
+        auto student = make_shared<Student>(CSV::CSVToStudent(headers, row));
         if (student->valid())
             count += (bool)addStudent(student, class_name);
     }
@@ -218,12 +234,33 @@ int App::addStudents(const CSVData &csv, const Data::UID &class_uid) {
     auto headers = csv.getHeaders();
 
     for(const auto& row : rows) {
-        auto student = make_shared<Student>(Student::tryParse(headers, row));
+        auto student = make_shared<Student>(CSV::CSVToStudent(headers, row));
         if (student->valid())
             count += (bool)addStudent(student, class_uid);
     }
 
     return count;
+}
+
+DataIter App::addStudent(const shared_ptr<Student> &student, const DataIter &classroom) {
+    if (!classroom)
+        return {};
+
+    /// If another student with the same student_id already exists in database.
+    if (database.data.find_if([&](const shared_ptr<Data> &ptr) {
+        if (ptr->data_type != DataType::Account)
+            return false;
+        if (dynamic_pointer_cast<Account>(ptr)->getUserType() != UserType::Student)
+            return false;
+        return dynamic_pointer_cast<Student>(ptr)->student_id == student->student_id;
+    }) != database.data.end())
+        return {};
+
+    student->classroom = classroom;
+    auto data = database.add(student);
+    classroom.ptr<Class>()->addStudent(data);
+
+    return data;
 }
 
 DataIter App::addStudent(const shared_ptr<Student> &student, const string &class_name) {
@@ -563,4 +600,194 @@ DataIter App::getStudent(const string &student_id) {
     });
 
     return student_iter;
+}
+
+Score App::CSV::CSVToScore(const List<string> &headers, const List<string> &row, const DataIter &course) {
+    if (!course)
+        return {};
+
+    Score score(course);
+
+    for (int i = 0; i < min(headers.size(), row.size()); i++) {
+        try {
+            auto header = headers[i];
+            auto data = row[i];
+
+            if (header.find("midterm") != string::npos) {
+                for (int pos = (int) header.find(' '); pos != string::npos; pos = (int) header.find(' '))
+                    header.erase(pos, 1);
+
+                score.midterm = stod(data);
+            }
+            else if (header.find("final") != string::npos) {
+                for (int pos = (int) header.find(' '); pos != string::npos; pos = (int) header.find(' '))
+                    header.erase(pos, 1);
+
+                score.final = stod(data);
+            }
+            else if (header.find("total") != string::npos) {
+                for (int pos = (int) header.find(' '); pos != string::npos; pos = (int) header.find(' '))
+                    header.erase(pos, 1);
+
+                score.total = stod(data);
+            }
+            else if (header.find("other") != string::npos) {
+                for (int pos = (int) header.find(' '); pos != string::npos; pos = (int) header.find(' '))
+                    header.erase(pos, 1);
+
+                score.other = stod(data);
+            }
+        }
+        catch (exception &e) {
+            cerr << e.what() << std::endl;
+        }
+    }
+
+    return score;
+}
+
+Student App::CSV::CSVToStudent(const List<string> &headers, const List<string> &row) {
+    string student_id = {}, social_id = {};
+    FullName name = {};
+    Gender gender = Gender::Unknown;
+    tm birth = {};
+
+    for (int i = 0; i < min(headers.size(), row.size()); i++) {
+        try {
+            auto header = headers[i];
+            auto data = row[i];
+
+            if (header.find("student") != string::npos && header.find("id") != string::npos) {
+                student_id = data;
+            }
+            else if (header.find("social") != string::npos) {
+                social_id = data;
+            }
+            else if (header.find("name") != string::npos && header.find("last") != string::npos) {
+                name.last = data;
+            }
+            else if (header.find("name") != string::npos && header.find("first") != string::npos) {
+                name.first = data;
+            }
+            else if (header.find("gender") != string::npos) {
+                Utils::toLowerStr(data);
+                if (data == "male")
+                    gender = Gender::Male;
+                else if (data == "female")
+                    gender = Gender::Female;
+                else if (data == "other")
+                    gender = Gender::Other;
+            }
+            else if (header.find("birth") != string::npos) {
+                for (int pos = (int) data.find(' '); pos != string::npos; pos = (int) data.find(' '))
+                    data.erase(pos, 1);
+
+                char sep[] = {'/', '-', '.', '\\'};
+                for (const auto &c: sep) {
+                    int s1 = (int) data.find(c), s2 = (int) data.find(c, s1 + 1);
+                    if (s1 == string::npos || s2 == string::npos)
+                        continue;
+
+                    try {
+                        int day = stoi(data.substr(0, s1));
+                        int month = stoi(data.substr(s1 + 1, s2 - s1 - 1));
+                        int year = stoi(data.substr(s2 + 1, data.size() - s2 - 1));
+                        birth = Utils::mktm(day, month, year);
+
+                        break;
+                    }
+                    catch (exception &e) {
+                        cerr << e.what() << std::endl;
+                    }
+                }
+            }
+        }
+        catch (exception &e) {
+            cerr << e.what() << std::endl;
+
+            return {};
+        }
+    }
+
+    return { student_id, social_id, name, gender, birth };
+}
+
+void App::CSV::studentToCSV(const shared_ptr<Student> &student, CSVIO::CSVWriter &writer, const bool write_header) {
+    if (write_header)
+        writer << "Student ID" << "Last Name" << "First Name" << "Gender" << "Date of Birth" << "Social ID";
+
+    writer << student->student_id
+            << student->name.last
+            << student->name.first
+            << genderStr[(int)student->gender]
+            << Utils::dateToStr(student->birth)
+            << student->social_id;
+}
+
+void App::CSV::studentsToCSV(const List<DataIter> &students, CSVIO::CSVWriter &writer) {
+    writer.resetContent();
+    writer.newRow() << "No" << "Student ID" << "Last Name" << "First Name" << "Gender" << "Date of Birth" << "Social ID";
+
+    int no = 0;
+    for(const auto& iter : students) {
+        if (!iter) continue;
+        auto student = iter.ptr<Student>();
+
+        writer.newRow();
+
+        ++no; writer << no;
+        studentToCSV(student, writer);
+    }
+}
+
+int App::addScores(const CSVData &csv, const DataIter &course) {
+    if (!course)
+        return 0;
+
+    int count = 0;
+
+    auto rows = csv.getData();
+    auto headers = csv.getHeaders();
+
+    for(const auto &row : rows) {
+        string student_id;
+        FullName student_name;
+
+        for (int i = 0; i < min(headers.size(), row.size()); i++) {
+            try {
+                auto header = headers[i];
+                auto data = row[i];
+
+                if (header.find("student") != string::npos && header.find("id") != string::npos) {
+                    student_id = data;
+                }
+                else if (header.find("name") != string::npos && header.find("full") != string::npos) {
+                    student_name.first = data;
+                }
+
+                auto student = course.ptr<Course>()->getStudent(student_id);
+                if (student) {
+                    auto student_score = student.ptr<Student>()->getScore(course.uid());
+                    *student_score = CSV::CSVToScore(headers, row, course);
+                    ++count;
+                }
+            }
+            catch (exception &e) {
+                cerr << e.what() << std::endl;
+            }
+        }
+    }
+
+    return count;
+}
+
+void App::exportStudentsInCourse(const DataIter &course, const string &file_path) {
+    if (!course)
+        return;
+
+    course.ptr<Course>()->sortStudentsByID();
+
+    CSVIO::CSVWriter writer;
+    CSV::studentsToCSV(course.ptr<Course>()->students, writer);
+    writer.writeToFile(file_path);
 }

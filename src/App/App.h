@@ -39,6 +39,14 @@ private:
     /// > There is no existing schoolyear with such start_year and end_year in database.
     bool setDefaultSchoolYear(const int start_year, const int end_year);
 
+    class CSV {
+    public:
+        static Score CSVToScore(const List<string> &headers, const List<string> &row, const DataIter &course);
+        static Student CSVToStudent(const List<string> &headers, const List<string> &row);
+        static void studentToCSV(const shared_ptr<Student> &student, CSVIO::CSVWriter &writer, const bool write_header = false);
+        static void studentsToCSV(const List<DataIter> &students, CSVIO::CSVWriter &writer);
+    };
+
 public:
     Database database;
     DataIter default_year_iter;
@@ -148,6 +156,9 @@ public:
     /// True if succeeded, false if:\n
     /// > DataIter is empty.
     bool deleteCourse(const DataIter &course);
+    /// Exports a list of students of a course to a CSV file.\n
+    /// Needs DataIter to the course, path of the CSV.
+    void exportStudentsInCourse(const DataIter &course, const string &file_path);
 
     /// Gets a DataIter of a class by name.\n\n
     /// Returns empty DataIter if no class is found.
@@ -181,6 +192,13 @@ public:
     /// Returns empty DataIter if no student is found.
     DataIter getStudent(const string &student_id);
     /// Adds students in a CSV file to database and to a class.\n
+    /// Needs CSVData, DataIter class.\n\n
+    /// Returns number of students successfully added. Adding fail when:\n
+    /// > DataIter is empty.\n
+    /// > Another student with the same student_id already exists in database.\n
+    /// > Parsing fails.
+    int addStudents(const CSVData &csv, const DataIter &classroom);
+    /// Adds students in a CSV file to database and to a class.\n
     /// Needs CSVData, name of the class.\n\n
     /// Returns number of students successfully added. Adding fail when:\n
     /// > Another student with the same student_id already exists in database.\n
@@ -193,14 +211,23 @@ public:
     /// > Parsing fails.
     int addStudents(const CSVData &csv, const Data::UID &class_uid);
     /// Adds a new student to database and to a class.\n
+    /// Needs a shared ptr of that student, DataIter to the class.\n\n
+    /// Returns DataIter of the new course if succeeded, or empty DataIter if:\n
+    /// > DataIter is empty.\n
+    /// > Another student with the same student_id already exists in database.\n
+    /// > Class is not found.
+    DataIter addStudent(const shared_ptr<Student> &student, const DataIter &classroom);
+    /// Adds a new student to database and to a class.\n
     /// Needs a shared ptr of that student, name of the class.\n\n
     /// Returns DataIter of the new course if succeeded, or empty DataIter if:\n
-    /// > Another student with the same student_id already exists in database.
+    /// > Another student with the same student_id already exists in database.\n
+    /// > Class is not found.
     DataIter addStudent(const shared_ptr<Student> &student, const string &class_name);
     /// Adds a new student to database and to a class in default schoolyear.\n
     /// Needs a shared ptr of that student, uid of the class.\n\n
     /// Returns DataIter of the new course if succeeded, or empty DataIter if:\n
-    /// > Another student with the same student_id already exists in database.
+    /// > Another student with the same student_id already exists in database.\n
+    /// > Class is not found.
     DataIter addStudent(const shared_ptr<Student> &student, const Data::UID &class_uid);
     /// Deletes a student.\n
     /// Note: This method deletes student from class and from all courses.\n
@@ -245,4 +272,12 @@ public:
     /// > Student has not enrolled in that course.\n
     /// > Default semester has not been set.
     bool disenroll(const DataIter &student, const string &course_id);
+
+    /// Imports scores of a course from CSV.\n
+    /// Needs CSVData and DataIter to the course.\n\n
+    /// Returns number of scores (each for 1 student) successfully added. Adding fail when:\n
+    /// > DataIter is empty.\n
+    /// > Student is not found in course.\n
+    /// > Parsing fails.
+    int addScores(const CSVData &csv, const DataIter &course);
 };
