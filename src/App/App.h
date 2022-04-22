@@ -25,7 +25,7 @@ private:
 
     void deleteSchoolYear(const DataIter &year);
     void deleteSemester(const DataIter &semester);
-    void deleteCourse(const DataIter &course);
+
 public:
     Database database;
     DataIter default_year_iter;
@@ -140,6 +140,11 @@ public:
     /// > No course with such UID is found in default semester.\n
     /// > Default semester has not been set.
     bool deleteCourse(const Data::UID &course_uid);
+    /// Deletes a course.\n
+    /// Needs DataIter to the course.\n\n
+    /// True if succeeded, false if:\n
+    /// > DataIter is empty.
+    bool deleteCourse(const DataIter &course);
 
     /// Gets a DataIter of a class by name.\n\n
     /// Returns empty DataIter if no class is found.
@@ -159,6 +164,13 @@ public:
     /// > No class with such UID is found in default schoolyear.\n
     /// > Default schoolyear has not been set.
     bool removeClassFromYear(const Data::UID &class_uid);
+    /// Removes all connections of a class from default schoolyear. Does not delete that class entirely.\n
+    /// NOTE: This also removes the students from all courses belong to default schoolyear.\n
+    /// Needs DataIter to the class.\n\n
+    /// True if succeeded, false if:\n
+    /// > DataIter is empty.\n
+    /// > Default schoolyear has not been set.
+    bool removeClassFromYear(const DataIter &classroom);
     /// Deletes a class entirely. Also deletes all students in that class.
     void deleteClass(const DataIter &classroom);
 
@@ -191,11 +203,13 @@ public:
     /// Note: This method deletes student from class and from all courses.\n
     /// Needs DataIter of that student.\n\n
     /// True if succeeded, false if:\n
+    /// > DataIter is empty.\n
     /// > Student does not belong to any class.
     bool deleteStudent(const DataIter &student);
     /// Enrolls student to a course in default semester.\n
     /// Needs DataIter of that student, UID of the course.\n\n
     /// True if succeeded, false if:\n
+    /// > DataIter is empty.\n
     /// > Course is not found in default semester.\n
     /// > Student has already enrolled in that course.\n
     /// > There are conflicts with enrolled courses' sessions.\n
@@ -205,18 +219,17 @@ public:
     /// Enrolls student to a course in default semester.\n
     /// Needs DataIter of that student, course_id.\n\n
     /// True if succeeded, false if:\n
+    /// > DataIter is empty.\n
     /// > Course is not found in default semester.\n
     /// > Student has already enrolled in that course.\n
     /// > There are conflicts with enrolled courses' sessions.\n
     /// > Default semester has not been set.\n\n
     /// NOTE: call app.getOverlappingCourses to get a list of conflicting courses, if any.
     bool enroll(const DataIter &student, const string &course_id);
-    /// Gets a list of courses that conflict with provided sessions.\n\n
-    /// Returns an empty list if there are no conflicting courses.
-    List<DataIter> getOverlappingCourses(const DataIter &student, const List<Course::Session> sessions) const;
     /// Disenrolls student from a course in default semester.\n
     /// Needs DataIter of that student, UID of the course.\n\n
     /// True if succeeded, false if:\n
+    /// > DataIter is empty.\n
     /// > Course is not found in default semester.\n
     /// > Student has not enrolled in that course.\n
     /// > Default semester has not been set.
@@ -224,21 +237,9 @@ public:
     /// Disenrolls student from a course in default semester.\n
     /// Needs DataIter of that student, course_id.\n\n
     /// True if succeeded, false if:\n
+    /// > DataIter is empty.\n
     /// > Course is not found in default semester.\n
     /// > Student has not enrolled in that course.\n
     /// > Default semester has not been set.
     bool disenroll(const DataIter &student, const string &course_id);
-
-    /// Gets a pointer of a student's score of a course.\n\n
-    /// Returns nullptr if:\n
-    /// > Student is not found.\n
-    /// > Course is not found.\n
-    /// > Student hasn't enrolled in the course.
-    shared_ptr<Score> getScoreOfStudent(const string &student_id, const string &course_id);
-    /// Gets a pointer of a student's score of a course.\n\n
-    /// Returns nullptr if:\n
-    /// > Student is not found.\n
-    /// > Course is not found.\n
-    /// > Student hasn't enrolled in the course.
-    shared_ptr<Score> getScoreOfStudent(const string &student_id, const Data::UID &course_uid);
 };

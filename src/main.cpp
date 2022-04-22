@@ -74,10 +74,10 @@ void output(App &app) {
                 std::cout << "      " << s_ptr->student_id << " - " << s_ptr->name.last << ' ' << s_ptr->name.first
                           << ", ";
                 std::cout << "class " << s_ptr->classroom.ptr<Class>()->name << ", ";
-                std::cout << "total " << app.getScoreOfStudent(s_ptr->student_id, c_ptr->uid)->total << ", ";
-                std::cout << "final " << app.getScoreOfStudent(s_ptr->student_id, c_ptr->uid)->final << ", ";
-                std::cout << "midterm " << app.getScoreOfStudent(s_ptr->student_id, c_ptr->uid)->midterm << ", ";
-                std::cout << "other " << app.getScoreOfStudent(s_ptr->student_id, c_ptr->uid)->other << '\n';
+                std::cout << "total " << s_ptr->getScore(c_ptr->uid)->total << ", ";
+                std::cout << "final " << s_ptr->getScore(c_ptr->uid)->final << ", ";
+                std::cout << "midterm " << s_ptr->getScore(c_ptr->uid)->midterm << ", ";
+                std::cout << "other " << s_ptr->getScore(c_ptr->uid)->other << '\n';
             }
         }
     }
@@ -179,7 +179,9 @@ int main() {
         /// 0
         std::cout << '\n' << app.enroll(app.getStudent("0"), "CS0") << '\n';
         /// 1
-        std::cout << app.getOverlappingCourses(app.getStudent("0"), app.semester()->getCourse("CS0").ptr<Course>()->sessions).size() << "\n\n";
+        std::cout << app.getStudent("0").ptr<Student>()->getOverlappingCourses(
+                app.semester()->getCourse("CS0").ptr<Course>()->sessions)
+                .size() << "\n\n";
 
 
         /// Import score from CSV to course CS4
