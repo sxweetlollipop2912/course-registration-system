@@ -2,7 +2,7 @@
 
 #include "Utils.h"
 
-using std::chrono::system_clock, std::mt19937_64, std::random_device, std::uniform_int_distribution;
+using std::chrono::system_clock, std::mt19937_64, std::random_device, std::uniform_int_distribution, std::to_string;
 
 tm Utils::now() {
     auto now = system_clock::to_time_t(system_clock::now());
@@ -17,9 +17,9 @@ tm Utils::mktm(const int day, const int month, const int year, const int hour, c
     time.tm_hour = hour;
     time.tm_min = minute;
     time.tm_sec = second;
-    auto mk = mktime(&time);
+    mktime(&time);
 
-    return *localtime(&mk);
+    return time;
 }
 
 tm Utils::mksession(const int weekday, const int hour, const int minute) {
@@ -31,9 +31,9 @@ tm Utils::mksession(const int weekday, const int hour, const int minute) {
     time.tm_mday = weekday == 1 ? 7 : weekday - 1;
     time.tm_mon = 0;
     time.tm_year = 0;
-    auto mk = mktime(&time);
+    mktime(&time);
 
-    return *localtime(&mk);
+    return time;
 }
 
 string Utils::tmToStr(const tm &time) {
@@ -72,17 +72,13 @@ string Utils::sessionToStr(const tm &session) {
 string Utils::dateToStr(const tm &date) {
     tm tmp = date;
     mktime(&tmp);
-    string s = asctime(&tmp); // Mon Jan  1 00:00:00 1900\n
 
-    s.erase(0, 4);
+    string s;
+    s += (tmp.tm_mday < 10 ? "0" : "") + to_string(tmp.tm_mday) + (char)'/';
+    s += (tmp.tm_mon + 1 < 10 ? "0" : "") + to_string(tmp.tm_mon + 1) + (char)'/';
+    s += to_string(tmp.tm_year + 1900);
 
-    auto pos = s.find(':');
-    if (pos != string::npos) s.erase(pos - 2, 9);
-
-    s.pop_back();
-    Utils::trimStr(s);
-
-    // Jan 1 1900
+    // 01/01/1900
     return s;
 }
 

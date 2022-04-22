@@ -21,7 +21,7 @@ namespace Utils {
     /// Ex: Mon 00:00
     string sessionToStr(const tm &session);
     /// Convert std::tm to std::string for output.\n
-    /// Ex: Jan 1 1900
+    /// Ex: 01/01/1900
     string dateToStr(const tm &date);
     /// Returns a random integer from [min, max].
     int random(const int min, const int max);
