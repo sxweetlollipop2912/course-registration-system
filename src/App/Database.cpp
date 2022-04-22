@@ -5,11 +5,11 @@
 
 string Data::UID::gen() {
 	std::mt19937_64 mt(std::chrono::system_clock::now().time_since_epoch() / std::chrono::microseconds(1));
-	return std::to_string(std::uniform_int_distribution<__int64>(1e17, 1e18 - 1)(mt));
+	return std::to_string(std::uniform_int_distribution<long long>(1e17, 1e18 - 1)(mt));
 }
 
 Data::UID::operator string() const {return id;}
-Data::UID &Data::UID::operator=(const Data::UID &uid) { this->id = uid; return *this;}
+Data::UID &Data::UID::operator=(const Data::UID &uid) {this->id = uid; return *this;}
 bool Data::UID::operator==(const Data::UID &uid) const {return (string)(*this) == (string)uid;}
 
 bool Data::operator==(const Data &obj) const {return this->uid == obj.uid;}
