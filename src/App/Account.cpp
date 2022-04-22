@@ -103,7 +103,7 @@ bool Student::removeScore(const Data::UID &course_uid) {
     return false;
 }
 
-List<DataIter> Student::getOverlappingCourses(const List<Course::Session> &sessions) const {
+List<DataIter> Student::overlappingCourses(const List<Course::Session> &sessions) const {
     return courses.filter([&](const DataIter &iter) {
         auto course_ptr = iter.ptr<Course>();
 
