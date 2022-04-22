@@ -118,6 +118,14 @@ List<DataIter> Student::overlappingCourses(const List<Course::Session> &sessions
     });
 }
 
+List<DataIter> Student::getCoursesInSemester(const Data::UID &semester_uid) {
+    return courses.filter([&](const DataIter &iter) {
+        auto course_ptr = iter.ptr<Course>();
+
+        return course_ptr->semester.uid() == semester_uid;
+    });
+}
+
 DataIter Student::getCourse(const string &course_id) {
     auto it = courses.find_if([&](const DataIter &ref) {
         return course_id == ref.ptr<Course>()->id;
