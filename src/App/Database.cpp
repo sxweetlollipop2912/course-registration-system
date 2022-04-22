@@ -1,15 +1,11 @@
 #include "Database.h"
 
 #include <utility>
-
-/* auto Data::UID::rng = mt19937_64(random_device()());
-auto Data::UID::dis = uniform_int_distribution<int>(0, 15);
-auto Data::UID::dis2 = uniform_int_distribution<int>(8, 11); */
-
-std::mt19937_64 mt(std::chrono::system_clock::now().time_since_epoch() / std::chrono::microseconds(1));
+#include <string.h>
 
 string Data::UID::gen() {
-    return std::to_string(std::uniform_int_distribution<__int64>(1e17, 9e17)(mt));
+	std::mt19937_64 mt(std::chrono::system_clock::now().time_since_epoch() / std::chrono::microseconds(1));
+	return std::to_string(std::uniform_int_distribution<__int64>(1e17, 1e18 - 1)(mt));
 }
 
 Data::UID::operator string() const {return id;}
