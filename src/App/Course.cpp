@@ -1,8 +1,10 @@
+#include <iostream>
+
 #include "Course.h"
 #include "Account.h"
 #include "Utils.h"
 
-using std::shared_ptr, std::min, std::exception, std::stod;
+using std::shared_ptr, std::min, std::exception, std::stod, std::cerr;
 
 
 DataIter Course::getStudent(const string &student_id) {
@@ -115,12 +117,18 @@ int Course::tryParseScore(const CSVData &csv) {
 
             auto student = getStudent(student_id);
             if (student) {
-                *student.ptr<Student>()->getScore(this->uid) = score;
+                auto student_score = student.ptr<Student>()->getScore(this->uid);
+                student_score->final = score.final;
+                student_score->midterm = score.midterm;
+                student_score->total = score.total;
+                student_score->other = score.other;
 
                 ++count;
             }
         }
-        catch (exception &e) {}
+        catch (exception &e) {
+            cerr << e.what() << std::endl;
+        }
     }
 
     return count;

@@ -41,9 +41,7 @@ string Utils::tmToStr(const tm &time) {
     mktime(&tmp);
     string s = asctime(&tmp); // Mon Jan  1 00:00:00 1900\n
 
-    auto pos = s.find("  ");
-    if (pos != string::npos) s.erase(pos, 1);
-
+    Utils::trimStr(s);
     s.pop_back();
 
     // Mon Jan 1 00:00:00 1900
@@ -68,6 +66,23 @@ string Utils::sessionToStr(const tm &session) {
     s.pop_back();
 
     // Mon 00:00
+    return s;
+}
+
+string Utils::dateToStr(const tm &date) {
+    tm tmp = date;
+    mktime(&tmp);
+    string s = asctime(&tmp); // Mon Jan  1 00:00:00 1900\n
+
+    s.erase(0, 4);
+
+    auto pos = s.find(':');
+    if (pos != string::npos) s.erase(pos - 2, 9);
+
+    s.pop_back();
+    Utils::trimStr(s);
+
+    // Jan 1 1900
     return s;
 }
 

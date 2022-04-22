@@ -1,9 +1,11 @@
 #include <algorithm>
+#include <stdexcept>
+#include <iostream>
 
 #include "Account.h"
 #include "Utils.h"
 
-using std::dynamic_pointer_cast, std::make_shared, std::min, std::stoi, std::exception;
+using std::dynamic_pointer_cast, std::make_shared, std::min, std::stoi, std::exception, std::cerr;
 
 
 Student Student::tryParse(const List<string> &headers, const List<string> &row) {
@@ -44,29 +46,33 @@ Student Student::tryParse(const List<string> &headers, const List<string> &row) 
             }
 
             else if (header.find("birth") != string::npos) {
-                for(int pos = (int)header.find(' '); pos != string::npos; pos = (int)header.find(' '))
-                    header.erase(pos, 1);
+                for(int pos = (int)data.find(' '); pos != string::npos; pos = (int)data.find(' '))
+                    data.erase(pos, 1);
 
-                char sep[] = { '\\','-','.'};
+                char sep[] = { '/','-','.','\\'};
                 for(const auto &c : sep) {
-                    int s1 = (int)header.find(c), s2 = (int)header.find(c, s1 + 1);
+                    int s1 = (int)data.find(c), s2 = (int)data.find(c, s1 + 1);
                     if (s1 == string::npos || s2 == string::npos)
                         continue;
 
                     try {
-                        int day = stoi(header.substr(0, s1));
-                        int month = stoi(header.substr(s1 + 1, s2 - s1 - 1));
-                        int year = stoi(header.substr(s2 + 1, header.size() - s2 - 1));
+                        int day = stoi(data.substr(0, s1));
+                        int month = stoi(data.substr(s1 + 1, s2 - s1 - 1));
+                        int year = stoi(data.substr(s2 + 1, data.size() - s2 - 1));
                         birth = Utils::mktm(day, month, year);
 
                         break;
                     }
-                    catch (exception &e) {}
+                    catch (exception &e) {
+                        cerr << e.what() << std::endl;
+                    }
                 }
             }
         }
     }
     catch (exception &e) {
+        cerr << e.what() << std::endl;
+
         return {};
     }
 
@@ -204,6 +210,10 @@ shared_ptr<const Score> Student::getScore(const string &course_id) const {
     if (it == scores.end()) return nullptr;
 
     return *it;
+}
+
+bool Student::valid() const {
+    return !student_id.empty() && !social_id.empty();
 }
 
 bool Account::checkPassword(const string &input) const {

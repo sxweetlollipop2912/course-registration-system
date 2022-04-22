@@ -196,6 +196,36 @@ DataIter App::addCourse(const shared_ptr<Course> &course) {
     return data;
 }
 
+int App::addStudents(const CSVData &csv, const string &class_name) {
+    int count = 0;
+
+    auto rows = csv.getData();
+    auto headers = csv.getHeaders();
+
+    for(const auto& row : rows) {
+        auto student = make_shared<Student>(Student::tryParse(headers, row));
+        if (student->valid())
+            count += (bool)addStudent(student, class_name);
+    }
+
+    return count;
+}
+
+int App::addStudents(const CSVData &csv, const Data::UID &class_uid) {
+    int count = 0;
+
+    auto rows = csv.getData();
+    auto headers = csv.getHeaders();
+
+    for(const auto& row : rows) {
+        auto student = make_shared<Student>(Student::tryParse(headers, row));
+        if (student->valid())
+            count += (bool)addStudent(student, class_uid);
+    }
+
+    return count;
+}
+
 DataIter App::addStudent(const shared_ptr<Student> &student, const string &class_name) {
     auto classroom = getClass(class_name);
     if (!classroom)

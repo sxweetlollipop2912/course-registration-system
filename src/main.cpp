@@ -12,6 +12,7 @@
 #include "TestingScenes.h"
 #include "List.h"
 #include "Utils.h"
+#include "CSV.h"
 
 using std::make_shared, std::tm, std::dynamic_pointer_cast, std::to_string;
 
@@ -33,7 +34,7 @@ void output(App &app) {
             auto c_ptr = c.ptr<Course>();
             std::cout << "      Course " << c_ptr->id << '\n';
             std::cout << "          name: " << c_ptr->name << '\n';
-            std::cout << "          teacher: " << c_ptr->teacher_name.last << ' ' << c_ptr->teacher_name.first << '\n';
+            std::cout << "          teacher: " << c_ptr->teacher_name.toStr() << '\n';
 
             std::cout << "          1st session: " << Utils::sessionToStr(c_ptr->sessions[0].start) << " - " << Utils::sessionToStr(c_ptr->sessions[0].end) << '\n';
             std::cout << "          2nd session: " << Utils::sessionToStr(c_ptr->sessions[1].start) << " - " << Utils::sessionToStr(c_ptr->sessions[1].end) << '\n';
@@ -48,8 +49,11 @@ void output(App &app) {
 
             for (const auto& s: c_ptr->students) {
                 auto s_ptr = s.ptr<Student>();
-                std::cout << "      " << s_ptr->student_id << " - " << s_ptr->name.last << ' ' << s_ptr->name.first
-                          << ", ";
+                std::cout << "      " << s_ptr->student_id << " - " << s_ptr->name.toStr() << ", ";
+                std::cout << (s_ptr->gender == Gender::Male? "male, " : "female, ");
+                std::cout << "social: " << s_ptr->social_id << ", ";
+                std::cout << "birth: " << Utils::dateToStr(s_ptr->birth) << ", ";
+
                 std::cout << "enrolling in " << s_ptr->courses.size() << " course(s):\n";
                 for (const auto& course: s_ptr->courses) {
                     auto course_ptr = course.ptr<Course>();
@@ -70,7 +74,10 @@ void output(App &app) {
                 std::cout << "      " << s_ptr->student_id << " - " << s_ptr->name.last << ' ' << s_ptr->name.first
                           << ", ";
                 std::cout << "class " << s_ptr->classroom.ptr<Class>()->name << ", ";
-                std::cout << "final score: " << app.getScoreOfStudent(s_ptr->student_id, c_ptr->uid)->final << '\n';
+                std::cout << "total " << app.getScoreOfStudent(s_ptr->student_id, c_ptr->uid)->total << ", ";
+                std::cout << "final " << app.getScoreOfStudent(s_ptr->student_id, c_ptr->uid)->final << ", ";
+                std::cout << "midterm " << app.getScoreOfStudent(s_ptr->student_id, c_ptr->uid)->midterm << ", ";
+                std::cout << "other " << app.getScoreOfStudent(s_ptr->student_id, c_ptr->uid)->other << '\n';
             }
         }
     }
@@ -107,7 +114,7 @@ int main() {
 
 
         /// Create courses
-        for(int i = 0; i < 5; i++) {
+        for(int i = 0; i < 4; i++) {
             auto course = make_shared<Course>("CS" + to_string(i),
                                              "Intro to CS",
                                              FullName("Ten", "Ho"),
@@ -117,6 +124,14 @@ int main() {
                                              50);
             app.addCourse(course);
         }
+        auto course = make_shared<Course>("CS4",
+                                          "Intro to CS",
+                                          FullName("Ten", "Ho"),
+                                          Course::Session(Utils::mksession(3, 7, 30), Utils::mksession(3, 9, 10)),
+                                          Course::Session(Utils::mksession(6, 8, 30), Utils::mksession(6, 10, 10)),
+                                          4,
+                                          50);
+        app.addCourse(course);
 
 
         /// Create a class 21CTT1
@@ -133,6 +148,23 @@ int main() {
                                                     Utils::mktm(1, 1, 2003));
             auto student = app.addStudent(student_ptr, "21CTT1");
             app.enroll(student, "CS" + to_string(i));
+            app.enroll(student, "CS4");
+        }
+
+        /// CSV tests
+        {
+            app.addClass(make_shared<Class>("21CTT1"));
+            app.addClass(make_shared<Class>("21CTT2"));
+            app.addClass(make_shared<Class>("21CTT3"));
+
+            auto csvData = CSVIO::tryParse("./csv/21CTT1.csv");
+            app.addStudents(csvData, "21CTT1");
+
+            csvData = CSVIO::tryParse("./csv/21CTT2.csv");
+            app.addStudents(csvData, "21CTT2");
+
+            csvData = CSVIO::tryParse("./csv/21CTT3.csv");
+            app.addStudents(csvData, "21CTT3");
         }
 
         /// Check if registration session is ongoing.
@@ -145,25 +177,31 @@ int main() {
 
         /// Enroll student 0 to CS0 (fail, due to overlapping courses).
         /// 0
-        std::cout << '\n' << app.enroll(app.getStudentByID("0"), "CS0") << '\n';
+        std::cout << '\n' << app.enroll(app.getStudent("0"), "CS0") << '\n';
         /// 1
-        std::cout << app.getOverlappingCourses(app.getStudentByID("0"), app.semester()->getCourseByID("CS0").ptr<Course>()->sessions).size() << "\n\n";
+        std::cout << app.getOverlappingCourses(app.getStudent("0"), app.semester()->getCourse("CS0").ptr<Course>()->sessions).size() << "\n\n";
+
+
+        /// Import score from CSV to course CS4
+        auto csvData = CSVIO::tryParse("./csv/CS4.csv");
+        app.semester()->getCourse("CS4").ptr<Course>()->tryParseScore(csvData);
+        output(app);
 
 
         /// Remove course CS0.
-        app.deleteCourse(app.semester()->getCourseByID("CS0").uid());
+        app.deleteCourse(app.semester()->getCourse("CS0").uid());
         output(app);
         std::cout << "data count 2: " << app.database.size() << '\n';
 
 
         /// Remove student with id 1.
-        app.deleteStudent(ctt1->getStudentByID("1"));
+        app.deleteStudent(ctt1->getStudent("1"));
         output(app);
         std::cout << "data count 3: " << app.database.size() << '\n';
 
 
         /// Disenroll student 2 from course CS2
-        app.disenroll(ctt1->getStudentByID("2"), app.semester()->getCourseByID("CS2").uid());
+        app.disenroll(ctt1->getStudent("2"), app.semester()->getCourse("CS2").uid());
         output(app);
 
 

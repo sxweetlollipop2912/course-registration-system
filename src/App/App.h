@@ -7,6 +7,7 @@
 #include "Course.h"
 #include "Class.h"
 #include "Account.h"
+#include "CSV.h"
 
 using std::shared_ptr, std::string;
 
@@ -163,7 +164,19 @@ public:
 
     /// Gets a DataIter of a student by studentID.\n\n
     /// Returns empty DataIter if no student is found.
-    DataIter getStudentByID(const string &student_id);
+    DataIter getStudent(const string &student_id);
+    /// Adds students in a CSV file to database and to a class.\n
+    /// Needs CSVData, name of the class.\n\n
+    /// Returns number of students successfully added. Adding fail when:\n
+    /// > Another student with the same student_id already exists in database.\n
+    /// > Parsing fails.
+    int addStudents(const CSVData &csv, const string &class_name);
+    /// Adds students in a CSV file to database and to a class.\n
+    /// Needs CSVData, uid of the class.\n\n
+    /// Returns number of students successfully added. Adding fail when:\n
+    /// > Another student with the same student_id already exists in database.\n
+    /// > Parsing fails.
+    int addStudents(const CSVData &csv, const Data::UID &class_uid);
     /// Adds a new student to database and to a class.\n
     /// Needs a shared ptr of that student, name of the class.\n\n
     /// Returns DataIter of the new course if succeeded, or empty DataIter if:\n

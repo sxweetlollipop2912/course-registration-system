@@ -56,6 +56,9 @@ public:
             Account(student_id, ACCOUNT::DEFAULT_PASS, name, gender, UserType::Student),
             student_id{student_id}, social_id{social_id}, birth{birth}  {}
 
+    /// Basically checks if student_id and social_id is initiated.
+    bool valid() const;
+
     /// Returns a default Student if an exception was thrown.\n
     /// Otherwise returns Student with parsed info (there might have been failed parsing attempts).
     static Student tryParse(const List<string> &headers, const List<string> &row);
