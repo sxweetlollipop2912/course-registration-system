@@ -1,8 +1,9 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
-#include "List.h"
-#include "Constants.h"
+#include "../App/List.h"
+#include "../Constants.h"
+#include "../App/App.h"
 
 class Outline {
 public:

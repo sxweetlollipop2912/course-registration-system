@@ -2,25 +2,14 @@
 
 #include <utility>
 
-auto Data::UID::rng = mt19937_64(random_device()());
+/* auto Data::UID::rng = mt19937_64(random_device()());
 auto Data::UID::dis = uniform_int_distribution<int>(0, 15);
-auto Data::UID::dis2 = uniform_int_distribution<int>(8, 11);
+auto Data::UID::dis2 = uniform_int_distribution<int>(8, 11); */
+
+std::mt19937_64 mt(std::chrono::system_clock::now().time_since_epoch() / std::chrono::microseconds(1));
 
 string Data::UID::gen() {
-    stringstream ss;
-    int i;
-    ss << std::hex;
-    for (i = 0; i < 8; i++) ss << dis(rng);
-    ss << "-";
-    for (i = 0; i < 4; i++) ss << dis(rng);
-    ss << "-4";
-    for (i = 0; i < 3; i++) ss << dis(rng);
-    ss << "-";
-    ss << dis2(rng);
-    for (i = 0; i < 3; i++) ss << dis(rng);
-    ss << "-";
-    for (i = 0; i < 12; i++) ss << dis(rng);
-    return ss.str();
+    return std::to_string(std::uniform_int_distribution<__int64>(1e17, 9e17)(mt));
 }
 
 Data::UID::operator string() const {return id;}

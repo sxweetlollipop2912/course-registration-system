@@ -1,5 +1,7 @@
 #pragma once
 
+#include<stack>
+
 #include "List.h"
 #include "Database.h"
 #include "SchoolYear.h"
@@ -9,7 +11,7 @@
 #include "Account.h"
 #include "CSV.h"
 
-using std::shared_ptr, std::string;
+using std::shared_ptr, std::string, std::stack;
 
 /// All methods work on default_year and default_semester,
 /// unless default year or default semester is replaced by method's parameters.\n\n
@@ -42,6 +44,7 @@ public:
     DataIter default_year_iter;
     DataIter default_semester_iter;
     DataIter user_iter;
+    stack<int> scenes;
 
     App() {
         user_iter = {};

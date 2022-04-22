@@ -271,9 +271,6 @@ DataIter App::addStudent(const shared_ptr<Student> &student, const Data::UID &cl
 }
 
 bool App::deleteStudent(const DataIter &student) {
-    if (!student)
-        return false;
-
     auto student_ptr = student.ptr<Student>();
     auto classroom_ptr = student_ptr->classroom.ptr<Class>();
 
@@ -329,38 +326,6 @@ DataIter App::getClass(const Data::UID &uid) {
     return {};
 }
 
-bool App::removeClassFromYear(const DataIter &classroom) {
-    if (!year())
-        return false;
-
-    if (!classroom)
-        return false;
-
-    auto class_ptr = classroom.ptr<Class>();
-
-    for(const auto& student_iter : class_ptr->students) {
-        auto student_ptr = student_iter.ptr<Student>();
-
-        /// Remove student from courses on this year.
-        student_ptr->courses
-                .filter([&](const DataIter &iter) {
-                    auto semester_ptr = iter.ptr<Course>()->semester.ptr<Semester>();
-                    return semester_ptr->school_year == default_year_iter;
-                })
-                .for_each([&](const DataIter &iter) {
-                    auto course_ptr = iter.ptr<Course>();
-                    course_ptr->removeStudent(student_iter.uid());
-                });
-        /// Remove courses from student.
-        student_ptr->courses.remove_if([&](const DataIter &iter) {
-            auto semester_ptr = iter.ptr<Course>()->semester.ptr<Semester>();
-            return semester_ptr->school_year == default_year_iter;
-        });
-    }
-
-    return true;
-}
-
 bool App::removeClassFromYear(const Data::UID &class_uid) {
     if (!year())
         return false;
@@ -412,9 +377,11 @@ bool App::deleteDefaultSchoolYear() {
     return true;
 }
 
+List<DataIter> App::getOverlappingCourses(const DataIter &student, const List<Course::Session> sessions) const {
+    return student.ptr<Student>()->overlappingCourses(sessions);
+}
+
 bool App::enroll(const DataIter &student, const Data::UID &course_uid) {
-    if (!student)
-        return false;
     if (!semester())
         return false;
     /// If no such course is found in default semester.
@@ -422,15 +389,13 @@ bool App::enroll(const DataIter &student, const Data::UID &course_uid) {
     if (!course)
         return false;
     /// If there are overlapping courses.
-    if (!student.ptr<Student>()->getOverlappingCourses(course.ptr<Course>()->sessions).empty())
+    if (!student.ptr<Student>()->overlappingCourses(course.ptr<Course>()->sessions).empty())
         return false;
 
     return student.ptr<Student>()->addCourse(course) && course.ptr<Course>()->addStudent(student);
 }
 
 bool App::enroll(const DataIter &student, const string &course_id) {
-    if (!student)
-        return false;
     if (!semester())
         return false;
     /// If no such course is found in default semester.
@@ -438,15 +403,13 @@ bool App::enroll(const DataIter &student, const string &course_id) {
     if (!course)
         return false;
     /// If there are overlapping courses.
-    if (!student.ptr<Student>()->getOverlappingCourses(course.ptr<Course>()->sessions).empty())
+    if (!student.ptr<Student>()->overlappingCourses(course.ptr<Course>()->sessions).empty())
         return false;
 
     return student.ptr<Student>()->addCourse(course) && course.ptr<Course>()->addStudent(student);
 }
 
 bool App::disenroll(const DataIter &student, const Data::UID &course_uid) {
-    if (!student)
-        return false;
     if (!semester())
         return false;
     /// If no such course is found in default semester.
@@ -458,8 +421,6 @@ bool App::disenroll(const DataIter &student, const Data::UID &course_uid) {
 }
 
 bool App::disenroll(const DataIter &student, const string &course_id) {
-    if (!student)
-        return false;
     if (!semester())
         return false;
     /// If no such course is found in default semester.
@@ -492,9 +453,6 @@ bool App::exitDefaultSemester() {
 }
 
 void App::deleteSchoolYear(const DataIter &year) {
-    if (!year)
-        return;
-
     auto year_ptr = year.ptr<SchoolYear>();
 
     for(const auto& semester : year_ptr->semesters) {
@@ -505,9 +463,6 @@ void App::deleteSchoolYear(const DataIter &year) {
 }
 
 void App::deleteSemester(const DataIter &semester) {
-    if (!semester)
-        return;
-
     auto semester_ptr = semester.ptr<Semester>();
 
     semester_ptr->school_year.ptr<SchoolYear>()->removeSemester(semester.uid());
@@ -518,10 +473,7 @@ void App::deleteSemester(const DataIter &semester) {
     database.remove(semester);
 }
 
-bool App::deleteCourse(const DataIter &course) {
-    if (!course)
-        return false;
-
+void App::deleteCourse(const DataIter &course) {
     auto course_ptr = course.ptr<Course>();
 
     course_ptr->semester.ptr<Semester>()->removeCourse(course.uid());
@@ -530,14 +482,9 @@ bool App::deleteCourse(const DataIter &course) {
     }
 
     database.remove(course);
-
-    return true;
 }
 
 void App::deleteClass(const DataIter &classroom) {
-    if (!classroom)
-        return;
-
     auto class_ptr = classroom.ptr<Class>();
 
     for (const auto &student: class_ptr->students) {
@@ -553,6 +500,28 @@ void App::deleteClass(const DataIter &classroom) {
     }
 
     database.remove(classroom);
+}
+
+shared_ptr<Score> App::getScoreOfStudent(const string &student_id, const string &course_id) {
+    auto student_iter = getStudent(student_id);
+    if (!student_iter)
+        return nullptr;
+
+    auto student_ptr = student_iter.ptr<Student>();
+    auto score_ptr = student_ptr->getScore(course_id);
+
+    return score_ptr;
+}
+
+shared_ptr<Score> App::getScoreOfStudent(const string &student_id, const Data::UID &course_uid) {
+    auto student_iter = getStudent(student_id);
+    if (!student_iter)
+        return nullptr;
+
+    auto student_ptr = student_iter.ptr<Student>();
+    auto score_ptr = student_ptr->getScore(course_uid);
+
+    return score_ptr;
 }
 
 DataIter App::getStudent(const string &student_id) {

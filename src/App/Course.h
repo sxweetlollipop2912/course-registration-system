@@ -13,15 +13,6 @@ class Course;
 class Score;
 
 class Course : public Data {
-    friend class App;
-private:
-    /// False if a student with the same student_id is already added, otherwise true.
-    bool addStudent(const DataIter& student);
-    /// False if no such student is found, otherwise true.
-    bool removeStudent(const Data::UID& student_uid);
-    /// False if no student with such student_id is found, otherwise true.
-    bool removeStudent(const string &student_id);
-
 public:
     class Session {
     public:
@@ -55,6 +46,13 @@ public:
 
     /// Returns empty DataIter if no student is found.
     DataIter getStudent(const string &student_id);
+    /// False if a student with the same student_id is already added, otherwise true.
+    bool addStudent(const DataIter& student);
+    /// False if no such student is found, otherwise true.
+    bool removeStudent(const Data::UID& student_uid);
+    /// False if no student with such student_id is found, otherwise true.
+    bool removeStudent(const string &student_id);
+
     /// Returns number of successful parsing attempt (attempts without any exception).\n
     int tryParseScore(const CSVData &csv);
 };
