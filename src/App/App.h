@@ -26,6 +26,17 @@ private:
     void deleteSchoolYear(const DataIter &year);
     void deleteSemester(const DataIter &semester);
 
+    /// Sets a schoolyear in database to default.\n
+    /// Needs UID.\n\n
+    /// True if succeeded, false if:\n
+    /// > There is no existing schoolyear with such UID in database.
+    bool setDefaultSchoolYear(const Data::UID &year_uid);
+    /// Sets a school year in database to default.\n
+    /// Needs start and end year of that schoolyear.\n\n
+    /// True if succeeded, false if:\n
+    /// > There is no existing schoolyear with such start_year and end_year in database.
+    bool setDefaultSchoolYear(const int start_year, const int end_year);
+
 public:
     Database database;
     DataIter default_year_iter;
@@ -39,8 +50,7 @@ public:
     }
 
     bool isLoggedIn() const;
-    /// Returns UserType of current user.\n\n
-    /// Returns:\n
+    /// Returns UserType of current user:\n
     /// > UserType::Student if current user is a student.\n
     /// > UserType::Staff if current user is a staff.\n
     /// > UserType::Unknown if no user has logged in.\n
@@ -75,17 +85,6 @@ public:
     /// > username already exists.\n
     DataIter addStaff(const shared_ptr<Staff> &staff);
 
-
-    /// Sets a schoolyear in database to default.\n
-    /// Needs UID.\n\n
-    /// True if succeeded, false if:\n
-    /// > There is no existing schoolyear with such UID in database.
-    bool setDefaultSchoolYear(const Data::UID &year_uid);
-    /// Sets a school year in database to default.\n
-    /// Needs start and end year of that schoolyear.\n\n
-    /// True if succeeded, false if:\n
-    /// > There is no existing schoolyear with such start_year and end_year in database.
-    bool setDefaultSchoolYear(const int start_year, const int end_year);
     /// Adds a new schoolyear to database.\n
     /// Needs a shared ptr of that schoolyear.\n\n
     /// True if succeeded, false if:\n

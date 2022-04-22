@@ -119,16 +119,16 @@ bool App::setDefaultSemester(const int no) {
 }
 
 bool App::addDefaultSchoolYear(const shared_ptr<SchoolYear> &year) {
-    auto it = database.get([&](const shared_ptr<Data> &ptr) {
-        if (ptr->data_type != DataType::SchoolYear)
-            return false;
-
-        auto year_ptr = dynamic_pointer_cast<SchoolYear>(ptr);
+    auto years = getAllYears();
+    if (years.any_of([&](const DataIter &iter) {
+        auto year_ptr = iter.ptr<SchoolYear>();
 
         return year_ptr->start_year == year->start_year && year_ptr->end_year == year->end_year;
-    });
+    }))
+        return false;
 
-    if (it) return false;
+    for(const auto& y : years)
+        deleteSchoolYear(y);
 
     default_year_iter = database.add(year);
     default_year_uid = default_year_iter.uid();
