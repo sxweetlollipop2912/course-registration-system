@@ -5,7 +5,7 @@
 #include "CSV.h"
 #include "Utils.h"
 
-using std::ios, std::ifstream, std::istringstream, std::endl, std::cerr;
+using std::ios, std::ifstream, std::endl, std::cerr, std::ios_base;
 
 int CSVData::headerSize() const {
     return headers.size();
@@ -76,45 +76,33 @@ namespace CSVIO {
         return data;
     }
 
-    Parser::Parser(const string &data, const DataType &type, char sep)
-            : _type(type), _sep(sep) {
+    Parser::Parser(const string &data, char sep)
+            : _sep(sep) {
         string line;
-        if (type == eFILE) {
-            _file = data;
-            ifstream ifile(_file.c_str());
-            
-            if (ifile.is_open()) {
-                while (ifile.good()) {
-                    getline(ifile, line);
-                    if (!line.empty())
-                        _originalFile.push_back(line);
-                }
-                ifile.close();
 
-                if (_originalFile.empty())
-                    throw Error(string("No Data in ").append(_file));
+        _file = data;
+        ifstream ifile(_file.c_str());
 
-                parseHeader();
-                parseContent();
-            }
-            else
-                throw Error(string("Failed to open ").append(_file));
-        }
-        else {
-            istringstream stream(data);
-            while (getline(stream, line))
+        if (ifile.is_open()) {
+            while (ifile.good()) {
+                getline(ifile, line);
                 if (!line.empty())
                     _originalFile.push_back(line);
+            }
+            ifile.close();
+
             if (_originalFile.empty())
-                throw Error(string("No Data in pure content"));
+                throw Error(string("No Data in ").append(_file));
 
             parseHeader();
             parseContent();
         }
+        else
+            throw Error(string("Failed to open ").append(_file));
     }
 
     Parser::~Parser() {
-        for (auto & it : _content)
+        for (auto &it : _content)
             delete it;
     }
 
@@ -126,8 +114,7 @@ namespace CSVIO {
             _header.push_back(item);
     }
 
-    void Parser::parseContent()
-    {
+    void Parser::parseContent() {
         auto it = _originalFile.begin();
         it++; // skip header
 
@@ -142,8 +129,14 @@ namespace CSVIO {
                 if (it->at(i) == '"')
                     quoted = !(quoted);
                 
-                else if (it->at(i) == ',' && !quoted) {
-                    row->push(it->substr(tokenStart, i - tokenStart));
+                else if (it->at(i) == _sep && !quoted) {
+                    auto s = it->substr(tokenStart, i - tokenStart);
+                    while (s.size() > 1 &&s[0] == '"' &&s.back() == '"') {
+                        s.erase(0, 1);
+                        s.pop_back();
+                    }
+
+                    row->push(s);
                     tokenStart = i + 1;
                 }
             }
@@ -182,65 +175,6 @@ namespace CSVIO {
         return _header;
     }
 
-    string Parser::getHeaderElement(int pos) const {
-        if (pos >= _header.size())
-            throw Error("can't return this header (doesn't exist)");
-
-        return _header[pos];
-    }
-
-    bool Parser::deleteRow(int pos) {
-        if (pos < _content.size()) {
-            auto it = _content.begin() + pos;
-            delete *it;
-            _content.remove(it);
-
-            return true;
-        }
-        return false;
-    }
-
-    bool Parser::addRow(int pos, const List<string> &r) {
-        Row *row = new Row(_header);
-
-        for (const auto & it : r)
-            row->push(it);
-
-        if (pos <= _content.size()) {
-            _content.insert(_content.begin() + pos, row);
-
-            return true;
-        }
-
-        return false;
-    }
-
-    void Parser::sync() const {
-        if (_type == DataType::eFILE) {
-            ofstream f;
-            f.open(_file, ios::out | ios::trunc);
-
-            // header
-            int i = 0;
-            for (auto it = _header.begin(); it != _header.end(); it++, i++) {
-                f << *it;
-                if (i < _header.size() - 1)
-                    f << ",";
-                else
-                    f << endl;
-            }
-
-            for (auto it : _content)
-                f << *it << endl;
-
-            f.close();
-        }
-    }
-
-    string Parser::getFileName() const {
-        return _file;
-    }
-
     Row::Row(const List<string> &header) : _header(header) {}
 
     int Row::size() const {
@@ -249,20 +183,6 @@ namespace CSVIO {
 
     void Row::push(const string &value) {
         _values.push_back(value);
-    }
-
-    bool Row::set(const string &key, const string &value) {
-        int pos = 0;
-        for (const auto & it : _header) {
-            if (key == it) {
-                _values[pos] = value;
-
-                return true;
-            }
-            pos++;
-        }
-
-        return false;
     }
 
     string Row::operator[](int valuePosition) const {
@@ -274,7 +194,7 @@ namespace CSVIO {
 
     string Row::operator[](const string &key) const {
         int pos = 0;
-        for (const auto & it : _header) {
+        for (const auto &it : _header) {
             if (key == it)
                 return _values[pos];
             pos++;
@@ -283,23 +203,123 @@ namespace CSVIO {
         throw Error("can't return this value (doesn't exist)");
     }
 
-    ostream &operator<<(ostream &os, const Row &row) {
-        for (const auto & _value : row._values)
-            os << _value << " | ";
-
-        return os;
+    CSVWriter::CSVWriter() {
+        this->firstRow = true;
+        this->separator = CSV::SEPARATOR;
+        this->columnNum = -1;
+        this->valueCount = 0;
     }
 
-    ofstream &operator<<(ofstream &os, const Row &row) {
-        int i = 0;
-        for(const auto & _value : row._values) {
-            os << _value;
-            if (i < row._values.size() - 1)
-                os << ",";
-            ++i;
-        }
+    CSVWriter::CSVWriter(int numberOfColumns) {
+        this->firstRow = true;
+        this->separator = CSV::SEPARATOR;
+        this->columnNum = numberOfColumns;
+        this->valueCount = 0;
+    }
 
-        return os;
+    CSVWriter::CSVWriter(const string &separator) {
+        this->firstRow = true;
+        this->separator = separator;
+        this->columnNum = -1;
+        this->valueCount = 0;
+    }
+
+    CSVWriter::CSVWriter(const string&separator, int numberOfColumns) {
+        this->firstRow = true;
+        this->separator = separator;
+        this->columnNum = numberOfColumns;
+        this->valueCount = 0;
+    }
+
+    CSVWriter&CSVWriter::add(const char *str) {
+        return this->add(string(str));
+    }
+
+    CSVWriter&CSVWriter::add(char *str) {
+        return this->add(string(str));
+    }
+
+    CSVWriter&CSVWriter::add(string str) {
+        //if " character was found, escape it
+        size_t position = str.find('\"', 0);
+        bool foundQuotationMarks = position != string::npos;
+        while(position != string::npos) {
+            str.insert(position, "\"");
+            position = str.find('\"', position + 2);
+        }
+        if(foundQuotationMarks) {
+            str = "\"" + str + "\"";
+        }
+        else if (str.find(this->separator) != string::npos) {
+            //if separator was found and string was not escaped before, surround string with "
+            str = "\"" + str + "\"";
+        }
+        return this->add<string>(str);
+    }
+
+    void CSVWriter::operator+=(CSVWriter &csv) {this->ss << endl << csv;}
+
+    string CSVWriter::toString() {return ss.str();}
+
+    CSVWriter&CSVWriter::newRow() {
+        if (!this->firstRow || this->columnNum > -1) {
+            ss << endl;
+        }
+        else {
+            //if the row is the first row, do not insert a new line
+            this->firstRow = false;
+        }
+        valueCount = 0;
+        return *this;
+    }
+
+    bool CSVWriter::writeToFile(const string&filename) {
+        return writeToFile(filename, false);
+    }
+
+    bool CSVWriter::writeToFile(const string&filename, bool append) {
+        ofstream file;
+        bool appendNewLine = false;
+        if (append) {
+            //check if last char of the file is newline
+            ifstream fin;
+            fin.open(filename);
+            if (fin.is_open()) {
+                fin.seekg(-1, ios_base::end); //go to end of file
+                int lastChar = fin.peek();
+                if (lastChar != -1 &&lastChar != '\n') //if file is not empty and last char is not new line char
+                    appendNewLine = true;
+            }
+            file.open(filename.c_str(), ios::out | ios::app);
+        }
+        else {
+            file.open(filename.c_str(), ios::out | ios::trunc);
+        }
+        if(!file.is_open())
+            return false;
+
+        if(append &&appendNewLine)
+            file << endl;
+        file << this->toString();
+        file.close();
+
+        return file.good();
+    }
+
+    void CSVWriter::enableAutoNewRow(int numberOfColumns) {this->columnNum = numberOfColumns;}
+
+    void CSVWriter::disableAutoNewRow() {this->columnNum = -1;}
+
+    void CSVWriter::resetContent() {
+        const static stringstream initial;
+
+        ss.str(string());
+        ss.clear();
+        ss.copyfmt(initial);
+    }
+
+    CSVWriter::~CSVWriter() {
+        resetContent();
     }
 }
 

@@ -50,7 +50,7 @@ void output(App &app) {
             for (const auto& s: c_ptr->students) {
                 auto s_ptr = s.ptr<Student>();
                 std::cout << "      " << s_ptr->student_id << " - " << s_ptr->name.toStr() << ", ";
-                std::cout << (s_ptr->gender == Gender::Male? "male, " : "female, ");
+                std::cout << genderStr[(int)s_ptr->gender] << ", ";
                 std::cout << "social: " << s_ptr->social_id << ", ";
                 std::cout << "birth: " << Utils::dateToStr(s_ptr->birth) << ", ";
 
@@ -165,6 +165,10 @@ int main() {
 
             csvData = CSVIO::tryParse("./csv/21CTT3.csv");
             app.addStudents(csvData, "21CTT3");
+
+            /// Import score from CSV to course CS4
+            csvData = CSVIO::tryParse("./csv/CS4.csv");
+            app.semester()->getCourse("CS4").ptr<Course>()->tryParseScore(csvData);
         }
 
         /// Check if registration session is ongoing.
@@ -180,12 +184,6 @@ int main() {
         std::cout << '\n' << app.enroll(app.getStudent("0"), "CS0") << '\n';
         /// 1
         std::cout << app.getOverlappingCourses(app.getStudent("0"), app.semester()->getCourse("CS0").ptr<Course>()->sessions).size() << "\n\n";
-
-
-        /// Import score from CSV to course CS4
-        auto csvData = CSVIO::tryParse("./csv/CS4.csv");
-        app.semester()->getCourse("CS4").ptr<Course>()->tryParseScore(csvData);
-        output(app);
 
 
         /// Remove course CS0.

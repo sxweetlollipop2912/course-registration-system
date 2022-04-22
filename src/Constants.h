@@ -10,6 +10,10 @@ namespace PATH {
     const string DEFAULT_FONT = FONTS + (const string)"arial.ttf";
 }
 
+namespace CSV {
+    const char SEPARATOR = ',';
+}
+
 namespace ACCOUNT {
     const string DEFAULT_PASS = "1234";
 

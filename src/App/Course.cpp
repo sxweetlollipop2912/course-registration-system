@@ -134,6 +134,10 @@ int Course::tryParseScore(const CSVData &csv) {
     return count;
 }
 
+bool Course::exportScore(CSVIO::CSVWriter &writer) {
+
+}
+
 bool Course::Session::inRange(const tm &time) const {
     tm tmp = time, tmp_st = start, tmp_en = end;
     return mktime(&tmp_st) < mktime(&tmp) && mktime(&tmp_en) > mktime(&tmp);

@@ -55,6 +55,8 @@ public:
 
     /// Returns number of successful parsing attempt (attempts without any exception).\n
     int tryParseScore(const CSVData &csv);
+    /// True if succeeded, otherwise false.
+    bool exportScore(CSVIO::CSVWriter &writer);
 };
 
 
