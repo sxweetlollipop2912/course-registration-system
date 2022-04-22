@@ -33,7 +33,15 @@ public:
 
 
 class Student : public Account {
+    friend class App;
 private:
+    /// Returns false if course is already added.
+    bool addCourse(const DataIter &course);
+    /// Returns false if no course is found.
+    bool removeCourse(const Data::UID &course_uid);
+    /// This replaces if another score has already existed.\n
+    /// Returns ptr to the added score.
+    shared_ptr<Score> replaceScore(const Score &score);
     /// Returns ptr to the added score.
     shared_ptr<Score> addScore(const Score &score);
     bool removeScore(const Data::UID &course_id);
@@ -63,25 +71,28 @@ public:
     /// Otherwise returns Student with parsed info (there might have been failed parsing attempts).
     static Student tryParse(const List<string> &headers, const List<string> &row);
 
-    List<DataIter> overlappingCourses(const List<Course::Session> &sessions) const;
+    /// Gets a list of courses that conflict with provided sessions.\n\n
+    /// Returns an empty list if there are no conflicting courses.
+    List<DataIter> getOverlappingCourses(const List<Course::Session> &sessions) const;
     List<DataIter> getCoursesInSemester(const Data::UID &semester_uid);
     /// Returns empty DataIter if no course is found.
     DataIter getCourse(const string &course_id);
     DataIter getCourse(const Data::UID &uid);
-    /// Returns false if course is already added.
-    bool addCourse(const DataIter &course);
-    /// Returns false if no course is found.
-    bool removeCourse(const Data::UID &course_uid);
-    /// This replaces if another score has already existed.\n
-    /// Returns ptr to the added score.
-    shared_ptr<Score> replaceScore(const Score &score);
-    /// Returns nullptr if no score is found.
+    /// Gets a pointer of a score of a course.\n\n
+    /// Returns nullptr if:\n
+    /// > Student hasn't enrolled in the course.
     shared_ptr<Score> getScore(const Data::UID &course_uid);
-    /// Returns nullptr if no score is found.
+    /// Gets a pointer of a score of a course.\n\n
+    /// Returns nullptr if:\n
+    /// > Student hasn't enrolled in the course.
     shared_ptr<Score> getScore(const string &course_id);
-    /// Returns nullptr if no score is found.
+    /// Gets a pointer of a score of a course.\n\n
+    /// Returns nullptr if:\n
+    /// > Student hasn't enrolled in the course.
     shared_ptr<const Score> getScore(const Data::UID &course_uid) const;
-    /// Returns nullptr if no score is found.
+    /// Gets a pointer of a score of a course.\n\n
+    /// Returns nullptr if:\n
+    /// > Student hasn't enrolled in the course.
     shared_ptr<const Score> getScore(const string &course_id) const;
 };
 
@@ -89,7 +100,7 @@ public:
 class Staff : public Account {
 public:
     Staff(const string &username, const FullName &name = {}, const Gender &gender = Gender::Unknown) :
-    Account(username, ACCOUNT::DEFAULT_PASS, name, gender, UserType::Staff) {}
+            Account(username, ACCOUNT::DEFAULT_PASS, name, gender, UserType::Staff) {}
 
     Staff(const string &username, const string &password, const FullName &name = {}, const Gender &gender = Gender::Unknown) :
             Account(username, password, name, gender, UserType::Staff) {}

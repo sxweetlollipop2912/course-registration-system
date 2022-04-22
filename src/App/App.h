@@ -1,6 +1,6 @@
 #pragma once
 
-#include<stack>
+#include <stack>
 
 #include "List.h"
 #include "Database.h"
@@ -44,6 +44,7 @@ public:
     DataIter default_year_iter;
     DataIter default_semester_iter;
     DataIter user_iter;
+
     stack<int> scenes;
 
     App() {
