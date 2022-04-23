@@ -3,6 +3,7 @@
 #include <ctime>
 #include <chrono>
 #include <string>
+#include <iostream>
 
 using std::tm, std::string;
 
@@ -17,6 +18,7 @@ namespace Utils {
     /// Convert std::tm to std::string for output.\n
     /// Ex: Mon Jan 1 00:00:00 1900
     string tmToStr(const tm &time);
+    tm strToTm(const string &s);
     /// Convert std::tm to std::string for output (session syntax).\n
     /// Ex: Mon 00:00
     string sessionToStr(const tm &session);
@@ -29,4 +31,6 @@ namespace Utils {
     /// Trims spaces at the beginning and end.\n
     /// Reduces consecutive spaces into one.
     void trimStr(string &s);
+
+    bool getline(std::istream &is, string &s);
 }

@@ -3,7 +3,7 @@
 #include <iostream>
 
 #include "Account.h"
-#include "Utils.h"
+#include "Database.h"
 
 using std::dynamic_pointer_cast, std::make_shared, std::min, std::stoi, std::exception, std::cerr;
 
@@ -158,4 +158,17 @@ bool Account::checkPassword(const string &input) const {
 
 UserType Account::getUserType() const {
     return user_type;
+}
+
+void Student::load(Database &database) {
+    classroom = database.get(classroom.uid());
+
+    for(auto &e : courses) {
+        e = database.get(e.uid());
+    }
+
+    for(auto &e : scores) {
+        e->course = database.get(e->course.uid());
+        std::cout << "hi";
+    }
 }

@@ -4,6 +4,7 @@
 
 #include "../Enums.h"
 #include "Database.h"
+#include "Utils.h"
 
 using std::tm;
 
@@ -19,4 +20,21 @@ public:
 
     /// True if session is ongoing given current date, otherwise false.
     bool isOngoing();
+
+    friend std::ostream& operator<<(std::ostream &os, const RegistrationSession &obj) {
+        os << Utils::tmToStr(obj.start) << '\n';
+        os << Utils::tmToStr(obj.end) << '\n';
+
+        return os;
+    }
+
+    friend std::istream& operator>>(std::istream &is, RegistrationSession &obj) {
+        string s;
+        Utils::getline(is, s);
+        obj.start = Utils::strToTm(s);
+        Utils::getline(is, s);
+        obj.end = Utils::strToTm(s);
+
+        return is;
+    }
 };

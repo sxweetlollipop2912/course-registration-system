@@ -1,4 +1,5 @@
 #include <random>
+#include <sstream>
 
 #include "Utils.h"
 
@@ -104,9 +105,50 @@ void Utils::trimStr(string &s) {
         s.erase(pos, 1);
 }
 
+tm Utils::strToTm(const string &s) {
+    // Mon Jan 1 00:00:00 1900
+    tm time{};
+
+    std::stringstream ss(s);
+    string wday; ss >> wday;
+    string tm_mon; ss >> tm_mon;
+
+    ss >> time.tm_mday;
+
+    string clock; ss >> clock;
+
+    ss >> time.tm_year;
+
+    string mon[] = { "Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec" };
+    for(int i = 0; i < 12; i++)
+        if (tm_mon == mon[i]) {
+            time.tm_mon = i;
+            break;
+        }
+
+    int pos = clock.find(':');
+    if (pos != string::npos) time.tm_hour = std::stoi(clock.substr(0, pos));
+    int pos2 = clock.find(':', pos + 1);
+    if (pos2 != string::npos) time.tm_min = std::stoi(clock.substr(pos + 1, pos2 - pos - 1));
+    int pos3 = clock.find(':', pos2 + 1);
+    if (pos3 != string::npos) time.tm_sec = std::stoi(clock.substr(pos2 + 1, pos3 - pos2 - 1));
+
+    time.tm_year -= 1900;
+
+    mktime(&time);
+
+    return time;
+}
+
 int Utils::random(const int min, const int max) {
     auto rng = mt19937_64(random_device()());
     auto dis = uniform_int_distribution<int>(min, max);
 
     return dis(rng);
+}
+
+bool Utils::getline(std::istream &is, string &s) {
+    while (std::getline(is, s) && s.empty());
+
+    return !s.empty();
 }

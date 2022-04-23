@@ -1,7 +1,10 @@
+#include <utility>
+#include <string>
+
 #include "Database.h"
 
-#include <utility>
-#include <string.h>
+using std::ofstream, std::ifstream;
+namespace fs = std::filesystem;
 
 string Data::UID::gen() {
 	std::mt19937_64 mt(std::chrono::system_clock::now().time_since_epoch() / std::chrono::microseconds(1));
@@ -23,7 +26,7 @@ DataIter::operator bool() const {
 }
 
 Data::UID DataIter::uid() const {
-    return (*iterator)->uid;
+    return !iterator? tmp_uid : (*iterator)->uid;
 }
 
 void Database::remove(const DataIter &data_iter) {
@@ -74,3 +77,5 @@ void Database::clean() {
 int Database::size() const {
     return data.size();
 }
+
+void Data::load(Database &database) {}

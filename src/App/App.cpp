@@ -1,11 +1,158 @@
+#include <filesystem>
+#include <fstream>
+
 #include "App.h"
 #include "Utils.h"
 
+namespace fs = std::filesystem;
 using std::shared_ptr, std::dynamic_pointer_cast, std::static_pointer_cast, std::min, std::stoi, std::exception, std::cerr;
+
+bool App::save() {
+    fs::create_directories(PATH::SAVES);
+
+    std::ofstream ofs(PATH::APP);
+    if (!ofs.is_open())
+        return false;
+    ofs << default_year_iter << '\n';
+    ofs << default_semester_iter << '\n';
+    ofs.close();
+    ofs.clear();
+
+    ofs.open(PATH::DATABASE);
+    if (!ofs.is_open())
+        return false;
+    ofs << database;
+    ofs.close();
+    ofs.clear();
+
+    for(const auto &e : database.data) {
+        ofs.open(PATH::SAVES + e->uid.id + ".txt");
+
+        if (!ofs.is_open())
+            return false;
+
+        switch(e->data_type) {
+            case DataType::SchoolYear: {
+                ofs << *dynamic_pointer_cast<SchoolYear>(e);
+                break;
+            }
+            case DataType::Student: {
+                ofs << *dynamic_pointer_cast<Student>(e);
+                break;
+            }
+            case DataType::Staff: {
+                ofs << *dynamic_pointer_cast<Staff>(e);
+                break;
+            }
+            case DataType::Class: {
+                ofs << *dynamic_pointer_cast<Class>(e);
+                break;
+            }
+            case DataType::Course: {
+                ofs << *dynamic_pointer_cast<Course>(e);
+                break;
+            }
+            case DataType::Semester: {
+                ofs << *dynamic_pointer_cast<Semester>(e);
+                break;
+            }
+            case DataType::Other:
+            case DataType::Unknown: {
+                break;
+            }
+        }
+
+        ofs.close();
+        ofs.clear();
+    }
+
+    return true;
+}
+
+bool App::load() {
+    std::ifstream ifs(PATH::APP);
+    if (!ifs.is_open())
+        return false;
+    ifs >> default_year_iter;
+    ifs >> default_semester_iter;
+    ifs.close();
+    ifs.clear();
+
+    ifs.open(PATH::DATABASE);
+    if (!ifs.is_open())
+        return false;
+    ifs >> database;
+    ifs.close();
+    ifs.clear();
+
+    for(auto &e : database.data) {
+        ifs.open(PATH::SAVES + e->uid.id + ".txt");
+
+        if (!ifs.is_open()) {
+            database.data.clear();
+
+            return false;
+        }
+
+        switch(e->data_type) {
+            case DataType::SchoolYear: {
+                SchoolYear obj;
+                ifs >> obj;
+                e = dynamic_pointer_cast<Data>(make_shared<SchoolYear>(obj));
+                break;
+            }
+            case DataType::Student: {
+                Student obj;
+                ifs >> obj;
+                e = dynamic_pointer_cast<Data>(make_shared<Student>(obj));
+                break;
+            }
+            case DataType::Staff: {
+                Staff obj;
+                ifs >> obj;
+                e = dynamic_pointer_cast<Data>(make_shared<Staff>(obj));
+                break;
+            }
+            case DataType::Class: {
+                Class obj;
+                ifs >> obj;
+                e = dynamic_pointer_cast<Data>(make_shared<Class>(obj));
+                break;
+            }
+            case DataType::Course: {
+                Course obj;
+                ifs >> obj;
+                e = dynamic_pointer_cast<Data>(make_shared<Course>(obj));
+                break;
+            }
+            case DataType::Semester: {
+                Semester obj;
+                ifs >> obj;
+                e = dynamic_pointer_cast<Data>(make_shared<Semester>(obj));
+                break;
+            }
+            case DataType::Other:
+            case DataType::Unknown: {
+                break;
+            }
+        }
+
+        ifs.close();
+        ifs.clear();
+    }
+
+    for(auto &e : database.data)
+        e->load(database);
+
+    default_year_iter = database.get(default_year_iter.uid());
+    default_semester_iter = database.get(default_semester_iter.uid());
+
+    return true;
+}
 
 DataIter App::addAccount(const shared_ptr<Account> &account) {
     if (database.data.find_if([&](const shared_ptr<Data> &ptr) {
-        return ptr->data_type == DataType::Account && dynamic_pointer_cast<Account>(ptr)->username == account->username;
+        return (ptr->data_type == DataType::Student || ptr->data_type == DataType::Staff) && dynamic_pointer_cast<Account>(ptr)->username == account->username;
     }) != database.data.end()) {
         return {};
     }
@@ -42,7 +189,7 @@ List<DataIter> App::getAllClasses() {
 
 DataIter App::login(const string &username, const string &password) {
     auto account = database.get([&](const shared_ptr<Data> &ptr) {
-        return ptr->data_type == DataType::Account && dynamic_pointer_cast<Account>(ptr)->username == username;
+        return (ptr->data_type == DataType::Student || ptr->data_type == DataType::Staff) && dynamic_pointer_cast<Account>(ptr)->username == username;
     });
 
     if (account && account.ptr<Account>()->checkPassword(password))
@@ -163,7 +310,7 @@ DataIter App::addClass(const shared_ptr<Class> &classroom) {
 
         /// If another student with the same student_id already exists in database.
         if (database.data.find_if([&](const shared_ptr<Data> &ptr) {
-            if (ptr->data_type != DataType::Account)
+            if (ptr->data_type != DataType::Student && ptr->data_type != DataType::Staff)
                 return false;
             if (dynamic_pointer_cast<Account>(ptr)->getUserType() != UserType::Student)
                 return false;
@@ -248,7 +395,7 @@ DataIter App::addStudent(const shared_ptr<Student> &student, const DataIter &cla
 
     /// If another student with the same student_id already exists in database.
     if (database.data.find_if([&](const shared_ptr<Data> &ptr) {
-        if (ptr->data_type != DataType::Account)
+        if (ptr->data_type != DataType::Student && ptr->data_type != DataType::Staff)
             return false;
         if (dynamic_pointer_cast<Account>(ptr)->getUserType() != UserType::Student)
             return false;
@@ -270,7 +417,7 @@ DataIter App::addStudent(const shared_ptr<Student> &student, const string &class
 
     /// If another student with the same student_id already exists in database.
     if (database.data.find_if([&](const shared_ptr<Data> &ptr) {
-        if (ptr->data_type != DataType::Account)
+        if (ptr->data_type != DataType::Student && ptr->data_type != DataType::Staff)
             return false;
         if (dynamic_pointer_cast<Account>(ptr)->getUserType() != UserType::Student)
             return false;
@@ -292,7 +439,7 @@ DataIter App::addStudent(const shared_ptr<Student> &student, const Data::UID &cl
 
     /// If another student with the same student_id already exists in database.
     if (database.data.find_if([&](const shared_ptr<Data> &ptr) {
-        if (ptr->data_type != DataType::Account)
+        if (ptr->data_type != DataType::Student && ptr->data_type != DataType::Staff)
             return false;
         if (dynamic_pointer_cast<Account>(ptr)->getUserType() != UserType::Student)
             return false;
@@ -594,7 +741,7 @@ void App::deleteClass(const DataIter &classroom) {
 
 DataIter App::getStudent(const string &student_id) {
     auto student_iter = database.get([&](const shared_ptr<Data> &ptr) {
-        return ptr->data_type == DataType::Account &&
+        return (ptr->data_type == DataType::Student || ptr->data_type == DataType::Staff) &&
                dynamic_pointer_cast<Account>(ptr)->getUserType() == UserType::Student &&
                dynamic_pointer_cast<Student>(ptr)->student_id == student_id;
     });

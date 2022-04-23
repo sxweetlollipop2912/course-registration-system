@@ -62,3 +62,8 @@ void Class::sortStudent() {
         return id1 < id2;
     });
 }
+
+void Class::load(Database &database) {
+    for(auto &e : students)
+        e = database.get(e.uid());
+}

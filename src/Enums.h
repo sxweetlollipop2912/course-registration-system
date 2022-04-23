@@ -5,10 +5,14 @@
 using std::string;
 
 enum class DataType {
-    Account,
+    Student,
+    Staff,
     SchoolYear,
     Class,
-    Other
+    Course,
+    Semester,
+    Other,
+    Unknown
 };
 
 enum class UserType {

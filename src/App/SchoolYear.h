@@ -8,6 +8,7 @@
 
 class SchoolYear : public Data {
     friend class App;
+    typedef Data super;
 private:
     /// False if a semester with the same no. is already added, otherwise true.
     bool addSemester(const DataIter &semester);
@@ -27,10 +28,40 @@ public:
         this->data_type = DataType::SchoolYear;
     }
 
+    void load(Database &database) override;
+
     /// Returns empty DataIter if no semester is found.
     DataIter getSemester(const int no);
     /// Returns empty DataIter if no semester is found.
     DataIter getSemester(const Data::UID &uid);
     /// Sorts semesters by no.
     void sortSemesters();
+
+    friend std::ostream& operator<<(std::ostream &os, const SchoolYear &obj) {
+        os << (super&)obj;
+
+        os << obj.start_year << '\n';
+        os << obj.end_year << '\n';
+
+        os << obj.semesters.size() << '\n';
+        for(const auto &e : obj.semesters)
+            os << e << '\n';
+
+        return os;
+    }
+
+    friend std::istream& operator>>(std::istream &is, SchoolYear &obj) {
+        is >> (super&)obj;
+
+        int sz;
+
+        is >> obj.start_year;
+        is >> obj.end_year;
+
+        is >> sz; obj.semesters.resize(sz);
+        for(auto &e : obj.semesters)
+            is >> e;
+
+        return is;
+    }
 };

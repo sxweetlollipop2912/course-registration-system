@@ -72,8 +72,8 @@ public:
     shared_ptr<SchoolYear> year() {return default_year_iter.ptr<SchoolYear>();}
     shared_ptr<Semester> semester() {return default_semester_iter.ptr<Semester>();}
 
-    void load();
-    void save();
+    bool load();
+    bool save();
     List<DataIter> getAllYears();
     List<DataIter> getAllClasses();
 

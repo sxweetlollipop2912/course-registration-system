@@ -8,6 +8,7 @@
 
 #include "List.h"
 #include "../Enums.h"
+#include "Utils.h"
 
 using std::string, std::stringstream, std::random_device, std::mt19937_64, std::uniform_int_distribution, std::make_shared, std::shared_ptr, std::static_pointer_cast, std::dynamic_pointer_cast;
 
@@ -40,8 +41,22 @@ public:
 
     Data() : data_type{DataType::Other} {}
 
+    virtual void load(Database &database);
+
     bool operator ==(const Data& obj) const;
-    virtual void write() {std::cout << "hi\n";}
+    friend std::ostream& operator<<(std::ostream &os, const Data &data) {
+        os << data.uid.id << '\n';
+        os << (int) data.data_type << '\n';
+
+        return os;
+    }
+    friend std::istream& operator>>(std::istream &is, Data &data) {
+        Utils::getline(is, data.uid.id);
+        int type; is >> type;
+        data.data_type = static_cast<DataType>(type);
+
+        return is;
+    }
 };
 
 
@@ -52,6 +67,7 @@ private:
     /// This is quite dumb tbh.
     shared_ptr<Data> data_ptr;
     List<shared_ptr<Data>>::iterator iterator;
+    Data::UID tmp_uid;
 public:
     DataIter() = default;
     DataIter(List<shared_ptr<Data>>::iterator iterator) : data_ptr{nullptr}, iterator{iterator} {
@@ -75,6 +91,19 @@ public:
         if ((bool)iterator)
             return dynamic_pointer_cast<T>(*iterator);
         return shared_ptr<T>(nullptr);
+    }
+
+    friend std::ostream& operator<<(std::ostream &os, const DataIter &obj) {
+        os << obj.uid().id;
+
+        return os;
+    }
+    friend std::istream& operator>>(std::istream &is, DataIter &obj) {
+        Data::UID uid;
+        Utils::getline(is, uid.id);
+        obj.tmp_uid = uid;
+
+        return is;
     }
 };
 
@@ -105,4 +134,29 @@ public:
     List<DataIter> getAll(const std::function<bool(const shared_ptr<Data>&)>& func);
     /// Removes unused data from database. Doesn't work in case of cyclic dependencies.
     void clean();
+
+    friend std::ostream& operator<<(std::ostream &os, const Database &obj) {
+        os << obj.data.size() << '\n';
+
+        for(const auto &e : obj.data) {
+            os << e->uid.id << '\n';
+            os << (int)e->data_type << '\n';
+        }
+
+        return os;
+    }
+
+    friend std::istream& operator>>(std::istream &is, Database &obj) {
+        int sz; is >> sz;
+        obj.data.resize(sz);
+
+        for(auto& e : obj.data) {
+            e = make_shared<Data>();
+            Utils::getline(is, e->uid.id);
+            int type; is >> type;
+            e->data_type = static_cast<DataType>(type);
+        }
+
+        return is;
+    }
 };

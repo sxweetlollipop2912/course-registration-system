@@ -2,7 +2,6 @@
 
 #include "Course.h"
 #include "Account.h"
-#include "Utils.h"
 
 using std::shared_ptr, std::min, std::exception, std::stod, std::cerr;
 
@@ -76,4 +75,11 @@ bool Course::Session::inRange(const tm &time) const {
 bool Course::Session::operator==(const Session &s) const {
     tm s_st = s.start, s_en = s.end, tmp_st = start, tmp_en = end;
     return mktime(&s_st) == mktime(&tmp_st) && mktime(&s_en) == mktime(&tmp_en);
+}
+
+void Course::load(Database &database) {
+    semester = database.get(semester.uid());
+
+    for(auto &e : students)
+        e = database.get(e.uid());
 }

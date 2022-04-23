@@ -8,6 +8,10 @@ namespace PATH {
     const string ASSETS = "./assets/";
     const string FONTS = ASSETS + (const string)"fonts/";
     const string DEFAULT_FONT = FONTS + (const string)"arial.ttf";
+
+    const string SAVES = "./saves/";
+    const string DATABASE = SAVES + (const string)"database.txt";
+    const string APP = SAVES + (const string)"app.txt";
 }
 
 namespace CSV {
