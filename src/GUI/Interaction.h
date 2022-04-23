@@ -109,10 +109,12 @@ public:
 class Button_Sprite {
 public:
 	sf::Sprite idle_sprite, hover_sprite;
+	sf::Texture texture;
 	bool idle = true;
 
-	Button_Sprite(const sf::Texture& texture, const sf::Vector2f& position, const sf::Vector2f& size,
+	Button_Sprite(const sf::Texture& _texture, const sf::Vector2f& position, const sf::Vector2f& size,
 		const sf::Color& hover_color = sf::Color::Cyan) {
+		texture = _texture;
 		idle_sprite.setTexture(texture);
 		idle_sprite.setPosition(position);
 		idle_sprite.setScale(size.x / idle_sprite.getGlobalBounds().width, size.y / idle_sprite.getGlobalBounds().height);

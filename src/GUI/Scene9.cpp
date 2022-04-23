@@ -1,7 +1,7 @@
 #include "Scene9.h"
 #include "../App/Utils.h"
 
-std::string to_string(const Gender& gender) {
+static std::string to_string(const Gender& gender) {
 	switch (gender) {
 	case Gender::Male: return "Male";
 	case Gender::Female: return "Female";
@@ -10,17 +10,17 @@ std::string to_string(const Gender& gender) {
 	return "Unknown";
 }
 
-App* app;
+static App* app;
 
-void go_back(int dummy) {
+static void go_back(int dummy) {
 	app->scenes.pop();
 }
 
-void go_to_scene10(int dummy) {
+static void go_to_scene10(int dummy) {
 	app->scenes.push(10);
 }
 
-void go_to_scene11(int dummy) {
+static void go_to_scene11(int dummy) {
 	app->scenes.push(11);
 }
 
