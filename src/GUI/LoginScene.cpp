@@ -1,10 +1,10 @@
 #include "LoginScene.h"
 
-Input_Textbox* usernameInputBoxP;
-Input_Textbox* passwordInputBoxP;
-App* appGlobal;
+static Input_Textbox* usernameInputBoxP;
+static Input_Textbox* passwordInputBoxP;
+static App* appGlobal;
 
-void checkAccount(int dummy)
+static void checkAccount(int dummy)
 {
 	string username = usernameInputBoxP->text;
 	string password = passwordInputBoxP->text;
@@ -13,6 +13,7 @@ void checkAccount(int dummy)
 
 void login_scene(sf::RenderWindow& window, App &app)
 {
+	if (app.isLoggedIn()) app.logout();
 	appGlobal = &app;
 	Textbox mainBackground("", defaultCharSize, sf::Color::White, sf::Vector2f(windowWidth / 4, windowHeight / 3), sf::Vector2f(windowWidth / 2, windowHeight / 3), sf::Color::Black);
 	mainBackground.set_outline(sf::Color::Blue, 4);
