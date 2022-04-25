@@ -36,7 +36,6 @@ public:
 	Textbox() = default;
 
 	void set_text(const std::string& _text);
-	void set_font(const sf::Font& font);
 	void set_text_size(const int& char_size);
 	void set_text_color(const sf::Color& char_color);
 	void set_text_style(const sf::Uint32& char_style);
