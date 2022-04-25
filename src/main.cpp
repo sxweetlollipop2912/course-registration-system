@@ -13,8 +13,8 @@
 #include "App/Utils.h"
 #include "App/CSV.h"
 #include "GUI/loginScene.h"
-#include "GUI/scene9.h"
-#include "GUI/scene1.h"
+#include "GUI/Scene9.h"
+#include "GUI/Scene1.h"
 
 
 using std::make_shared, std::tm, std::dynamic_pointer_cast, std::to_string;
