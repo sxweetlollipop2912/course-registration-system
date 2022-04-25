@@ -38,17 +38,15 @@ static void go_back()
 	app->scenes.pop();
 }
 
-static void draw_semester(sf::RenderWindow& window)
+static void draw_semester(sf::RenderWindow& window, sf::Vector2i mousePos)
 {
 	Textbox semesterBox("", defaultCharSize, sf::Color::White, sf::Vector2f(0, 0), sf::Vector2f(200, 50), sf::Color::Black);
 	for (auto& semester : app->year()->semesters)
 	{
-		sf::Vector2i mousePos = Mouse::getPosition(window);
 		auto ptr = semester.ptr<Semester>(); // ptr cua semester
 		semesterBox.set_text("Semester " + to_string(ptr->no));
 		semesterBox.set_box_position(sf::Vector2f(windowWidth / 2 - 100, 200 + (ptr->no) * 75));
-		if (mousePos.x >= windowWidth / 2 - 100 && mousePos.x <= windowWidth / 2 + 100
-			&& mousePos.y >= 200 + (ptr->no) * 75 && mousePos.y <= 250 + (ptr->no) * 75)
+		if (semesterBox.inside(mousePos.x, mousePos.y))
 		{
 			semesterBox.set_outline(sf::Color::Blue);
 		}
@@ -120,7 +118,7 @@ static void create_semester()
 	interaction.add_input_textbox(monthInputBox2);
 	interaction.add_input_textbox(yearInputBox2);
 
-	Textbox enterBox("ENTER", defaultCharSize, sf::Color::White, sf::Vector2f(windowWidth / 2 - 65, windowHeight / 3 + 220), sf::Vector2f(130, 50), sf::Color::Blue);
+	Textbox enterBox("ENTER", defaultCharSize, sf::Color::White, sf::Vector2f(windowWidth / 2 - 65, windowHeight / 3 + 235), sf::Vector2f(130, 50), sf::Color::Blue);
 	Button_Textbox enterButton(enterBox, sf::Color::White);
 
 	interaction.add_button(enterButton, create_semester_function);
@@ -240,7 +238,7 @@ void scene2(sf::RenderWindow& window, App& _app)
 		else removeYearBox.set_outline(sf::Color::Transparent);
 		removeYearBox.draw(window);
 		
-		draw_semester(window);
+		draw_semester(window, mousePos);
 		window.display();
 	}
 }
