@@ -2,6 +2,7 @@
 
 void Textbox::set_text(const std::string& _text) {
 	text.setString(_text);
+	align_center();
 }
 
 void Textbox::set_text_size(const int& char_size) {
@@ -36,6 +37,7 @@ void Textbox::align_right(const float& offset) {
 
 void Textbox::set_box_position(const sf::Vector2f& position) {
 	box.setPosition(position);
+	align_center();
 }
 
 void Textbox::set_box_origin(const sf::Vector2f& origin) {
