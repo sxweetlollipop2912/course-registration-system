@@ -10,5 +10,5 @@
 using namespace GUI;
 using namespace std;
 
-void checkAccount(int dummy);
-void login_scene(sf::RenderWindow& window, App& app);
+static void checkAccount(int dummy);
+void scene0(sf::RenderWindow& window, App& app);

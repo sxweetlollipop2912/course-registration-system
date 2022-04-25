@@ -1,8 +1,9 @@
-#include "LoginScene.h"
+#include "Scene0.h"
 
 static Input_Textbox* usernameInputBoxP;
 static Input_Textbox* passwordInputBoxP;
 static App* appGlobal;
+static SceneType current_scene = SceneType::Scene0;
 
 static void checkAccount(int dummy)
 {
@@ -11,7 +12,7 @@ static void checkAccount(int dummy)
 	appGlobal->login(username, password);
 }
 
-void login_scene(sf::RenderWindow& window, App &app)
+void scene0(sf::RenderWindow& window, App &app)
 {
 	if (app.isLoggedIn()) app.logout();
 	appGlobal = &app;
@@ -41,18 +42,20 @@ void login_scene(sf::RenderWindow& window, App &app)
 
 	interaction.add_button(loginButton, checkAccount);
 
-	while (window.isOpen())
-	{
-		interaction.interact(window);
+    while (window.isOpen() && !appGlobal->scenes.empty() && appGlobal->scenes.top() == current_scene && !appGlobal->scenes.refresh)
+    {
+        auto event = interaction.interact(window);
+        appGlobal->scenes.interact(event);
+
 		if (app.isLoggedIn())
 		{
 			if (app.userType() == UserType::Student)
 			{
-				app.scenes.push(9);
+				app.scenes.push(SceneType::Scene9);
 			}
 			else
 			{
-				app.scenes.push(1);
+				app.scenes.push(SceneType::Scene1);
 			}
 			return;
 		}

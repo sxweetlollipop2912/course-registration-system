@@ -37,6 +37,7 @@ struct FullName {
     string last;
     FullName() = default;
     FullName(const string &first_name, const string &last_name);
+    FullName(const string &name);
 
     string toStr() const;
 };

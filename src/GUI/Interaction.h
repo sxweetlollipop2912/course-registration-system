@@ -136,6 +136,10 @@ public:
 
 	void add_button(const T& button);
 	void draw(sf::RenderWindow& window, sf::Font& font);
+    void add_trigger(const std::function<void(int)>& trigger) {
+        this->trigger = trigger;
+    }
+	void draw(sf::RenderWindow& window);
 	void update_hover(const int& x, const int& y);
 	void update_trigger(const int& x, const int& y);
 };
@@ -145,13 +149,13 @@ public:
 	List<Input_Textbox*> list_inptb;
 	List<Button_List<Button_Textbox>> type1_buttons;
 	List<Button_List<Button_Sprite>> type2_buttons;
-	Input_Textbox* selected_textbox = NULL;
+	Input_Textbox* selected_textbox = nullptr;
 
 	void add_input_textbox(Input_Textbox& inptb);
 	void add_button_list(const Button_List<Button_Textbox>& button_list);
 	void add_button_list(const Button_List<Button_Sprite>& button_list);
 	void add_button(const Button_Textbox& button, const std::function<void(int)>& trigger);
 	void add_button(const Button_Sprite& button, const std::function<void(int)>& trigger);
-	void interact(sf::RenderWindow& window);
+    sf::Event interact(sf::RenderWindow& window);
 	void draw(sf::RenderWindow& window, sf::Font& font);
 };

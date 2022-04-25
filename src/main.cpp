@@ -12,10 +12,13 @@
 #include "App/List.h"
 #include "App/Utils.h"
 #include "App/CSV.h"
-#include "GUI/loginScene.h"
-#include "GUI/scene9.h"
-#include "GUI/scene1.h"
-#include "GUI/scene2.h"
+#include "GUI/Scene0.h"
+#include "GUI/Scene9.h"
+#include "GUI/Scene1.h"
+#include "GUI/Scene2.h"
+#include "GUI/Scene5.h"
+#include "GUI/SceneManager.h"
+
 
 using std::make_shared, std::tm, std::dynamic_pointer_cast, std::to_string;
 
@@ -89,9 +92,63 @@ void output(App &app) {
 int main() {
     sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight), "Courses", sf::Style::Close);
     App app;
-    app.scenes.push(0);
+    {
+        /// Add admin account ("admin", "admin").
+        app.addStaff(make_shared<Staff>(ACCOUNT::ADMIN_USERNAME, ACCOUNT::ADMIN_PASS));
+        /// Login with admin account.
+        app.login(ACCOUNT::ADMIN_USERNAME, ACCOUNT::ADMIN_PASS);
 
-    auto default_year = make_shared<SchoolYear>(2021, 2022);
+        if (!app.load()) {
+            /// Create year 2021 - 2022
+            auto default_year = make_shared<SchoolYear>(2021, 2022);
+            app.addDefaultSchoolYear(default_year);
+
+            /// Create semester 1, spanning from October 1 2021 to December 31 2021
+            auto semester1 = make_shared<Semester>(1,
+                                                   Utils::mktm(1, 10, 2021),
+                                                   Utils::mktm(31, 12, 2021));
+            app.addDefaultSemester(semester1);
+
+            /// Create a registration session spanning from October 1st, 2021 to October 1st, 2022.
+            app.semester()->reg_session.start = Utils::mktm(1, 10, 2021);
+            app.semester()->reg_session.end = Utils::mktm(1, 10, 2022);
+
+            /// Create courses
+            for (int i = 0; i < 4; i++) {
+                auto course = make_shared<Course>("CS" + to_string(i),
+                                                  "Intro to CS",
+                                                  FullName("Ten", "Ho"),
+                                                  Course::Session(tm{ 2, 7, 30 }, tm{ 2, 9, 10 }),
+                                                  Course::Session(tm{ 7, 7, 30 }, tm{ 7, 9, 10 }),
+                                                  4,
+                                                  50);
+                app.addCourse(course);
+            }
+
+            /// CSV tests
+            {
+                app.addClass(make_shared<Class>("21CTT1"));
+                app.addClass(make_shared<Class>("21CTT2"));
+                app.addClass(make_shared<Class>("21CTT3"));
+
+                auto csvData = CSVIO::tryParse("./csv/21CTT1.csv");
+                app.addStudents(csvData, "21CTT1");
+
+                csvData = CSVIO::tryParse("./csv/21CTT2.csv");
+                app.addStudents(csvData, "21CTT2");
+
+                csvData = CSVIO::tryParse("./csv/21CTT3.csv");
+                app.addStudents(csvData, "21CTT3");
+
+                csvData = CSVIO::tryParse("./csv/CS4.csv");
+                app.addScores(csvData, app.semester()->getCourse("CS4"));
+            }
+        }
+
+        output(app);
+    }
+
+   /* auto default_year = make_shared<SchoolYear>(2021, 2022);
     app.addDefaultSchoolYear(default_year);
 
     /// Create semester 1, spanning from October 1 2021 to December 31 2021
@@ -136,77 +193,48 @@ int main() {
     app.addStudents(csvData, "21CTT2");
 
     csvData = CSVIO::tryParse("csv/21CTT3.csv");
-    app.addStudents(csvData, "21CTT3");
+    app.addStudents(csvData, "21CTT3");*/
 
     /// Add admin account ("admin", "admin").
     app.addStaff(make_shared<Staff>(ACCOUNT::ADMIN_USERNAME, ACCOUNT::ADMIN_PASS));
 
     //app.login("21280009", ACCOUNT::DEFAULT_PASS);
+    app.scenes.push(SceneType::Scene5);
+
     while (!app.scenes.empty())
     {
-        int sceneNow = app.scenes.top();
-        if (sceneNow == 0)
+        app.scenes.refresh = false;
+        auto sceneNow = app.scenes.top();
+
+        if (sceneNow == SceneType::Scene0)
         {
-            login_scene(window, app);
+            scene0(window, app);
         }
-        if (sceneNow == 1)
+        if (sceneNow == SceneType::Scene1)
         {
             scene1(window, app);
         }
-        if (sceneNow == 2)
+        if (sceneNow == SceneType::Scene2)
         {
             scene2(window, app);
         }
-        if (sceneNow == 9)
+        if (sceneNow == SceneType::Scene5)
+        {
+            scene5(window, app);
+        }
+        if (sceneNow == SceneType::Scene9)
         {
             scene9(window, app);
         }
+        if (sceneNow == SceneType::SceneModifyReg)
+        {
+            modify_registration_scene(window, app);
+        }
+        if (sceneNow == SceneType::SceneAddCourse)
+        {
+            add_course_scene(window, app);
+        }
     }
 
-//    {
-//        App app;
-//        /// Add admin account ("admin", "admin").
-//        app.addStaff(make_shared<Staff>(ACCOUNT::ADMIN_USERNAME, ACCOUNT::ADMIN_PASS));
-//        /// Login with admin account.
-//        app.login(ACCOUNT::ADMIN_USERNAME, ACCOUNT::ADMIN_PASS);
-//
-//        if (!app.load()) {
-//            /// Create year 2021 - 2022
-//            auto default_year = make_shared<SchoolYear>(2021, 2022);
-//            app.addDefaultSchoolYear(default_year);
-//
-//            /// Create semester 1, spanning from October 1 2021 to December 31 2021
-//            auto semester1 = make_shared<Semester>(1,
-//                                                   Utils::mktm(1, 10, 2021),
-//                                                   Utils::mktm(31, 12, 2021));
-//            app.addDefaultSemester(semester1);
-//
-//            /// Create a registration session spanning from October 1st, 2021 to October 1st, 2022.
-//            app.semester()->reg_session.start = Utils::mktm(1, 10, 2021);
-//            app.semester()->reg_session.end = Utils::mktm(1, 10, 2022);
-//
-//            /// CSV tests
-//            {
-//                app.addClass(make_shared<Class>("21CTT1"));
-//                app.addClass(make_shared<Class>("21CTT2"));
-//                app.addClass(make_shared<Class>("21CTT3"));
-//
-//                auto csvData = CSVIO::tryParse("./csv/21CTT1.csv");
-//                app.addStudents(csvData, "21CTT1");
-//
-//                csvData = CSVIO::tryParse("./csv/21CTT2.csv");
-//                app.addStudents(csvData, "21CTT2");
-//
-//                csvData = CSVIO::tryParse("./csv/21CTT3.csv");
-//                app.addStudents(csvData, "21CTT3");
-//
-//                csvData = CSVIO::tryParse("./csv/CS4.csv");
-//                app.addScores(csvData, app.semester()->getCourse("CS4"));
-//            }
-//
-//            std::cout << "saving " << app.save() << '\n';
-//        }
-//
-//        output(app);
-//    }
+    std::cout << "saving " << app.save() << '\n';
 }

@@ -10,6 +10,7 @@ static string double_to_string(const double& val, int d = 2) {
 
 static App* app;
 static int num_page, page_cnt;
+static SceneType current_scene = SceneType::Scene10;
 
 static void go_back(int dummy) {
 	app->scenes.pop();
@@ -73,7 +74,7 @@ void scene10(sf::RenderWindow& window, App &_app) {
 			page.clear();
 		}
 
-		auto course = score->course.ptr<Course>();
+		auto course = score->course.template ptr<Course>();
 
 		Textbox id(course->id, 16, sf::Color::Black, sf::Vector2f(80, 100 + num_row * 50),
 			sf::Vector2f(150, 50), sf::Color::White);
@@ -145,7 +146,7 @@ void scene10(sf::RenderWindow& window, App &_app) {
 	headers.push_back(total_credit_box);
 
 	sf::Texture texture;
-	texture.loadFromFile("assets/images/GoBack.png");
+	texture.loadFromFile("assets/images/go_back.png");
 	Button_Sprite back_button(texture, sf::Vector2f(10, 5), sf::Vector2f(40, 40));
 
 	texture.loadFromFile("assets/images/previous.jpg");
@@ -159,7 +160,7 @@ void scene10(sf::RenderWindow& window, App &_app) {
 	interaction.add_button(previous_button, previous);
 	interaction.add_button(next_button, next);
 
-	while (window.isOpen() && app->scenes.top() == 10) {
+    while (window.isOpen() && !app->scenes.empty() && app->scenes.top() == current_scene && !app->scenes.refresh) {
 		window.clear(sf::Color::White);
 
 		headers.for_each([&](Textbox& textbox) {
@@ -181,7 +182,9 @@ void scene10(sf::RenderWindow& window, App &_app) {
 		page_num.draw(window, app->default_font);
 
 		interaction.draw(window, app->default_font);
+
+        auto event = interaction.interact(window);
+        app->scenes.interact(event);
 		window.display();
-		interaction.interact(window);
 	}
 }

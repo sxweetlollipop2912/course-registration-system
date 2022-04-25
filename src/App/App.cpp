@@ -932,6 +932,9 @@ void App::exportStudentsInCourse(const DataIter &course, const string &file_path
     if (!course)
         return;
 
+    fs::path path(file_path);
+    fs::create_directories(path.parent_path());
+
     course.ptr<Course>()->sortStudentsByID();
 
     CSVIO::CSVWriter writer;

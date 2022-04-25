@@ -1,5 +1,6 @@
 #include "Scene9.h"
 #include "../App/Utils.h"
+#include "Constants.h"
 
 static std::string to_string(const Gender& gender) {
 	switch (gender) {
@@ -11,17 +12,18 @@ static std::string to_string(const Gender& gender) {
 }
 
 static App* app;
+static SceneType current_scene =  SceneType::Scene9;
 
 static void go_back(int dummy) {
 	app->scenes.pop();
 }
 
 static void go_to_scene10(int dummy) {
-	app->scenes.push(10);
+	app->scenes.push(SceneType::Scene10);
 }
 
 static void go_to_scene11(int dummy) {
-	app->scenes.push(11);
+	app->scenes.push(SceneType::Scene11);
 }
 
 void scene9(sf::RenderWindow& window, App &_app) {
@@ -71,7 +73,7 @@ void scene9(sf::RenderWindow& window, App &_app) {
 
 
 	sf::Texture texture;
-	texture.loadFromFile("assets/images/GoBack.png");
+	texture.loadFromFile(PATH::IMAGES + "go_back.png");
 	Button_Sprite back_button(texture, sf::Vector2f(10, 5), sf::Vector2f(40, 40));
 	Interaction interaction;
 	interaction.add_button(scoreboard_button, go_to_scene10);
@@ -79,7 +81,7 @@ void scene9(sf::RenderWindow& window, App &_app) {
 	interaction.add_button(back_button, go_back);
 
 
-	while (window.isOpen() && app->scenes.top() == 9) {
+    while (window.isOpen() && !app->scenes.empty() && app->scenes.top() == current_scene && !app->scenes.refresh) {
 		window.clear(sf::Color::White);
 		name.draw(window, app->default_font);
 		classroom.draw(window, app->default_font);
@@ -89,6 +91,8 @@ void scene9(sf::RenderWindow& window, App &_app) {
 		birth.draw(window, app->default_font);
 		interaction.draw(window, app->default_font);
 		window.display();
-		interaction.interact(window);
+
+        auto event = interaction.interact(window);
+        app->scenes.interact(event);
 	}
 }
