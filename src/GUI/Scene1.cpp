@@ -1,4 +1,4 @@
-#include "Scene1.h"
+#include "scene1.h"
 
 static Input_Textbox* startInputBoxP;
 static Input_Textbox* endInputBoxP;
@@ -51,12 +51,12 @@ static void create_new_year(int dummy)
 	Textbox mainBackground("", defaultCharSize, sf::Color::White, sf::Vector2f(windowWidth / 4, windowHeight / 3), sf::Vector2f(windowWidth / 2, windowHeight / 3), sf::Color::Black);
 	mainBackground.set_outline(sf::Color::Blue, 4);
 
-	Textbox startText("Start:", defaultCharSize, sf::Color::White, sf::Vector2f(windowWidth / 4 + 20, windowHeight / 3 + 30), sf::Vector2f(130, 50), sf::Color::Transparent);
+	Textbox startText("Start year:", defaultCharSize, sf::Color::White, sf::Vector2f(windowWidth / 4 + 20, windowHeight / 3 + 30), sf::Vector2f(130, 50), sf::Color::Transparent);
 	Textbox startBox("", defaultCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 4 + 170, windowHeight / 3 + 30), sf::Vector2f(410, 50), sf::Color::White);
 	Input_Textbox startInputBox(startBox, 20, sf::Color::Blue);
 	startInputBoxP = &startInputBox;
 
-	Textbox endText("End:", defaultCharSize, sf::Color::White, sf::Vector2f(windowWidth / 4 + 20, windowHeight / 3 + 100), sf::Vector2f(130, 50), sf::Color::Transparent);
+	Textbox endText("End year:", defaultCharSize, sf::Color::White, sf::Vector2f(windowWidth / 4 + 20, windowHeight / 3 + 100), sf::Vector2f(130, 50), sf::Color::Transparent);
 	Textbox endBox("", defaultCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 4 + 170, windowHeight / 3 + 100), sf::Vector2f(410, 50), sf::Color::White);
 	Input_Textbox endInputBox(endBox, 20, sf::Color::Blue);
 	endInputBoxP = &endInputBox;

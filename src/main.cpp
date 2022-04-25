@@ -13,9 +13,9 @@
 #include "App/Utils.h"
 #include "App/CSV.h"
 #include "GUI/loginScene.h"
-#include "GUI/Scene9.h"
-#include "GUI/Scene1.h"
-
+#include "GUI/scene9.h"
+#include "GUI/scene1.h"
+#include "GUI/scene2.h"
 
 using std::make_shared, std::tm, std::dynamic_pointer_cast, std::to_string;
 
@@ -91,7 +91,7 @@ int main() {
     App app;
     app.scenes.push(0);
 
-   /* auto default_year = make_shared<SchoolYear>(2021, 2022);
+    auto default_year = make_shared<SchoolYear>(2021, 2022);
     app.addDefaultSchoolYear(default_year);
 
     /// Create semester 1, spanning from October 1 2021 to December 31 2021
@@ -136,10 +136,10 @@ int main() {
     app.addStudents(csvData, "21CTT2");
 
     csvData = CSVIO::tryParse("csv/21CTT3.csv");
-    app.addStudents(csvData, "21CTT3");*/
+    app.addStudents(csvData, "21CTT3");
 
     /// Add admin account ("admin", "admin").
-        app.addStaff(make_shared<Staff>(ACCOUNT::ADMIN_USERNAME, ACCOUNT::ADMIN_PASS));
+    app.addStaff(make_shared<Staff>(ACCOUNT::ADMIN_USERNAME, ACCOUNT::ADMIN_PASS));
 
     //app.login("21280009", ACCOUNT::DEFAULT_PASS);
     while (!app.scenes.empty())
@@ -152,6 +152,10 @@ int main() {
         if (sceneNow == 1)
         {
             scene1(window, app);
+        }
+        if (sceneNow == 2)
+        {
+            scene2(window, app);
         }
         if (sceneNow == 9)
         {

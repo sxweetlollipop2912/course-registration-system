@@ -19,10 +19,7 @@ public:
     RegistrationSession(const tm &start, const tm &end) : start{start}, end{end} {}
 
     /// True if session is ongoing given current date, otherwise false.
-    bool isOngoing() const;
-    bool hasEnded() const;
-    bool hasNotStarted() const;
-    bool hasInit() const;
+    bool isOngoing();
 
     friend std::ostream& operator<<(std::ostream &os, const RegistrationSession &obj) {
         os << Utils::tmToStr(obj.start) << '\n';
