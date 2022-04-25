@@ -73,7 +73,7 @@ void scene10(sf::RenderWindow& window, App &_app) {
 			page.clear();
 		}
 
-		auto course = score->course.ptr<Course>();
+		auto course = score->course.template ptr<Course>();
 
 		Textbox id(course->id, 16, sf::Color::Black, sf::Vector2f(80, 100 + num_row * 50),
 			sf::Vector2f(150, 50), sf::Color::White);

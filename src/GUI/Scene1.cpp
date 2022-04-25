@@ -1,4 +1,4 @@
-#include "scene1.h"
+#include "Scene1.h"
 
 static Input_Textbox* startInputBoxP;
 static Input_Textbox* endInputBoxP;
