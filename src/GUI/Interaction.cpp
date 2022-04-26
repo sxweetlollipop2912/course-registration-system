@@ -62,9 +62,8 @@ void Textbox::set_outline(const Outline &outline) {
 	box.setOutlineThickness(outline.thickness);
 }
 
-void Textbox::draw(sf::RenderWindow& window) {
+void Textbox::draw(sf::RenderWindow& window, sf::Font& font) {
 	window.draw(box);
-	font.loadFromFile(PATH::DEFAULT_FONT);
 	text.setFont(font);
 	window.draw(text);
 }
@@ -110,7 +109,7 @@ void Input_Textbox::pop_char() {
 	text.pop_back();
 }
 
-void Input_Textbox::draw(sf::RenderWindow& window) {
+void Input_Textbox::draw(sf::RenderWindow& window, sf::Font& font) {
 	if (hide_text) {
 		std::string replace_text(text.size(), '*');
 		textbox.set_text(replace_text);
@@ -122,7 +121,7 @@ void Input_Textbox::draw(sf::RenderWindow& window) {
 		textbox.set_outline(idle_outline);
 	else
 		textbox.set_outline(selected_outline);
-	textbox.draw(window);
+	textbox.draw(window, font);
 }
 
 bool Input_Textbox::inside(const int& x, const int& y) {
@@ -137,19 +136,19 @@ void Button_Textbox::set_hover_outline(const sf::Color& color, const float& thic
 	hover_outline = { color, thickness };
 }
 
-void Button_Textbox::draw(sf::RenderWindow& window) {
+void Button_Textbox::draw(sf::RenderWindow& window, sf::Font& font) {
 	if (idle)
 		textbox.set_outline(idle_outline);
 	else
 		textbox.set_outline(hover_outline);
-	textbox.draw(window);
+	textbox.draw(window, font);
 }
 
 bool Button_Textbox::inside(const int& x, const int& y) {
 	return textbox.inside(x, y);
 }
 
-void Button_Sprite::draw(sf::RenderWindow& window) {
+void Button_Sprite::draw(sf::RenderWindow& window, sf::Font& font) {
 	if (idle)
 		window.draw(idle_sprite);
 	else
@@ -171,9 +170,9 @@ void Button_List<T>::add_button(const T& button) {
 }
 
 template <class T>
-void Button_List<T>::draw(sf::RenderWindow& window) {
+void Button_List<T>::draw(sf::RenderWindow& window, sf::Font& font) {
 	list_button.for_each([&](T& button) {
-		button.draw(window);
+		button.draw(window, font);
 	});
 }
 
@@ -267,14 +266,14 @@ void Interaction::interact(sf::RenderWindow& window) {
 	}
 }
 
-void Interaction::draw(sf::RenderWindow& window) {
+void Interaction::draw(sf::RenderWindow& window, sf::Font& font) {
 	type1_buttons.for_each([&](Button_List<Button_Textbox>& button_list) {
-		button_list.draw(window);
+		button_list.draw(window, font);
 	});
 	type2_buttons.for_each([&](Button_List<Button_Sprite>& button_list) {
-		button_list.draw(window);
+		button_list.draw(window, font);
 	});
 	list_inptb.for_each([&](Input_Textbox*& inptb) {
-		inptb->draw(window);
+		inptb->draw(window, font);
 	});
 }
