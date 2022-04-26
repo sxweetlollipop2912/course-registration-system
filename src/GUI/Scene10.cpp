@@ -163,12 +163,12 @@ void scene10(sf::RenderWindow& window, App &_app) {
 		window.clear(sf::Color::White);
 
 		headers.for_each([&](Textbox& textbox) {
-			textbox.draw(window);
+			textbox.draw(window, app->default_font);
 		});
 
 		if (!pages.empty()) {
 			pages[num_page].for_each([&](Textbox& textbox) {
-				textbox.draw(window);
+				textbox.draw(window, app->default_font);
 			});
 		}
 
@@ -178,9 +178,9 @@ void scene10(sf::RenderWindow& window, App &_app) {
 		else
 			page_num_string = "0/0";
 		Textbox page_num(page_num_string, 16, sf::Color::Black, sf::Vector2f(1030, 60), sf::Vector2f(60, 40), sf::Color::White);
-		page_num.draw(window);
+		page_num.draw(window, app->default_font);
 
-		interaction.draw(window);
+		interaction.draw(window, app->default_font);
 		window.display();
 		interaction.interact(window);
 	}
