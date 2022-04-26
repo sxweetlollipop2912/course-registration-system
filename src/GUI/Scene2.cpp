@@ -1,4 +1,4 @@
-#include "Scene2.h"
+#include "scene2.h"
 static App* app;
 static sf::RenderWindow* windowP;
 static bool inCreate;
@@ -73,8 +73,6 @@ static void create_semester_function(int dummy)
 
 static void create_semester()
 {
-	
-
 	Textbox mainBackground("", defaultCharSize, sf::Color::White, sf::Vector2f(windowWidth / 4, windowHeight / 3), sf::Vector2f(windowWidth / 2, windowHeight / 3), sf::Color::Black);
 	mainBackground.set_outline(sf::Color::Blue, 4);
 
@@ -150,7 +148,7 @@ static void clickSemester(sf::Vector2i mousePos)
 			&& mousePos.y >= 200 + (ptr->no) * 75 && mousePos.y <= 250 + (ptr->no) * 75)
 		{
 			app->setDefaultSemester(ptr->no);
-			app->scenes.push(SceneType::Scene5);
+			app->scenes.push(5);
 			return;
 			//printf("%d\n", ptr->no);
 		}
@@ -174,10 +172,10 @@ void scene2(sf::RenderWindow& window, App& _app)
 	Textbox viewClassBox("View classes", defaultCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 2 - 100, 200 - 150), sf::Vector2f(200, 50), sf::Color::Green);
 	Textbox removeYearBox("Remove year", defaultCharSize, sf::Color::Black, sf::Vector2f(windowWidth - 250, 100), sf::Vector2f(200, 50), sf::Color::Red);
 	sf::Texture texture;
-	texture.loadFromFile("assets/images/go_back.png");
+	texture.loadFromFile("assets/images/GoBack.png");
 	Button_Sprite back_button = Button_Sprite(texture, sf::Vector2f(10, 5), sf::Vector2f(40, 40));
 
-	while (window.isOpen() && app->scenes.top() == SceneType::Scene2)
+	while (window.isOpen() && app->scenes.top() == 2)
 	{
 		sf::Event event;
 		sf::Vector2i mousePos = Mouse::getPosition(window);
@@ -193,7 +191,7 @@ void scene2(sf::RenderWindow& window, App& _app)
 				{
 					if (viewClassBox.inside(mousePos.x, mousePos.y))
 					{
-						app->scenes.push(SceneType::Scene3);
+						app->scenes.push(3);
 						return;
 					}
 					if (removeYearBox.inside(mousePos.x, mousePos.y))

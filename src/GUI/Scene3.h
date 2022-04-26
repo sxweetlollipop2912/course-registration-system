@@ -2,6 +2,7 @@
 
 #include <string.h>
 #include "Interaction.h";
+#include "scene4.h"
 
 using namespace GUI;
 using namespace sf;

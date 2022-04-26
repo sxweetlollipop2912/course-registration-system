@@ -6,11 +6,10 @@ static App* app;
 static sf::RenderWindow* windowP;
 static Button_Textbox* currentYearButtonP;
 static Interaction* interactionP;
-static SceneType current_scene = SceneType::Scene1;
 
 static string to_string(int x)
 {
-	string res;
+	string res = "";
 	while (x > 0)
 	{
 		res.push_back(char(x % 10 + 48));
@@ -23,9 +22,9 @@ static string to_string(int x)
 static int to_int(string s)
 {
 	int sum = 0;
-	for (char i : s)
+	for (int i = 0; i < s.size(); i++)
 	{
-		sum = sum * 10 + int(i) - 48;
+		sum = sum * 10 + int(s[i]) - 48;
 	}
 	return sum;
 }
@@ -36,7 +35,7 @@ static void go_back(int dummy) {
 
 static void go_to_scene2(int dummy)
 {
-	app->scenes.push(SceneType::Scene2);
+	app->scenes.push(2);
 }
 
 static void create_new_year_function(int dummy)
@@ -73,7 +72,7 @@ static void create_new_year(int dummy)
 
 
 	interaction.add_button(enterButton, create_new_year_function);
-	while (windowP->isOpen() && app->year() == nullptr)
+	while (windowP->isOpen() && app->year() == NULL)
 	{
 		windowP->clear(sf::Color::White);
 		mainBackground.draw(*windowP, app->default_font);
@@ -105,28 +104,26 @@ void scene1(sf::RenderWindow& window, App& _app)
 
 
 	sf::Texture texture;
-	texture.loadFromFile("assets/images/go_back.png");
+	texture.loadFromFile("assets/images/GoBack.png");
 	Button_Sprite back_button = Button_Sprite(texture, sf::Vector2f(10, 5), sf::Vector2f(40, 40));
 	interaction.add_button(back_button, go_back);
 	interactionP = &interaction;
 
-	if (app->year() != nullptr)
+	if (app->year() != NULL)
 	{
 		currentYearButton.textbox.set_text(to_string(app->year()->start_year) + "-" + to_string(app->year()->end_year));
 		interaction.add_button(currentYearButton, go_to_scene2);
 	}
-
-    while (window.isOpen() && !app->scenes.empty() && app->scenes.top() == current_scene && !app->scenes.refresh)
+	
+	while (window.isOpen() && app->scenes.top() == 1)
 	{
-		if (app->year() != nullptr)
+		if (app->year() != NULL)
 		{
 			window.clear(sf::Color::White);
 			currentYearText.draw(window, app->default_font);
 			interaction.draw(window, app->default_font);
 			window.display();
-
-            auto event = interaction.interact(window);
-            app->scenes.interact(event);
+			interaction.interact(window);
 		}
 		else
 		{
@@ -134,9 +131,10 @@ void scene1(sf::RenderWindow& window, App& _app)
 			noCurrentYearText.draw(window, app->default_font);
 			interaction2.draw(window, app->default_font);
 			window.display();
-
-            auto event = interaction2.interact(window);
-            app->scenes.interact(event);
+			interaction2.interact(window);
 		}
+		
 	}
+	
+
 }

@@ -1,4 +1,4 @@
-#include "Scene3.h"
+#include "scene3.h"
 static App* app;
 static sf::RenderWindow* windowP;
 static bool inCreate;
@@ -15,7 +15,7 @@ static void draw_class(sf::Vector2i mousePos)
 	List<DataIter> classes = app->getAllClasses();
 
 	int cnt = 0;
-	classes.for_each([&](DataIter cl)
+	classes.for_each([&](DataIter& cl)
 		{
 			auto ptr = cl.ptr<Class>();
 			cnt++;
@@ -36,7 +36,7 @@ static void clickClass(sf::Vector2i mousePos)
 	List<DataIter> classes = app->getAllClasses();
 
 	int cnt = 0;
-	classes.for_each([&](DataIter cl)
+	classes.for_each([&](DataIter& cl)
 		{
 			auto ptr = cl.ptr<Class>();
 			cnt++;
@@ -44,7 +44,8 @@ static void clickClass(sf::Vector2i mousePos)
 			classBox.set_box_position(sf::Vector2f(windowWidth / 2 - 100, 200 + cnt * 75));
 			if (classBox.inside(mousePos.x, mousePos.y))
 			{
-				app->scenes.push(SceneType::Scene4);
+				//app->scenes.push(4);
+				scene4(*windowP, *app, cl);
 				return;
 			}
 		});
@@ -53,7 +54,7 @@ static void clickClass(sf::Vector2i mousePos)
 static void create_class_function(int dummy)
 {
 	inCreate = false;
-	app->addClass(make_shared<Class>(classNameInputBoxP->text));
+	if (classNameInputBoxP->text.size() > 0) app->addClass(make_shared<Class>(classNameInputBoxP->text));
 }
 
 static void create_class()
@@ -93,10 +94,10 @@ void scene3(sf::RenderWindow& window, App& _app)
 	Textbox createClassBox("Create class", defaultCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 2 - 100, 200 - 75), sf::Vector2f(200, 50), sf::Color::Green);
 
 	sf::Texture texture;
-	texture.loadFromFile("assets/images/go_back.png");
+	texture.loadFromFile("assets/images/GoBack.png");
 	Button_Sprite back_button = Button_Sprite(texture, sf::Vector2f(10, 5), sf::Vector2f(40, 40));
 
-	while (window.isOpen() && app->scenes.top() == SceneType::Scene3)
+	while (window.isOpen() && app->scenes.top() == 3)
 	{
 		sf::Event event;
 		sf::Vector2i mousePos = Mouse::getPosition(window);
