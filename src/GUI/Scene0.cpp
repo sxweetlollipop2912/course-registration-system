@@ -61,12 +61,12 @@ void scene0(sf::RenderWindow& window, App &app)
 		}
 		window.clear(sf::Color::Green);
 
-		mainBackground.draw(window);
+		mainBackground.draw(window, app.default_font);
 
-		usernameText.draw(window);
-		passwordText.draw(window);
+		usernameText.draw(window, app.default_font);
+		passwordText.draw(window, app.default_font);
 
-		interaction.draw(window);
+		interaction.draw(window, app.default_font);
 
 		window.display();
 	}

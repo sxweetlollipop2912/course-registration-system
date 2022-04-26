@@ -1,4 +1,4 @@
-#include "scene2.h"
+#include "Scene2.h"
 static App* app;
 static sf::RenderWindow* windowP;
 static bool inCreate;
@@ -51,7 +51,7 @@ static void draw_semester(sf::RenderWindow& window, sf::Vector2i mousePos)
 			semesterBox.set_outline(sf::Color::Blue);
 		}
 		else semesterBox.set_outline(sf::Color::Transparent);
-		semesterBox.draw(window);
+		semesterBox.draw(window, app->default_font);
 	}
 }
 
@@ -127,15 +127,15 @@ static void create_semester()
 	while (windowP->isOpen() && inCreate)
 	{
 		windowP->clear(sf::Color::White);
-		mainBackground.draw(*windowP);
-		startDateText.draw(*windowP);
-		endDateText.draw(*windowP);
+		mainBackground.draw(*windowP, app->default_font);
+		startDateText.draw(*windowP, app->default_font);
+		endDateText.draw(*windowP, app->default_font);
 		
-		dayText.draw(*windowP);
-		monthText.draw(*windowP);
-		yearText.draw(*windowP);
+		dayText.draw(*windowP, app->default_font);
+		monthText.draw(*windowP, app->default_font);
+		yearText.draw(*windowP, app->default_font);
 
-		interaction.draw(*windowP);
+		interaction.draw(*windowP, app->default_font);
 		windowP->display();
 		interaction.interact(*windowP);
 	}
@@ -150,7 +150,7 @@ static void clickSemester(sf::Vector2i mousePos)
 			&& mousePos.y >= 200 + (ptr->no) * 75 && mousePos.y <= 250 + (ptr->no) * 75)
 		{
 			app->setDefaultSemester(ptr->no);
-			app->scenes.push(5);
+			app->scenes.push(SceneType::Scene5);
 			return;
 			//printf("%d\n", ptr->no);
 		}
@@ -174,10 +174,10 @@ void scene2(sf::RenderWindow& window, App& _app)
 	Textbox viewClassBox("View classes", defaultCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 2 - 100, 200 - 150), sf::Vector2f(200, 50), sf::Color::Green);
 	Textbox removeYearBox("Remove year", defaultCharSize, sf::Color::Black, sf::Vector2f(windowWidth - 250, 100), sf::Vector2f(200, 50), sf::Color::Red);
 	sf::Texture texture;
-	texture.loadFromFile("assets/images/GoBack.png");
+	texture.loadFromFile("assets/images/go_back.png");
 	Button_Sprite back_button = Button_Sprite(texture, sf::Vector2f(10, 5), sf::Vector2f(40, 40));
 
-	while (window.isOpen() && app->scenes.top() == 2)
+	while (window.isOpen() && app->scenes.top() == SceneType::Scene2)
 	{
 		sf::Event event;
 		sf::Vector2i mousePos = Mouse::getPosition(window);
@@ -193,7 +193,7 @@ void scene2(sf::RenderWindow& window, App& _app)
 				{
 					if (viewClassBox.inside(mousePos.x, mousePos.y))
 					{
-						app->scenes.push(3);
+						app->scenes.push(SceneType::Scene3);
 						return;
 					}
 					if (removeYearBox.inside(mousePos.x, mousePos.y))
@@ -215,28 +215,28 @@ void scene2(sf::RenderWindow& window, App& _app)
 			}
 		}
 		window.clear(sf::Color::White);
-		semesterText.draw(window);
+		semesterText.draw(window, app->default_font);
 		if (mousePos.x >= 10 && mousePos.x <= 50 && mousePos.y >= 5 && mousePos.y <= 45)
 		{
 			back_button.idle = false;
 		}
 		else back_button.idle = true;
-		back_button.draw(window);
+		back_button.draw(window, app->default_font);
 
 		if (mousePos.x >= windowWidth / 2 - 100 && mousePos.x <= windowWidth / 2 + 100 && mousePos.y >= 125 && mousePos.y <= 175)
 		{
 			createSemesterBox.set_outline(sf::Color::Blue);
 		}
 		else createSemesterBox.set_outline(sf::Color::Transparent);
-		createSemesterBox.draw(window);
+		createSemesterBox.draw(window, app->default_font);
 
 		if (viewClassBox.inside(mousePos.x, mousePos.y)) viewClassBox.set_outline(sf::Color::Blue);
 		else viewClassBox.set_outline(sf::Color::Transparent);
-		viewClassBox.draw(window);
+		viewClassBox.draw(window, app->default_font);
 
 		if (removeYearBox.inside(mousePos.x, mousePos.y)) removeYearBox.set_outline(sf::Color::Blue);
 		else removeYearBox.set_outline(sf::Color::Transparent);
-		removeYearBox.draw(window);
+		removeYearBox.draw(window, app->default_font);
 		
 		draw_semester(window, mousePos);
 		window.display();

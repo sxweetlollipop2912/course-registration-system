@@ -335,8 +335,8 @@ void add_course_scene(sf::RenderWindow& _window, App &_app) {
         window->clear(sf::Color::White);
 
         for(auto &box : boxes)
-            box.draw(*window);
-        interaction.draw(*window);
+            box.draw(*window, app->default_font);
+        interaction.draw(*window, app->default_font);
         window->display();
 
         auto event = interaction.interact(*window);
@@ -437,8 +437,8 @@ void modify_registration_scene(sf::RenderWindow& _window, App &_app) {
         window->clear(sf::Color::White);
 
         for(auto &box : boxes)
-            box.draw(*window);
-        interaction.draw(*window);
+            box.draw(*window, app->default_font);
+        interaction.draw(*window, app->default_font);
         window->display();
 
         auto event = interaction.interact(*window);
@@ -610,8 +610,8 @@ void scene5(sf::RenderWindow& _window, App &_app) {
         window->clear(sf::Color::White);
 
         for(auto &box : boxes)
-            box.draw(*window);
-        interaction.draw(*window);
+            box.draw(*window, app->default_font);
+        interaction.draw(*window, app->default_font);
         window->display();
 
         auto event = interaction.interact(*window);

@@ -76,10 +76,10 @@ static void create_new_year(int dummy)
 	while (windowP->isOpen() && app->year() == nullptr)
 	{
 		windowP->clear(sf::Color::White);
-		mainBackground.draw(*windowP);
-		interaction.draw(*windowP);
-		startText.draw(*windowP);
-		endText.draw(*windowP);
+		mainBackground.draw(*windowP, app->default_font);
+		interaction.draw(*windowP, app->default_font);
+		startText.draw(*windowP, app->default_font);
+		endText.draw(*windowP, app->default_font);
 		windowP->display();
 		interaction.interact(*windowP);
 	}
@@ -121,8 +121,8 @@ void scene1(sf::RenderWindow& window, App& _app)
 		if (app->year() != nullptr)
 		{
 			window.clear(sf::Color::White);
-			currentYearText.draw(window);
-			interaction.draw(window);
+			currentYearText.draw(window, app->default_font);
+			interaction.draw(window, app->default_font);
 			window.display();
 
             auto event = interaction.interact(window);
@@ -131,8 +131,8 @@ void scene1(sf::RenderWindow& window, App& _app)
 		else
 		{
 			window.clear(sf::Color::White);
-			noCurrentYearText.draw(window);
-			interaction2.draw(window);
+			noCurrentYearText.draw(window, app->default_font);
+			interaction2.draw(window, app->default_font);
 			window.display();
 
             auto event = interaction2.interact(window);

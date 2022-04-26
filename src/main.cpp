@@ -17,6 +17,9 @@
 #include "GUI/Scene1.h"
 #include "GUI/Scene2.h"
 #include "GUI/Scene5.h"
+#include "GUI/Scene3.h"
+#include "GUI/Scene10.h"
+#include "GUI/Scene11.h"
 #include "GUI/SceneManager.h"
 
 
@@ -148,58 +151,12 @@ int main() {
         output(app);
     }
 
-   /* auto default_year = make_shared<SchoolYear>(2021, 2022);
-    app.addDefaultSchoolYear(default_year);
-
-    /// Create semester 1, spanning from October 1 2021 to December 31 2021
-    auto semester1 = make_shared<Semester>(1,
-        Utils::mktm(1, 10, 2021),
-        Utils::mktm(31, 12, 2021));
-    app.addDefaultSemester(semester1);
-
-    /// Create a registration session spanning from October 1st, 2021 to October 1st, 2022.
-    app.semester()->reg_session.start = Utils::mktm(1, 10, 2021);
-    app.semester()->reg_session.end = Utils::mktm(1, 10, 2022);
-
-
-    /// Create courses
-    for (int i = 0; i < 4; i++) {
-        auto course = make_shared<Course>("CS" + to_string(i),
-            "Intro to CS",
-            FullName("Ten", "Ho"),
-            Course::Session(tm{ 2, 7, 30 }, tm{ 2, 9, 10 }),
-            Course::Session(tm{ 7, 7, 30 }, tm{ 7, 9, 10 }),
-            4,
-            50);
-        app.addCourse(course);
-    }
-    auto course = make_shared<Course>("CS4",
-        "Intro to CS",
-        FullName("Ten", "Ho"),
-        Course::Session(tm{ 3, 7, 30 }, tm{ 3, 9, 10 }),
-        Course::Session(tm{ 6, 8, 30 }, tm{ 6, 10, 10 }),
-        4,
-        50);
-    app.addCourse(course);
-
-    app.addClass(make_shared<Class>("21CTT1"));
-    app.addClass(make_shared<Class>("21CTT2"));
-    app.addClass(make_shared<Class>("21CTT3"));
-
-    auto csvData = CSVIO::tryParse("csv/21CTT1.csv");
-    app.addStudents(csvData, "21CTT1");
-
-    csvData = CSVIO::tryParse("csv/21CTT2.csv");
-    app.addStudents(csvData, "21CTT2");
-
-    csvData = CSVIO::tryParse("csv/21CTT3.csv");
-    app.addStudents(csvData, "21CTT3");*/
 
     /// Add admin account ("admin", "admin").
     app.addStaff(make_shared<Staff>(ACCOUNT::ADMIN_USERNAME, ACCOUNT::ADMIN_PASS));
 
-    //app.login("21280009", ACCOUNT::DEFAULT_PASS);
-    app.scenes.push(SceneType::Scene5);
+    app.login("21280009", ACCOUNT::DEFAULT_PASS);
+    app.scenes.push(SceneType::Scene9);
 
     while (!app.scenes.empty())
     {
@@ -218,6 +175,10 @@ int main() {
         {
             scene2(window, app);
         }
+        if (sceneNow == SceneType::Scene3)
+        {
+            scene3(window, app);
+        }
         if (sceneNow == SceneType::Scene5)
         {
             scene5(window, app);
@@ -225,6 +186,14 @@ int main() {
         if (sceneNow == SceneType::Scene9)
         {
             scene9(window, app);
+        }
+        if (sceneNow == SceneType::Scene10)
+        {
+            scene10(window, app);
+        }
+        if (sceneNow == SceneType::Scene11)
+        {
+            scene11(window, app);
         }
         if (sceneNow == SceneType::SceneModifyReg)
         {

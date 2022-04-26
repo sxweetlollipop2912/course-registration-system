@@ -1,4 +1,4 @@
-#include "scene3.h"
+#include "Scene3.h"
 static App* app;
 static sf::RenderWindow* windowP;
 static bool inCreate;
@@ -26,7 +26,7 @@ static void draw_class(sf::Vector2i mousePos)
 				classBox.set_outline(sf::Color::Blue);
 			}
 			else classBox.set_outline(sf::Color::Transparent);
-			classBox.draw(*windowP);
+			classBox.draw(*windowP, app->default_font);
 		});
 }
 
@@ -44,7 +44,7 @@ static void clickClass(sf::Vector2i mousePos)
 			classBox.set_box_position(sf::Vector2f(windowWidth / 2 - 100, 200 + cnt * 75));
 			if (classBox.inside(mousePos.x, mousePos.y))
 			{
-				app->scenes.push(4);
+				app->scenes.push(SceneType::Scene4);
 				return;
 			}
 		});
@@ -76,9 +76,9 @@ static void create_class()
 	while (windowP->isOpen() && inCreate)
 	{
 		windowP->clear(sf::Color::White);
-		mainBackground.draw(*windowP);
-		classNameText.draw(*windowP);
-		interaction.draw(*windowP);
+		mainBackground.draw(*windowP, app->default_font);
+		classNameText.draw(*windowP, app->default_font);
+		interaction.draw(*windowP, app->default_font);
 		windowP->display();
 		interaction.interact(*windowP);
 	}
@@ -93,10 +93,10 @@ void scene3(sf::RenderWindow& window, App& _app)
 	Textbox createClassBox("Create class", defaultCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 2 - 100, 200 - 75), sf::Vector2f(200, 50), sf::Color::Green);
 
 	sf::Texture texture;
-	texture.loadFromFile("assets/images/GoBack.png");
+	texture.loadFromFile("assets/images/go_back.png");
 	Button_Sprite back_button = Button_Sprite(texture, sf::Vector2f(10, 5), sf::Vector2f(40, 40));
 
-	while (window.isOpen() && app->scenes.top() == 3)
+	while (window.isOpen() && app->scenes.top() == SceneType::Scene3)
 	{
 		sf::Event event;
 		sf::Vector2i mousePos = Mouse::getPosition(window);
@@ -125,18 +125,18 @@ void scene3(sf::RenderWindow& window, App& _app)
 			}
 		}
 		window.clear(sf::Color::White);
-		classText.draw(window);
+		classText.draw(window, app->default_font);
 
 		if (mousePos.x >= 10 && mousePos.x <= 50 && mousePos.y >= 5 && mousePos.y <= 45)
 		{
 			back_button.idle = false;
 		}
 		else back_button.idle = true;
-		back_button.draw(window);
+		back_button.draw(window, app->default_font);
 
 		if (createClassBox.inside(mousePos.x, mousePos.y)) createClassBox.set_outline(sf::Color::Blue);
 		else createClassBox.set_outline(sf::Color::Transparent);
-		createClassBox.draw(window);
+		createClassBox.draw(window, app->default_font);
 
 		draw_class(mousePos);
 		window.display();
