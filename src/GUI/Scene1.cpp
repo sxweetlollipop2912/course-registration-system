@@ -6,10 +6,11 @@ static App* app;
 static sf::RenderWindow* windowP;
 static Button_Textbox* currentYearButtonP;
 static Interaction* interactionP;
+static SceneType current_scene = SceneType::Scene1;
 
 static string to_string(int x)
 {
-	string res = "";
+	string res;
 	while (x > 0)
 	{
 		res.push_back(char(x % 10 + 48));
@@ -22,9 +23,9 @@ static string to_string(int x)
 static int to_int(string s)
 {
 	int sum = 0;
-	for (int i = 0; i < s.size(); i++)
+	for (char i : s)
 	{
-		sum = sum * 10 + int(s[i]) - 48;
+		sum = sum * 10 + int(i) - 48;
 	}
 	return sum;
 }
@@ -35,7 +36,7 @@ static void go_back(int dummy) {
 
 static void go_to_scene2(int dummy)
 {
-	app->scenes.push(2);
+	app->scenes.push(SceneType::Scene2);
 }
 
 static void create_new_year_function(int dummy)
@@ -72,13 +73,13 @@ static void create_new_year(int dummy)
 
 
 	interaction.add_button(enterButton, create_new_year_function);
-	while (windowP->isOpen() && app->year() == NULL)
+	while (windowP->isOpen() && app->year() == nullptr)
 	{
 		windowP->clear(sf::Color::White);
-		mainBackground.draw(*windowP);
-		interaction.draw(*windowP);
-		startText.draw(*windowP);
-		endText.draw(*windowP);
+		mainBackground.draw(*windowP, app->default_font);
+		interaction.draw(*windowP, app->default_font);
+		startText.draw(*windowP, app->default_font);
+		endText.draw(*windowP, app->default_font);
 		windowP->display();
 		interaction.interact(*windowP);
 	}
@@ -104,37 +105,38 @@ void scene1(sf::RenderWindow& window, App& _app)
 
 
 	sf::Texture texture;
-	texture.loadFromFile("assets/images/GoBack.png");
+	texture.loadFromFile("assets/images/go_back.png");
 	Button_Sprite back_button = Button_Sprite(texture, sf::Vector2f(10, 5), sf::Vector2f(40, 40));
 	interaction.add_button(back_button, go_back);
 	interactionP = &interaction;
 
-	if (app->year() != NULL)
+	if (app->year() != nullptr)
 	{
 		currentYearButton.textbox.set_text(to_string(app->year()->start_year) + "-" + to_string(app->year()->end_year));
 		interaction.add_button(currentYearButton, go_to_scene2);
 	}
-	
-	while (window.isOpen() && app->scenes.top() == 1)
+
+    while (window.isOpen() && !app->scenes.empty() && app->scenes.top() == current_scene && !app->scenes.refresh)
 	{
-		if (app->year() != NULL)
+		if (app->year() != nullptr)
 		{
 			window.clear(sf::Color::White);
-			currentYearText.draw(window);
-			interaction.draw(window);
+			currentYearText.draw(window, app->default_font);
+			interaction.draw(window, app->default_font);
 			window.display();
-			interaction.interact(window);
+
+            auto event = interaction.interact(window);
+            app->scenes.interact(event);
 		}
 		else
 		{
 			window.clear(sf::Color::White);
-			noCurrentYearText.draw(window);
-			interaction2.draw(window);
+			noCurrentYearText.draw(window, app->default_font);
+			interaction2.draw(window, app->default_font);
 			window.display();
-			interaction2.interact(window);
-		}
-		
-	}
-	
 
+            auto event = interaction2.interact(window);
+            app->scenes.interact(event);
+		}
+	}
 }

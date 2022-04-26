@@ -60,6 +60,8 @@ public:
         user_iter = {};
         default_year_iter = database.get(default_year_uid);
         default_semester_iter = database.get(default_semester_uid);
+
+        default_font.loadFromFile(PATH::DEFAULT_FONT);
     }
 
     bool isLoggedIn() const;

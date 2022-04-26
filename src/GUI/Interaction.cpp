@@ -219,10 +219,11 @@ void Interaction::add_button(const Button_Sprite& button, const std::function<vo
 	type2_buttons.push_back(button_list);
 }
 
-void Interaction::interact(sf::RenderWindow& window) {
-	sf::Event event;
+sf::Event Interaction::interact(sf::RenderWindow& window) {
+	sf::Event event{};
 	window.waitEvent(event);
 	if (event.type == sf::Event::Closed) {
+        std::cout << "closing\n";
 		window.close();
 	}
 	else if (event.type == sf::Event::MouseMoved) {
@@ -245,7 +246,7 @@ void Interaction::interact(sf::RenderWindow& window) {
 			type2_buttons.for_each([&](Button_List<Button_Sprite>& button_list) {
 				button_list.update_trigger(x, y);
 			});
-			selected_textbox = NULL;
+			selected_textbox = nullptr;
 			list_inptb.for_each([&](Input_Textbox*& inptb) {
 				if (inptb->inside(x, y)) {
 					inptb->idle = false;
@@ -257,13 +258,16 @@ void Interaction::interact(sf::RenderWindow& window) {
 		}
 	}
 	else if (event.type == sf::Event::TextEntered) {
-		if (selected_textbox == NULL) return;
-		char c = static_cast<char>(event.text.unicode);
-		if (c == 8)
-			selected_textbox->pop_char();
-		else if (32 <= c && c <= 126) // printable characters
-			selected_textbox->add_char(c);
+		if (selected_textbox != nullptr) {
+            char c = static_cast<char>(event.text.unicode);
+            if (c == 8)
+                selected_textbox->pop_char();
+            else if (32 <= c && c <= 126) // printable characters
+                selected_textbox->add_char(c);
+        }
 	}
+
+    return event;
 }
 
 void Interaction::draw(sf::RenderWindow& window, sf::Font& font) {

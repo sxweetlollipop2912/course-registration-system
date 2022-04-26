@@ -15,14 +15,19 @@ namespace Utils {
     /// Returns std::tm of desired time.\n
     /// NOTE: Sunday to Saturday is 1 to 7.
     tm mksession(const int weekday, const int hour, const int minute);
-    /// Convert std::tm to std::string for output.\n
+    /// Converts string dd/mm/yyyy "01/01/1900" to tm.
+    tm strToDate(const string &s);
+    /// Converts string "Mon Jan 1 00:00:00 1900" to tm.
+    tm strToTm(const string &s);
+    /// Converts string "Mon 00:00" to tm.
+    tm strToSession(const string &s);
+    /// Converts std::tm to std::string for output.\n
     /// Ex: Mon Jan 1 00:00:00 1900
     string tmToStr(const tm &time);
-    tm strToTm(const string &s);
-    /// Convert std::tm to std::string for output (session syntax).\n
+    /// Converts std::tm to std::string for output (session syntax).\n
     /// Ex: Mon 00:00
     string sessionToStr(const tm &session);
-    /// Convert std::tm to std::string for output.\n
+    /// Converts std::tm to std::string for output.\n
     /// Ex: 01/01/1900
     string dateToStr(const tm &date);
     /// Returns a random integer from [min, max].

@@ -1,6 +1,6 @@
 #include "SceneManager.h"
 
-int SceneManager::top() const {
+SceneType SceneManager::top() const {
     return stack.back();
 }
 
@@ -12,7 +12,7 @@ bool SceneManager::empty() const {
     return stack.empty();
 }
 
-void SceneManager::push(int i) {
+void SceneManager::push(SceneType i) {
     stack.push_back(i);
 }
 
@@ -22,4 +22,10 @@ void SceneManager::pop() {
 
 void SceneManager::clear() {
     stack.clear();
+}
+
+void SceneManager::interact(sf::Event event) {
+    if (event.type == sf::Event::Closed) {
+        stack.clear();
+    }
 }

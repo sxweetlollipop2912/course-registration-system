@@ -1,4 +1,4 @@
-#include "scene11.h"
+#include "Scene11.h"
 
 static App* app;
 static int num_page, page_cnt, page_size;
@@ -88,7 +88,7 @@ void scene11(sf::RenderWindow& window, App &_app) {
 	page_cnt = (n - 1) / page_size + 1;
 
 	sf::Texture texture;
-	texture.loadFromFile("assets/images/GoBack.png");
+	texture.loadFromFile("assets/images/go_back.png");
 	Button_Sprite back_button(texture, sf::Vector2f(10, 5), sf::Vector2f(40, 40));
 
 	texture.loadFromFile("assets/images/previous.jpg");
@@ -97,7 +97,7 @@ void scene11(sf::RenderWindow& window, App &_app) {
 	texture.loadFromFile("assets/images/next.jpg");
 	Button_Sprite next_button(texture, sf::Vector2f(950, 60), sf::Vector2f(40, 40));
 
-	while (window.isOpen() && app->scenes.top() == 11) {
+	while (window.isOpen() && app->scenes.top() == SceneType::Scene11) {
 		List<Textbox> textboxs;
 		std::string page_num_string;
 		if (n > 0)
@@ -116,7 +116,7 @@ void scene11(sf::RenderWindow& window, App &_app) {
 		if (n > 0) {
 			int current_y = 150;
 			pages[num_page].for_each([&](const auto& Iter) {
-				auto course = Iter.ptr<Course>();
+				auto course = Iter.template ptr<Course>();
 
 				Textbox course_id(course->id, 16, sf::Color::Black, sf::Vector2f(0, current_y), sf::Vector2f(100, 100), sf::Color::White);
 				course_id.set_outline(sf::Color::Black);
@@ -189,7 +189,7 @@ void scene11(sf::RenderWindow& window, App &_app) {
 							OverlappingCourses.for_each([&](const auto& Iter) {
 								if (i)
 									conflict_message += ", ";
-								conflict_message += Iter.ptr<Course>()->id;
+								conflict_message += Iter.template ptr<Course>()->id;
 								i++;
 							});
 						}
@@ -210,7 +210,7 @@ void scene11(sf::RenderWindow& window, App &_app) {
 		interaction.add_button_list(status_column);
 
 		data_change = false;
-		while (window.isOpen() && app->scenes.top() == 11 && !data_change) {
+		while (window.isOpen() && app->scenes.top() == SceneType::Scene11 && !data_change) {
 			window.clear(sf::Color::White);
 
 			headers.for_each([&](Textbox& textbox) {
