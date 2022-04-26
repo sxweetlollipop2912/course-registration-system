@@ -23,10 +23,9 @@ static void toggle_enroll_course(int i) {
 	auto student = app->user_iter;
 	auto course = app->default_semester_iter.ptr<Semester>()->courses[offset + i].ptr<Course>();
 	if (course->getStudent(student.ptr<Student>()->student_id).empty())
-		app->enroll(student, course->id);
+		data_change = app->enroll(student, course->id);
 	else
-		app->disenroll(student, course->id);
-	data_change = true;
+		data_change = app->disenroll(student, course->id);
 }
 
 void scene11(sf::RenderWindow& window, App &_app) {
@@ -131,7 +130,8 @@ void scene11(sf::RenderWindow& window, App &_app) {
 				textboxs.push_back(course_name);
 
 
-				Textbox credits(std::to_string(course->credits), 16, sf::Color::Black, sf::Vector2f(400, current_y), sf::Vector2f(100, 100), sf::Color::White);
+				Textbox credits(std::to_string(course->credits), 
+					16, sf::Color::Black, sf::Vector2f(400, current_y), sf::Vector2f(100, 100), sf::Color::White);
 				credits.set_outline(sf::Color::Black);
 				textboxs.push_back(credits);
 
@@ -148,7 +148,8 @@ void scene11(sf::RenderWindow& window, App &_app) {
 				textboxs.push_back(session2);
 
 
-				Textbox teacher(course->teacher_name.last + " " + course->teacher_name.first, 16, sf::Color::Black, sf::Vector2f(700, current_y), sf::Vector2f(250, 100), sf::Color::White);
+				Textbox teacher(course->teacher_name.last + " " + course->teacher_name.first, 
+					16, sf::Color::Black, sf::Vector2f(700, current_y), sf::Vector2f(250, 100), sf::Color::White);
 				teacher.set_outline(sf::Color::Black);
 				teacher.align_left();
 				textboxs.push_back(teacher);
@@ -193,7 +194,8 @@ void scene11(sf::RenderWindow& window, App &_app) {
 							});
 						}
 					}
-					Textbox conflict(conflict_message, 16, sf::Color::Black, sf::Vector2f(0, current_y), sf::Vector2f(1200, 50), sf::Color::White);
+					Textbox conflict(conflict_message, 
+						16, sf::Color::Black, sf::Vector2f(0, current_y), sf::Vector2f(1200, 50), sf::Color::White);
 					conflict.set_outline(sf::Color::Black);
 					conflict.align_left();
 					textboxs.push_back(conflict);
@@ -212,14 +214,14 @@ void scene11(sf::RenderWindow& window, App &_app) {
 			window.clear(sf::Color::White);
 
 			headers.for_each([&](Textbox& textbox) {
-				textbox.draw(window);
+				textbox.draw(window, app->default_font);
 			});
 
 			textboxs.for_each([&](Textbox& textbox) {
-				textbox.draw(window);
+				textbox.draw(window, app->default_font);
 			});
 
-			interaction.draw(window);
+			interaction.draw(window, app->default_font);
 			window.display();
 			interaction.interact(window);
 		}
