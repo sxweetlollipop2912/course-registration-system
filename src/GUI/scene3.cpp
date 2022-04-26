@@ -4,9 +4,6 @@ static sf::RenderWindow* windowP;
 static bool inCreate;
 static Input_Textbox* classNameInputBoxP;
 
-#include <iostream>
-using namespace std;
-
 static void go_back()
 {
 	app->scenes.pop();
@@ -15,7 +12,7 @@ static void go_back()
 static void draw_class(sf::Vector2i mousePos)
 {
 	Textbox classBox("", defaultCharSize, sf::Color::White, sf::Vector2f(0, 0), sf::Vector2f(200, 50), sf::Color::Black);
-	static List<DataIter> classes = app->getAllClasses();
+	List<DataIter> classes = app->getAllClasses();
 
 	int cnt = 0;
 	classes.for_each([&](DataIter cl)
@@ -31,13 +28,12 @@ static void draw_class(sf::Vector2i mousePos)
 			else classBox.set_outline(sf::Color::Transparent);
 			classBox.draw(*windowP);
 		});
-	cout << cnt << endl;
 }
 
 static void clickClass(sf::Vector2i mousePos)
 {
 	Textbox classBox("", defaultCharSize, sf::Color::White, sf::Vector2f(0, 0), sf::Vector2f(200, 50), sf::Color::Black);
-	static List<DataIter> classes = app->getAllClasses();
+	List<DataIter> classes = app->getAllClasses();
 
 	int cnt = 0;
 	classes.for_each([&](DataIter cl)
@@ -57,8 +53,7 @@ static void clickClass(sf::Vector2i mousePos)
 static void create_class_function(int dummy)
 {
 	inCreate = false;
-	app->addClass(make_shared<Class>("3333"));
-	cout << classNameInputBoxP->text << endl;
+	app->addClass(make_shared<Class>(classNameInputBoxP->text));
 }
 
 static void create_class()
@@ -93,7 +88,7 @@ void scene3(sf::RenderWindow& window, App& _app)
 {
 	windowP = &window;
 	app = &_app;
-
+	
 	Textbox classText("Classes", 40, sf::Color::Black, sf::Vector2f(windowWidth / 2 - 100, 200), sf::Vector2f(200, 50), sf::Color::Transparent);
 	Textbox createClassBox("Create class", defaultCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 2 - 100, 200 - 75), sf::Vector2f(200, 50), sf::Color::Green);
 
