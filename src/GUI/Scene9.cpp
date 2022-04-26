@@ -81,13 +81,13 @@ void scene9(sf::RenderWindow& window, App &_app) {
 
 	while (window.isOpen() && app->scenes.top() == 9) {
 		window.clear(sf::Color::White);
-		name.draw(window);
-		classroom.draw(window);
-		student_id.draw(window);
-		social_id.draw(window);
-		gender.draw(window);
-		birth.draw(window);
-		interaction.draw(window);
+		name.draw(window, app->default_font);
+		classroom.draw(window, app->default_font);
+		student_id.draw(window, app->default_font);
+		social_id.draw(window, app->default_font);
+		gender.draw(window, app->default_font);
+		birth.draw(window, app->default_font);
+		interaction.draw(window, app->default_font);
 		window.display();
 		interaction.interact(window);
 	}
