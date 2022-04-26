@@ -15,16 +15,18 @@ public:
 };
 
 class Textbox {
+private:
+	sf::Font font_tmp; //for getting the bound of the text, kinda dump ngl
+
 public:
 	sf::Text text;
 	sf::RectangleShape box;
-	sf::Font font;
 
 	Textbox(const std::string &_text, const int &char_size, const sf::Color& char_color,
 		const sf::Vector2f& position, const sf::Vector2f& box_size, const sf::Color& box_color) {
-		font.loadFromFile(PATH::DEFAULT_FONT);
+		font_tmp.loadFromFile(PATH::DEFAULT_FONT);
+		text.setFont(font_tmp);
 		text.setString(_text);
-		text.setFont(font);
 		text.setCharacterSize(char_size);
 		text.setFillColor(char_color);
 		box.setPosition(position);
@@ -52,7 +54,7 @@ public:
 	void set_outline(const sf::Color& color, const float& thickness = -2);
 	void set_outline(const Outline &outline);
 
-	void draw(sf::RenderWindow& window);
+	void draw(sf::RenderWindow& window, sf::Font& font);
 	bool inside(const int& x, const int& y);
 };
 
@@ -82,7 +84,7 @@ public:
 	void set_hide_text(const bool& hide = true);
 	void add_char(char c);
 	void pop_char();
-	void draw(sf::RenderWindow& window);
+	void draw(sf::RenderWindow& window, sf::Font& font);
 	bool inside(const int& x, const int& y);
 };
 
@@ -101,7 +103,7 @@ public:
 
 	void set_idle_outline(const sf::Color& color, const float& thickness = -2);
 	void set_hover_outline(const sf::Color& color, const float& thickness = -2);
-	void draw(sf::RenderWindow& window);
+	void draw(sf::RenderWindow& window, sf::Font& font);
 	bool inside(const int& x, const int& y);
 };
 
@@ -122,7 +124,7 @@ public:
 	}
 	Button_Sprite() = default;
 
-	void draw(sf::RenderWindow& window);
+	void draw(sf::RenderWindow& window, sf::Font& font);
 	bool inside(const int& x, const int& y);
 };
 
@@ -133,7 +135,7 @@ public:
 	std::function<void(int)> trigger;
 
 	void add_button(const T& button);
-	void draw(sf::RenderWindow& window);
+	void draw(sf::RenderWindow& window, sf::Font& font);
 	void update_hover(const int& x, const int& y);
 	void update_trigger(const int& x, const int& y);
 };
@@ -151,5 +153,5 @@ public:
 	void add_button(const Button_Textbox& button, const std::function<void(int)>& trigger);
 	void add_button(const Button_Sprite& button, const std::function<void(int)>& trigger);
 	void interact(sf::RenderWindow& window);
-	void draw(sf::RenderWindow& window);
+	void draw(sf::RenderWindow& window, sf::Font& font);
 };
