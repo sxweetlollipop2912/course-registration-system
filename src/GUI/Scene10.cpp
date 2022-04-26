@@ -181,7 +181,7 @@ void scene10(sf::RenderWindow& window, App &_app) {
 		page_num.draw(window);
 
 		interaction.draw(window);
-		interaction.interact(window);
 		window.display();
+		interaction.interact(window);
 	}
 }
