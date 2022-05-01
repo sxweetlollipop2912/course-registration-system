@@ -40,7 +40,7 @@ static void go_back()
 
 static void draw_semester(sf::RenderWindow& window, sf::Vector2i mousePos)
 {
-	Textbox semesterBox("", defaultCharSize, sf::Color::White, sf::Vector2f(0, 0), sf::Vector2f(200, 50), sf::Color::Black);
+	Textbox semesterBox("", defaultMediumCharSize, sf::Color::White, sf::Vector2f(0, 0), sf::Vector2f(200, 50), sf::Color::Black);
 	for (auto& semester : app->year()->semesters)
 	{
 		auto ptr = semester.ptr<Semester>(); // ptr cua semester
@@ -73,24 +73,24 @@ static void create_semester_function(int dummy)
 
 static void create_semester()
 {
-	Textbox mainBackground("", defaultCharSize, sf::Color::White, sf::Vector2f(windowWidth / 4, windowHeight / 3), sf::Vector2f(windowWidth / 2, windowHeight / 3), sf::Color::Black);
+	Textbox mainBackground("", defaultMediumCharSize, sf::Color::White, sf::Vector2f(windowWidth / 4, windowHeight / 3), sf::Vector2f(windowWidth / 2, windowHeight / 3), sf::Color::Black);
 	mainBackground.set_outline(sf::Color::Blue, 4);
 
 	Interaction interaction;
-	Textbox startDateText("Start Date", defaultCharSize, sf::Color::White, sf::Vector2f(windowWidth / 3 - 50, 370), sf::Vector2f(100, 50), sf::Color::Transparent);
-	Textbox endDateText("End Date", defaultCharSize, sf::Color::White, sf::Vector2f(windowWidth / 3 - 50, 470), sf::Vector2f(100, 50), sf::Color::Transparent);
+	Textbox startDateText("Start Date", defaultMediumCharSize, sf::Color::White, sf::Vector2f(windowWidth / 3 - 50, 370), sf::Vector2f(100, 50), sf::Color::Transparent);
+	Textbox endDateText("End Date", defaultMediumCharSize, sf::Color::White, sf::Vector2f(windowWidth / 3 - 50, 470), sf::Vector2f(100, 50), sf::Color::Transparent);
 
-	Textbox dayText("Day", defaultCharSize, sf::Color::White, sf::Vector2f(windowWidth / 3 + 90, 300), sf::Vector2f(100, 50), sf::Color::Transparent);
-	Textbox monthText("Month", defaultCharSize, sf::Color::White, sf::Vector2f(windowWidth / 3 + 240, 300), sf::Vector2f(100, 50), sf::Color::Transparent);
-	Textbox yearText("Year", defaultCharSize, sf::Color::White, sf::Vector2f(windowWidth / 3 + 390, 300), sf::Vector2f(100, 50), sf::Color::Transparent);
+	Textbox dayText("Day", defaultMediumCharSize, sf::Color::White, sf::Vector2f(windowWidth / 3 + 90, 300), sf::Vector2f(100, 50), sf::Color::Transparent);
+	Textbox monthText("Month", defaultMediumCharSize, sf::Color::White, sf::Vector2f(windowWidth / 3 + 240, 300), sf::Vector2f(100, 50), sf::Color::Transparent);
+	Textbox yearText("Year", defaultMediumCharSize, sf::Color::White, sf::Vector2f(windowWidth / 3 + 390, 300), sf::Vector2f(100, 50), sf::Color::Transparent);
 
-	Textbox dayBox("", defaultCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 3 + 90, 370), sf::Vector2f(100, 50), sf::Color::White);
-	Textbox monthBox("", defaultCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 3 + 240, 370), sf::Vector2f(100, 50), sf::Color::White);
-	Textbox yearBox("", defaultCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 3 + 390, 370), sf::Vector2f(100, 50), sf::Color::White);
+	Textbox dayBox("", defaultMediumCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 3 + 90, 370), sf::Vector2f(100, 50), sf::Color::White);
+	Textbox monthBox("", defaultMediumCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 3 + 240, 370), sf::Vector2f(100, 50), sf::Color::White);
+	Textbox yearBox("", defaultMediumCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 3 + 390, 370), sf::Vector2f(100, 50), sf::Color::White);
 
-	Textbox dayBox2("", defaultCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 3 + 90, 470), sf::Vector2f(100, 50), sf::Color::White);
-	Textbox monthBox2("", defaultCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 3 + 240, 470), sf::Vector2f(100, 50), sf::Color::White);
-	Textbox yearBox2("", defaultCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 3 + 390, 470), sf::Vector2f(100, 50), sf::Color::White);
+	Textbox dayBox2("", defaultMediumCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 3 + 90, 470), sf::Vector2f(100, 50), sf::Color::White);
+	Textbox monthBox2("", defaultMediumCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 3 + 240, 470), sf::Vector2f(100, 50), sf::Color::White);
+	Textbox yearBox2("", defaultMediumCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 3 + 390, 470), sf::Vector2f(100, 50), sf::Color::White);
 
 	Input_Textbox dayInputBox(dayBox, 2, sf::Color::Blue);
 	Input_Textbox monthInputBox(monthBox, 2, sf::Color::Blue);
@@ -116,7 +116,7 @@ static void create_semester()
 	interaction.add_input_textbox(monthInputBox2);
 	interaction.add_input_textbox(yearInputBox2);
 
-	Textbox enterBox("ENTER", defaultCharSize, sf::Color::White, sf::Vector2f(windowWidth / 2 - 65, windowHeight / 3 + 235), sf::Vector2f(130, 50), sf::Color::Blue);
+	Textbox enterBox("ENTER", defaultMediumCharSize, sf::Color::White, sf::Vector2f(windowWidth / 2 - 65, windowHeight / 3 + 235), sf::Vector2f(130, 50), sf::Color::Blue);
 	Button_Textbox enterButton(enterBox, sf::Color::White);
 
 	interaction.add_button(enterButton, create_semester_function);
@@ -148,7 +148,7 @@ static void clickSemester(sf::Vector2i mousePos)
 			&& mousePos.y >= 200 + (ptr->no) * 75 && mousePos.y <= 250 + (ptr->no) * 75)
 		{
 			app->setDefaultSemester(ptr->no);
-			app->scenes.push(5);
+			app->scenes.push(SceneType::Scene5);
 			return;
 			//printf("%d\n", ptr->no);
 		}
@@ -167,15 +167,15 @@ void scene2(sf::RenderWindow& window, App& _app)
 	app = &_app;
 
 	Textbox semesterText("Semester", 40, sf::Color::Black, sf::Vector2f(windowWidth / 2 - 100, 200), sf::Vector2f(200, 50), sf::Color::Transparent);
-	Textbox createSemesterBox("Create semester", defaultCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 2 - 100, 200 - 75), sf::Vector2f(200, 50), sf::Color::Green);
+	Textbox createSemesterBox("Create semester", defaultMediumCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 2 - 100, 200 - 75), sf::Vector2f(200, 50), sf::Color::Green);
 	
-	Textbox viewClassBox("View classes", defaultCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 2 - 100, 200 - 150), sf::Vector2f(200, 50), sf::Color::Green);
-	Textbox removeYearBox("Remove year", defaultCharSize, sf::Color::Black, sf::Vector2f(windowWidth - 250, 100), sf::Vector2f(200, 50), sf::Color::Red);
+	Textbox viewClassBox("View classes", defaultMediumCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 2 - 100, 200 - 150), sf::Vector2f(200, 50), sf::Color::Green);
+	Textbox removeYearBox("Remove year", defaultMediumCharSize, sf::Color::Black, sf::Vector2f(windowWidth - 250, 100), sf::Vector2f(200, 50), sf::Color::Red);
 	sf::Texture texture;
-	texture.loadFromFile("assets/images/GoBack.png");
+	texture.loadFromFile("assets/images/go_back.png");
 	Button_Sprite back_button = Button_Sprite(texture, sf::Vector2f(10, 5), sf::Vector2f(40, 40));
 
-	while (window.isOpen() && app->scenes.top() == 2)
+	while (window.isOpen() && !app->scenes.empty() && app->scenes.top() == SceneType::Scene2)
 	{
 		sf::Event event;
 		sf::Vector2i mousePos = Mouse::getPosition(window);
@@ -184,14 +184,17 @@ void scene2(sf::RenderWindow& window, App& _app)
 		{
 			// "close requested" event: we close the window
 			if (event.type == sf::Event::Closed)
-				window.close();
+            {
+                window.close();
+                app->scenes.clear();
+            }
 			if (event.type == sf::Event::MouseButtonPressed)
 			{
 				if (event.mouseButton.button == sf::Mouse::Left)
 				{
 					if (viewClassBox.inside(mousePos.x, mousePos.y))
 					{
-						app->scenes.push(3);
+						app->scenes.push(SceneType::Scene3);
 						return;
 					}
 					if (removeYearBox.inside(mousePos.x, mousePos.y))

@@ -33,5 +33,6 @@ namespace GUI {
 	const int windowWidth = 1200;
 	const int windowHeight = 900;
 
-	const int defaultCharSize = 25;
+	const int defaultMediumCharSize = 25;
+    const int defaultSmallCharSize = 20;
 }

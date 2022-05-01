@@ -113,7 +113,6 @@ string Utils::tmToStr(const tm &time) {
 	tm tmp = time;
 	mktime(&tmp);
 	string s = asctime(&tmp); // Mon Jan  1 00:00:00 1900\n
-    std::cout << "to str " << s << '\n';
 
 	Utils::trimStr(s);
 	s.pop_back();

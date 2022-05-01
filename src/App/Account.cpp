@@ -169,6 +169,5 @@ void Student::load(Database &database) {
 
     for(auto &e : scores) {
         e->course = database.get(e->course.uid());
-        std::cout << "hi";
     }
 }

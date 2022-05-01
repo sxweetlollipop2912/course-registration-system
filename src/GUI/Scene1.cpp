@@ -1,4 +1,4 @@
-#include "scene1.h"
+#include "Scene1.h"
 
 static Input_Textbox* startInputBoxP;
 static Input_Textbox* endInputBoxP;
@@ -9,7 +9,7 @@ static Interaction* interactionP;
 
 static string to_string(int x)
 {
-	string res = "";
+	string res;
 	while (x > 0)
 	{
 		res.push_back(char(x % 10 + 48));
@@ -35,7 +35,7 @@ static void go_back(int dummy) {
 
 static void go_to_scene2(int dummy)
 {
-	app->scenes.push(2);
+	app->scenes.push(SceneType::Scene2);
 }
 
 static void create_new_year_function(int dummy)
@@ -48,21 +48,21 @@ static void create_new_year_function(int dummy)
 
 static void create_new_year(int dummy)
 {
-	Textbox mainBackground("", defaultCharSize, sf::Color::White, sf::Vector2f(windowWidth / 4, windowHeight / 3), sf::Vector2f(windowWidth / 2, windowHeight / 3), sf::Color::Black);
+	Textbox mainBackground("", defaultMediumCharSize, sf::Color::White, sf::Vector2f(windowWidth / 4, windowHeight / 3), sf::Vector2f(windowWidth / 2, windowHeight / 3), sf::Color::Black);
 	mainBackground.set_outline(sf::Color::Blue, 4);
 
-	Textbox startText("Start year:", defaultCharSize, sf::Color::White, sf::Vector2f(windowWidth / 4 + 20, windowHeight / 3 + 30), sf::Vector2f(130, 50), sf::Color::Transparent);
-	Textbox startBox("", defaultCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 4 + 170, windowHeight / 3 + 30), sf::Vector2f(410, 50), sf::Color::White);
+	Textbox startText("Start year:", defaultMediumCharSize, sf::Color::White, sf::Vector2f(windowWidth / 4 + 20, windowHeight / 3 + 30), sf::Vector2f(130, 50), sf::Color::Transparent);
+	Textbox startBox("", defaultMediumCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 4 + 170, windowHeight / 3 + 30), sf::Vector2f(410, 50), sf::Color::White);
 	Input_Textbox startInputBox(startBox, 20, sf::Color::Blue);
 	startInputBoxP = &startInputBox;
 
-	Textbox endText("End year:", defaultCharSize, sf::Color::White, sf::Vector2f(windowWidth / 4 + 20, windowHeight / 3 + 100), sf::Vector2f(130, 50), sf::Color::Transparent);
-	Textbox endBox("", defaultCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 4 + 170, windowHeight / 3 + 100), sf::Vector2f(410, 50), sf::Color::White);
+	Textbox endText("End year:", defaultMediumCharSize, sf::Color::White, sf::Vector2f(windowWidth / 4 + 20, windowHeight / 3 + 100), sf::Vector2f(130, 50), sf::Color::Transparent);
+	Textbox endBox("", defaultMediumCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 4 + 170, windowHeight / 3 + 100), sf::Vector2f(410, 50), sf::Color::White);
 	Input_Textbox endInputBox(endBox, 20, sf::Color::Blue);
 	endInputBoxP = &endInputBox;
 
 
-	Textbox enterBox("ENTER", defaultCharSize, sf::Color::White, sf::Vector2f(windowWidth / 2 - 65, windowHeight / 3 + 220), sf::Vector2f(130, 50), sf::Color::Blue);
+	Textbox enterBox("ENTER", defaultMediumCharSize, sf::Color::White, sf::Vector2f(windowWidth / 2 - 65, windowHeight / 3 + 220), sf::Vector2f(130, 50), sf::Color::Blue);
 	Button_Textbox enterButton(enterBox, sf::Color::White);
 
 	Interaction interaction;
@@ -72,7 +72,7 @@ static void create_new_year(int dummy)
 
 
 	interaction.add_button(enterButton, create_new_year_function);
-	while (windowP->isOpen() && app->year() == NULL)
+	while (windowP->isOpen() && app->year() == nullptr)
 	{
 		windowP->clear(sf::Color::White);
 		mainBackground.draw(*windowP, app->default_font);
@@ -92,38 +92,40 @@ void scene1(sf::RenderWindow& window, App& _app)
 	windowP = &window;
 	app = &_app;
 	Interaction interaction, interaction2;
-	Textbox currentYearText("Current year", defaultCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 2 - 100, windowHeight / 2 - 100), sf::Vector2f(200, 50), sf::Color::Transparent);
-	Textbox currentYear("", defaultCharSize, sf::Color::White, sf::Vector2f(windowWidth / 2 - 100, windowHeight / 2 - 25), sf::Vector2f(200, 50), sf::Color::Black);
+	Textbox currentYearText("Current year", defaultMediumCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 2 - 100, windowHeight / 2 - 100), sf::Vector2f(200, 50), sf::Color::Transparent);
+	Textbox currentYear("", defaultMediumCharSize, sf::Color::White, sf::Vector2f(windowWidth / 2 - 100, windowHeight / 2 - 25), sf::Vector2f(200, 50), sf::Color::Black);
 	Button_Textbox currentYearButton(currentYear, sf::Color::Blue);
 	currentYearButtonP = &currentYearButton;
 
-	Textbox noCurrentYearText("No current year!", defaultCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 2 - 100, windowHeight / 2 - 100), sf::Vector2f(200, 50), sf::Color::Transparent);
-	Textbox createYearBox("Create new year", defaultCharSize, sf::Color::White, sf::Vector2f(windowWidth / 2 - 100, windowHeight / 2 - 25), sf::Vector2f(200, 50), sf::Color::Black);
+	Textbox noCurrentYearText("No current year!", defaultMediumCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 2 - 100, windowHeight / 2 - 100), sf::Vector2f(200, 50), sf::Color::Transparent);
+	Textbox createYearBox("Create new year", defaultMediumCharSize, sf::Color::White, sf::Vector2f(windowWidth / 2 - 100, windowHeight / 2 - 25), sf::Vector2f(200, 50), sf::Color::Black);
 	Button_Textbox createYearButton(createYearBox, sf::Color::Blue);
 	interaction2.add_button(createYearButton, create_new_year);
 
 
 	sf::Texture texture;
-	texture.loadFromFile("assets/images/GoBack.png");
+	texture.loadFromFile("assets/images/go_back.png");
 	Button_Sprite back_button = Button_Sprite(texture, sf::Vector2f(10, 5), sf::Vector2f(40, 40));
 	interaction.add_button(back_button, go_back);
 	interactionP = &interaction;
 
-	if (app->year() != NULL)
+	if (app->year() != nullptr)
 	{
 		currentYearButton.textbox.set_text(to_string(app->year()->start_year) + "-" + to_string(app->year()->end_year));
 		interaction.add_button(currentYearButton, go_to_scene2);
 	}
 	
-	while (window.isOpen() && app->scenes.top() == 1)
+	while (window.isOpen() && app->scenes.top() == SceneType::Scene1)
 	{
-		if (app->year() != NULL)
+		if (app->year() != nullptr)
 		{
 			window.clear(sf::Color::White);
 			currentYearText.draw(window, app->default_font);
 			interaction.draw(window, app->default_font);
 			window.display();
-			interaction.interact(window);
+
+            auto event = interaction.interact(window);
+            app->scenes.interact(event);
 		}
 		else
 		{
@@ -131,7 +133,9 @@ void scene1(sf::RenderWindow& window, App& _app)
 			noCurrentYearText.draw(window, app->default_font);
 			interaction2.draw(window, app->default_font);
 			window.display();
-			interaction2.interact(window);
+
+            auto event = interaction2.interact(window);
+            app->scenes.interact(event);
 		}
 		
 	}
