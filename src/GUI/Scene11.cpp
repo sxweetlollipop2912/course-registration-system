@@ -210,7 +210,7 @@ void scene11(sf::RenderWindow& window, App &_app) {
 		interaction.add_button_list(status_column);
 
 		data_change = false;
-		while (window.isOpen() && app->scenes.top() == SceneType::Scene11 && !data_change) {
+		while (window.isOpen() && !app->scenes.empty() && app->scenes.top() == SceneType::Scene11 && !data_change) {
 			window.clear(sf::Color::White);
 
 			headers.for_each([&](Textbox& textbox) {
@@ -223,7 +223,9 @@ void scene11(sf::RenderWindow& window, App &_app) {
 
 			interaction.draw(window, app->default_font);
 			window.display();
-			interaction.interact(window);
+
+            auto event = interaction.interact(window);
+            app->scenes.interact(event);
 		}
 	}
 }

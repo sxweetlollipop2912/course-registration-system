@@ -136,9 +136,6 @@ public:
 
 	void add_button(const T& button);
 	void draw(sf::RenderWindow& window, sf::Font& font);
-    void add_trigger(const std::function<void(int)>& trigger) {
-        this->trigger = trigger;
-    }
 	void draw(sf::RenderWindow& window);
 	void update_hover(const int& x, const int& y);
 	void update_trigger(const int& x, const int& y);

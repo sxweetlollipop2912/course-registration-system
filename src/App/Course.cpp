@@ -1,4 +1,5 @@
 #include <iostream>
+#include <sstream>
 
 #include "Course.h"
 #include "Account.h"
@@ -67,6 +68,48 @@ bool Course::removeStudent(const string &student_id) {
     return false;
 }
 
+Course::Session::Session(const string &s) {
+    try {
+        std::stringstream ss(s);
+        string wday;
+        ss >> wday;
+
+        string session;
+        ss >> session;
+
+        string wday_s[] = { "sun", "mon", "tue", "wed", "thu", "fri", "sat" };
+        Utils::toLowerStr(wday);
+        int i;
+        for (i = 0; i < 7 && wday != wday_s[i]; i++);
+
+        if (i == 7) {
+            start = end = tm{};
+            return;
+        }
+
+        Utils::toLowerStr(session);
+        if (session == "s1") {
+            start = Utils::mksession(i + 1, 7, 30);
+            end = Utils::mksession(i + 1, 9, 10);
+        }
+        else if (session == "s2") {
+            start = Utils::mksession(i + 1, 9, 30);
+            end = Utils::mksession(i + 1, 11, 10);
+        }
+        else if (session == "s3") {
+            start = Utils::mksession(i + 1, 13, 30);
+            end = Utils::mksession(i + 1, 15, 10);
+        }
+        else if (session == "s4") {
+            start = Utils::mksession(i + 1, 15, 30);
+            end = Utils::mksession(i + 1, 17, 10);
+        }
+    }
+    catch (std::exception &e) {
+        std::cerr << e.what() << std::endl;
+    }
+}
+
 bool Course::Session::inRange(const tm &time) const {
     tm tmp = time, tmp_st = start, tmp_en = end;
     return mktime(&tmp_st) < mktime(&tmp) && mktime(&tmp_en) > mktime(&tmp);
@@ -75,6 +118,11 @@ bool Course::Session::inRange(const tm &time) const {
 bool Course::Session::operator==(const Session &s) const {
     tm s_st = s.start, s_en = s.end, tmp_st = start, tmp_en = end;
     return mktime(&s_st) == mktime(&tmp_st) && mktime(&s_en) == mktime(&tmp_en);
+}
+
+bool Course::Session::valid() const {
+    tm tmp_st = start, tmp_en = end;
+    return mktime(&tmp_st) != -1 && mktime(&tmp_en) != -1;
 }
 
 void Course::load(Database &database) {

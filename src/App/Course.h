@@ -30,7 +30,10 @@ public:
         tm start, end;
         Session() = default;
         Session(const tm &start, const tm &end) : start{start}, end{end} {}
+        /// string example: mon s4 (case-insensitive).
+        Session(const string &s);
 
+        bool valid() const;
         bool inRange(const tm &time) const;
         bool operator==(const Session &s) const;
 

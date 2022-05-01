@@ -117,12 +117,12 @@ int main() {
             app.semester()->reg_session.end = Utils::mktm(1, 10, 2022);
 
             /// Create courses
-            for (int i = 0; i < 4; i++) {
+            for (int i = 0; i < 9; i++) {
                 auto course = make_shared<Course>("CS" + to_string(i),
                                                   "Intro to CS",
                                                   FullName("Ten", "Ho"),
-                                                  Course::Session(tm{ 2, 7, 30 }, tm{ 2, 9, 10 }),
-                                                  Course::Session(tm{ 7, 7, 30 }, tm{ 7, 9, 10 }),
+                                                  Course::Session(Utils::mksession(2, 7, 30), Utils::mksession(2, 9, 10)),
+                                                  Course::Session(Utils::mksession(7, 7, 30), Utils::mksession(7, 9, 10)),
                                                   4,
                                                   50);
                 app.addCourse(course);
@@ -155,8 +155,8 @@ int main() {
     /// Add admin account ("admin", "admin").
     app.addStaff(make_shared<Staff>(ACCOUNT::ADMIN_USERNAME, ACCOUNT::ADMIN_PASS));
 
-    app.login("21280009", ACCOUNT::DEFAULT_PASS);
-    app.scenes.push(SceneType::Scene9);
+    //app.login("21280009", ACCOUNT::DEFAULT_PASS);
+    app.scenes.push(SceneType::Scene0);
 
     while (!app.scenes.empty())
     {

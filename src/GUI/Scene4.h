@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interaction.h";
+#include "Interaction.h"
 #include "../App/Account.h"
 
 using namespace GUI;

@@ -11,7 +11,7 @@ static void go_back()
 
 static void draw_class(sf::Vector2i mousePos)
 {
-	Textbox classBox("", defaultCharSize, sf::Color::White, sf::Vector2f(0, 0), sf::Vector2f(200, 50), sf::Color::Black);
+	Textbox classBox("", defaultMediumCharSize, sf::Color::White, sf::Vector2f(0, 0), sf::Vector2f(200, 50), sf::Color::Black);
 	List<DataIter> classes = app->getAllClasses();
 
 	int cnt = 0;
@@ -32,7 +32,7 @@ static void draw_class(sf::Vector2i mousePos)
 
 static void clickClass(sf::Vector2i mousePos)
 {
-	Textbox classBox("", defaultCharSize, sf::Color::White, sf::Vector2f(0, 0), sf::Vector2f(200, 50), sf::Color::Black);
+	Textbox classBox("", defaultMediumCharSize, sf::Color::White, sf::Vector2f(0, 0), sf::Vector2f(200, 50), sf::Color::Black);
 	List<DataIter> classes = app->getAllClasses();
 
 	int cnt = 0;
@@ -60,15 +60,15 @@ static void create_class_function(int dummy)
 static void create_class()
 {
 	Interaction interaction;
-	Textbox mainBackground("", defaultCharSize, sf::Color::White, sf::Vector2f(windowWidth / 4, windowHeight / 3), sf::Vector2f(windowWidth / 2, windowHeight / 3), sf::Color::Black);
+	Textbox mainBackground("", defaultMediumCharSize, sf::Color::White, sf::Vector2f(windowWidth / 4, windowHeight / 3), sf::Vector2f(windowWidth / 2, windowHeight / 3), sf::Color::Black);
 	mainBackground.set_outline(sf::Color::Blue, 4);
 
-	Textbox classNameText("Class name:", defaultCharSize, sf::Color::White, sf::Vector2f(windowWidth / 4 + 20, windowHeight / 3 + 30), sf::Vector2f(130, 50), sf::Color::Transparent);
-	Textbox classNameBox("", defaultCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 4 + 170, windowHeight / 3 + 30), sf::Vector2f(410, 50), sf::Color::White);
+	Textbox classNameText("Class name:", defaultMediumCharSize, sf::Color::White, sf::Vector2f(windowWidth / 4 + 20, windowHeight / 3 + 30), sf::Vector2f(130, 50), sf::Color::Transparent);
+	Textbox classNameBox("", defaultMediumCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 4 + 170, windowHeight / 3 + 30), sf::Vector2f(410, 50), sf::Color::White);
 	Input_Textbox classNameInputBox(classNameBox, 10, sf::Color::Blue);
 	classNameInputBoxP = &classNameInputBox;
 
-	Textbox enterBox("ENTER", defaultCharSize, sf::Color::White, sf::Vector2f(windowWidth / 2 - 65, windowHeight / 3 + 235), sf::Vector2f(130, 50), sf::Color::Blue);
+	Textbox enterBox("ENTER", defaultMediumCharSize, sf::Color::White, sf::Vector2f(windowWidth / 2 - 65, windowHeight / 3 + 235), sf::Vector2f(130, 50), sf::Color::Blue);
 	Button_Textbox enterButton(enterBox, sf::Color::White);
 
 	interaction.add_input_textbox(classNameInputBox);
@@ -91,13 +91,13 @@ void scene3(sf::RenderWindow& window, App& _app)
 	app = &_app;
 	
 	Textbox classText("Classes", 40, sf::Color::Black, sf::Vector2f(windowWidth / 2 - 100, 200), sf::Vector2f(200, 50), sf::Color::Transparent);
-	Textbox createClassBox("Create class", defaultCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 2 - 100, 200 - 75), sf::Vector2f(200, 50), sf::Color::Green);
+	Textbox createClassBox("Create class", defaultMediumCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 2 - 100, 200 - 75), sf::Vector2f(200, 50), sf::Color::Green);
 
 	sf::Texture texture;
-	texture.loadFromFile("assets/images/GoBack.png");
+	texture.loadFromFile("assets/images/go_back.png");
 	Button_Sprite back_button = Button_Sprite(texture, sf::Vector2f(10, 5), sf::Vector2f(40, 40));
 
-	while (window.isOpen() && app->scenes.top() == 3)
+	while (window.isOpen() && app->scenes.top() == SceneType::Scene3)
 	{
 		sf::Event event;
 		sf::Vector2i mousePos = Mouse::getPosition(window);
@@ -105,8 +105,11 @@ void scene3(sf::RenderWindow& window, App& _app)
 		while (window.pollEvent(event))
 		{
 			// "close requested" event: we close the window
-			if (event.type == sf::Event::Closed)
-				window.close();
+            if (event.type == sf::Event::Closed)
+            {
+                window.close();
+                app->scenes.clear();
+            }
 			if (event.type == sf::Event::MouseButtonPressed)
 			{
 				if (event.mouseButton.button == sf::Mouse::Left)

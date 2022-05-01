@@ -1,4 +1,4 @@
-#include "scene4.h"
+#include "Scene4.h"
 
 static App* app;
 static sf::RenderWindow* windowP;
@@ -26,8 +26,8 @@ static int to_int(string s)
 
 static void draw_student(DataIter& cl)
 {
-	Textbox studentBox("", defaultCharSize, sf::Color::White, sf::Vector2f(0, 0), sf::Vector2f(350, 50), sf::Color::Black);
-	Textbox studentIdBox("", defaultCharSize, sf::Color::White, sf::Vector2f(0, 0), sf::Vector2f(150, 50), sf::Color::Black);
+	Textbox studentBox("", defaultMediumCharSize, sf::Color::White, sf::Vector2f(0, 0), sf::Vector2f(350, 50), sf::Color::Black);
+	Textbox studentIdBox("", defaultMediumCharSize, sf::Color::White, sf::Vector2f(0, 0), sf::Vector2f(150, 50), sf::Color::Black);
 
 
 	auto ptrTmp = cl.ptr<Class>();
@@ -71,38 +71,38 @@ static void add_student_function(int dummy)
 static void add_student()
 {
 	Interaction interaction;
-	Textbox mainBackground("", defaultCharSize, sf::Color::White, sf::Vector2f(windowWidth / 2 - 300, windowHeight / 2 - 350), sf::Vector2f(600, 600), sf::Color::Black);
+	Textbox mainBackground("", defaultMediumCharSize, sf::Color::White, sf::Vector2f(windowWidth / 2 - 300, windowHeight / 2 - 350), sf::Vector2f(600, 600), sf::Color::Black);
 	mainBackground.set_outline(sf::Color::Blue, 4);
 
-	Textbox firstNameText("First name:", defaultCharSize, sf::Color::White, sf::Vector2f(windowWidth / 4 + 20, 125), sf::Vector2f(130, 50), sf::Color::Transparent);
-	Textbox firstNameBox("", defaultCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 4 + 170, 125), sf::Vector2f(410, 50), sf::Color::White);
+	Textbox firstNameText("First name:", defaultMediumCharSize, sf::Color::White, sf::Vector2f(windowWidth / 4 + 20, 125), sf::Vector2f(130, 50), sf::Color::Transparent);
+	Textbox firstNameBox("", defaultMediumCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 4 + 170, 125), sf::Vector2f(410, 50), sf::Color::White);
 	Input_Textbox firstNameInputBox(firstNameBox, 25, sf::Color::Blue);
 	interaction.add_input_textbox(firstNameInputBox);
 
-	Textbox lastNameText("Last name:", defaultCharSize, sf::Color::White, sf::Vector2f(windowWidth / 4 + 20, 200), sf::Vector2f(130, 50), sf::Color::Transparent);
-	Textbox lastNameBox("", defaultCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 4 + 170, 200), sf::Vector2f(410, 50), sf::Color::White);
+	Textbox lastNameText("Last name:", defaultMediumCharSize, sf::Color::White, sf::Vector2f(windowWidth / 4 + 20, 200), sf::Vector2f(130, 50), sf::Color::Transparent);
+	Textbox lastNameBox("", defaultMediumCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 4 + 170, 200), sf::Vector2f(410, 50), sf::Color::White);
 	Input_Textbox lastNameInputBox(lastNameBox, 25, sf::Color::Blue);
 	interaction.add_input_textbox(lastNameInputBox);
 
-	Textbox studenIdText("Student id:", defaultCharSize, sf::Color::White, sf::Vector2f(windowWidth / 4 + 20, 275), sf::Vector2f(130, 50), sf::Color::Transparent);
-	Textbox studenIdBox("", defaultCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 4 + 170, 275), sf::Vector2f(410, 50), sf::Color::White);
+	Textbox studenIdText("Student id:", defaultMediumCharSize, sf::Color::White, sf::Vector2f(windowWidth / 4 + 20, 275), sf::Vector2f(130, 50), sf::Color::Transparent);
+	Textbox studenIdBox("", defaultMediumCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 4 + 170, 275), sf::Vector2f(410, 50), sf::Color::White);
 	Input_Textbox studenIdInputBox(studenIdBox, 25, sf::Color::Blue);
 	interaction.add_input_textbox(studenIdInputBox);
 
-	Textbox socialIdText("Social id:", defaultCharSize, sf::Color::White, sf::Vector2f(windowWidth / 4 + 20, 350), sf::Vector2f(130, 50), sf::Color::Transparent);
-	Textbox socialIdBox("", defaultCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 4 + 170, 350), sf::Vector2f(410, 50), sf::Color::White);
+	Textbox socialIdText("Social id:", defaultMediumCharSize, sf::Color::White, sf::Vector2f(windowWidth / 4 + 20, 350), sf::Vector2f(130, 50), sf::Color::Transparent);
+	Textbox socialIdBox("", defaultMediumCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 4 + 170, 350), sf::Vector2f(410, 50), sf::Color::White);
 	Input_Textbox socialIdInputBox(socialIdBox, 25, sf::Color::Blue);
 	interaction.add_input_textbox(socialIdInputBox);
 
-	Textbox genderText("Gender:", defaultCharSize, sf::Color::White, sf::Vector2f(windowWidth / 4 + 20, 425), sf::Vector2f(130, 50), sf::Color::Transparent);
-	Textbox genderIdBox("", defaultCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 4 + 170, 425), sf::Vector2f(410, 50), sf::Color::White);
+	Textbox genderText("Gender:", defaultMediumCharSize, sf::Color::White, sf::Vector2f(windowWidth / 4 + 20, 425), sf::Vector2f(130, 50), sf::Color::Transparent);
+	Textbox genderIdBox("", defaultMediumCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 4 + 170, 425), sf::Vector2f(410, 50), sf::Color::White);
 	Input_Textbox genderIdInputBox(genderIdBox, 25, sf::Color::Blue);
 	interaction.add_input_textbox(genderIdInputBox);
 
-	Textbox birthText("Date of birth:", defaultCharSize, sf::Color::White, sf::Vector2f(windowWidth / 4 + 20, 500), sf::Vector2f(130, 50), sf::Color::Transparent);
-	Textbox dayBox("", defaultCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 3 + 80, 500), sf::Vector2f(100, 50), sf::Color::White);
-	Textbox monthBox("", defaultCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 3 + 230, 500), sf::Vector2f(100, 50), sf::Color::White);
-	Textbox yearBox("", defaultCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 3 + 380, 500), sf::Vector2f(100, 50), sf::Color::White);
+	Textbox birthText("Date of birth:", defaultMediumCharSize, sf::Color::White, sf::Vector2f(windowWidth / 4 + 20, 500), sf::Vector2f(130, 50), sf::Color::Transparent);
+	Textbox dayBox("", defaultMediumCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 3 + 80, 500), sf::Vector2f(100, 50), sf::Color::White);
+	Textbox monthBox("", defaultMediumCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 3 + 230, 500), sf::Vector2f(100, 50), sf::Color::White);
+	Textbox yearBox("", defaultMediumCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 3 + 380, 500), sf::Vector2f(100, 50), sf::Color::White);
 	Input_Textbox dayInputBox(dayBox, 2, sf::Color::Blue);
 	Input_Textbox monthInputBox(monthBox, 2, sf::Color::Blue);
 	Input_Textbox yearInputBox(yearBox, 4, sf::Color::Blue);
@@ -120,7 +120,7 @@ static void add_student()
 	monthInputBoxP = &monthInputBox;
 	yearInputBoxP = &yearInputBox;
 
-	Textbox enterBox("ENTER", defaultCharSize, sf::Color::White, sf::Vector2f(windowWidth / 2 - 65, windowHeight / 2 + 150), sf::Vector2f(130, 50), sf::Color::Blue);
+	Textbox enterBox("ENTER", defaultMediumCharSize, sf::Color::White, sf::Vector2f(windowWidth / 2 - 65, windowHeight / 2 + 150), sf::Vector2f(130, 50), sf::Color::Blue);
 	Button_Textbox enterButton(enterBox, sf::Color::White);
 	interaction.add_button(enterButton, add_student_function);
 	inCreate = true;
@@ -152,15 +152,15 @@ static void import_student_function(int dummy)
 static void import_student()
 {
 	Interaction interaction;
-	Textbox mainBackground("", defaultCharSize, sf::Color::White, sf::Vector2f(windowWidth / 2 - 300, windowHeight / 2 - 250), sf::Vector2f(600, 300), sf::Color::Black);
+	Textbox mainBackground("", defaultMediumCharSize, sf::Color::White, sf::Vector2f(windowWidth / 2 - 300, windowHeight / 2 - 250), sf::Vector2f(600, 300), sf::Color::Black);
 	mainBackground.set_outline(sf::Color::Blue, 4);
 
-	Textbox studenIdText("file Name:", defaultCharSize, sf::Color::White, sf::Vector2f(windowWidth / 4 + 20, 275), sf::Vector2f(130, 50), sf::Color::Transparent);
-	Textbox studenIdBox("", defaultCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 4 + 170, 275), sf::Vector2f(410, 50), sf::Color::White);
+	Textbox studenIdText("file Name:", defaultMediumCharSize, sf::Color::White, sf::Vector2f(windowWidth / 4 + 20, 275), sf::Vector2f(130, 50), sf::Color::Transparent);
+	Textbox studenIdBox("", defaultMediumCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 4 + 170, 275), sf::Vector2f(410, 50), sf::Color::White);
 	Input_Textbox studenIdInputBox(studenIdBox, 25, sf::Color::Blue);
 	interaction.add_input_textbox(studenIdInputBox);
 
-	Textbox enterBox("ENTER", defaultCharSize, sf::Color::White, sf::Vector2f(windowWidth / 2 - 65, windowHeight / 2 - 50), sf::Vector2f(130, 50), sf::Color::Blue);
+	Textbox enterBox("ENTER", defaultMediumCharSize, sf::Color::White, sf::Vector2f(windowWidth / 2 - 65, windowHeight / 2 - 50), sf::Vector2f(130, 50), sf::Color::Blue);
 	Button_Textbox enterButton(enterBox, sf::Color::White);
 	interaction.add_button(enterButton, import_student_function);
 
@@ -190,15 +190,15 @@ static void revome_student_function(int dummy)
 static void revome_student()
 {
 	Interaction interaction;
-	Textbox mainBackground("", defaultCharSize, sf::Color::White, sf::Vector2f(windowWidth / 2 - 300, windowHeight / 2 - 250), sf::Vector2f(600, 300), sf::Color::Black);
+	Textbox mainBackground("", defaultMediumCharSize, sf::Color::White, sf::Vector2f(windowWidth / 2 - 300, windowHeight / 2 - 250), sf::Vector2f(600, 300), sf::Color::Black);
 	mainBackground.set_outline(sf::Color::Blue, 4);
 
-	Textbox studenIdText("Student id:", defaultCharSize, sf::Color::White, sf::Vector2f(windowWidth / 4 + 20, 275), sf::Vector2f(130, 50), sf::Color::Transparent);
-	Textbox studenIdBox("", defaultCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 4 + 170, 275), sf::Vector2f(410, 50), sf::Color::White);
+	Textbox studenIdText("Student id:", defaultMediumCharSize, sf::Color::White, sf::Vector2f(windowWidth / 4 + 20, 275), sf::Vector2f(130, 50), sf::Color::Transparent);
+	Textbox studenIdBox("", defaultMediumCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 4 + 170, 275), sf::Vector2f(410, 50), sf::Color::White);
 	Input_Textbox studenIdInputBox(studenIdBox, 25, sf::Color::Blue);
 	interaction.add_input_textbox(studenIdInputBox);
 
-	Textbox enterBox("ENTER", defaultCharSize, sf::Color::White, sf::Vector2f(windowWidth / 2 - 65, windowHeight / 2 - 50), sf::Vector2f(130, 50), sf::Color::Blue);
+	Textbox enterBox("ENTER", defaultMediumCharSize, sf::Color::White, sf::Vector2f(windowWidth / 2 - 65, windowHeight / 2 - 50), sf::Vector2f(130, 50), sf::Color::Blue);
 	Button_Textbox enterButton(enterBox, sf::Color::White);
 	interaction.add_button(enterButton, revome_student_function);
 
@@ -231,14 +231,14 @@ void scene4(sf::RenderWindow& window, App& _app, DataIter &cl)
 	Textbox headText("Student list", 40, sf::Color::Black, sf::Vector2f(windowWidth / 3 - 200, 100), sf::Vector2f(200, 50), sf::Color::Transparent);
 	Textbox headText2("Functions", 40, sf::Color::Black, sf::Vector2f(windowWidth / 3 * 2, 100), sf::Vector2f(200, 50), sf::Color::Transparent);
 
-	Textbox addStudentButton("Add student", defaultCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 3 * 2 - 50, 100 + 75), sf::Vector2f(300, 50), sf::Color::Green);
-	Textbox importStudentButton("Import student", defaultCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 3 * 2 - 50, 100 + 150), sf::Vector2f(300, 50), sf::Color::Green);
-	Textbox removeStudentButton("Remove student by id", defaultCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 3 * 2 - 50, 100 + 225), sf::Vector2f(300, 50), sf::Color::Green);
-	Textbox viewScoreButton("View score board", defaultCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 3 * 2 - 50, 100 + 300), sf::Vector2f(300, 50), sf::Color::Green);
-	Textbox removeClassButton("Remove this class", defaultCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 3 * 2 - 50, 100 + 375), sf::Vector2f(300, 50), sf::Color::Red);
+	Textbox addStudentButton("Add student", defaultMediumCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 3 * 2 - 50, 100 + 75), sf::Vector2f(300, 50), sf::Color::Green);
+	Textbox importStudentButton("Import student", defaultMediumCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 3 * 2 - 50, 100 + 150), sf::Vector2f(300, 50), sf::Color::Green);
+	Textbox removeStudentButton("Remove student by id", defaultMediumCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 3 * 2 - 50, 100 + 225), sf::Vector2f(300, 50), sf::Color::Green);
+	Textbox viewScoreButton("View score board", defaultMediumCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 3 * 2 - 50, 100 + 300), sf::Vector2f(300, 50), sf::Color::Green);
+	Textbox removeClassButton("Remove this class", defaultMediumCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 3 * 2 - 50, 100 + 375), sf::Vector2f(300, 50), sf::Color::Red);
 
 	sf::Texture texture;
-	texture.loadFromFile("assets/images/GoBack.png");
+	texture.loadFromFile("assets/images/go_back.png");
 	Button_Sprite back_button = Button_Sprite(texture, sf::Vector2f(10, 5), sf::Vector2f(40, 40));
 	
 	while (window.isOpen())
@@ -248,8 +248,11 @@ void scene4(sf::RenderWindow& window, App& _app, DataIter &cl)
 		while (window.pollEvent(event))
 		{
 			// "close requested" event: we close the window
-			if (event.type == sf::Event::Closed)
-				window.close();
+            if (event.type == sf::Event::Closed)
+            {
+                window.close();
+                app->scenes.clear();
+            }
 			if (event.type == sf::Event::MouseButtonPressed)
 			{
 				if (event.mouseButton.button == sf::Mouse::Left)
