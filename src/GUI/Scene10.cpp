@@ -66,7 +66,7 @@ void scene10(sf::RenderWindow& window, App &_app) {
 	int num_row = 0;
 	List<Textbox> page;
 	List<List<Textbox>> pages;
-	scores.for_each([&](const auto& score) {
+	scores.for_each([&](const std::shared_ptr<Score>& score) {
 		++num_row;
 		if (num_row > page_size) {
 			num_row -= page_size;
@@ -74,7 +74,7 @@ void scene10(sf::RenderWindow& window, App &_app) {
 			page.clear();
 		}
 
-		auto course = score->course.template ptr<Course>();
+		auto course = score->course.ptr<Course>();
 
 		Textbox id(course->id, 16, sf::Color::Black, sf::Vector2f(80, 100 + num_row * 50),
 			sf::Vector2f(150, 50), sf::Color::White);

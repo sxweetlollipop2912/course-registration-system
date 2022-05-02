@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #include <SFML/Graphics.hpp>
 #include "../App/List.h"
 #include "../Constants.h"
@@ -71,6 +73,7 @@ public:
 	Input_Textbox(const Textbox& _textbox, const int& _length_limit, const sf::Color& selected_outline_color,
 		const float& selected_outline_thickness = -2) {
 		textbox = _textbox;
+        text = textbox.text.getString();
 		set_selected_outline(selected_outline_color, selected_outline_thickness);
 		length_limit = _length_limit;
 	}

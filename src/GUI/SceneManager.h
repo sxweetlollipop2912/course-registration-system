@@ -19,7 +19,8 @@ enum class SceneType {
     Scene10,
     Scene11,
     SceneModifyReg,
-    SceneAddCourse
+    SceneAddCourse,
+    SceneModifyCourse
 };
 
 class SceneManager {

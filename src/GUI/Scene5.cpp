@@ -29,7 +29,7 @@ static void go_to_scene7(int dummy) {
     app->scenes.arg = app->semester()->courses[dummy];
     std::cout << "move to scene 7: " << dummy << '\n';
 
-    //app->scenes.push(SceneType::Scene7);
+    app->scenes.push(SceneType::Scene7);
 }
 
 static void export_students(int dummy) {
@@ -91,7 +91,9 @@ static void add_course(int dummy) {
 
         if (course->sessions.all_of([](const Course::Session &s) {
             return s.valid();
-        })) {
+        }) &&
+        credits >= 0 &&
+        max_students >= 0) {
             app->addCourse(course);
 
             go_back(0);
@@ -413,10 +415,12 @@ static void next(int dummy) {
 void scene5(sf::RenderWindow& _window, App &_app) {
     app = &_app;
     window = &_window;
+    auto current_scene = SceneType::Scene5;
 
     auto year = app->year();
     auto semester = app->semester();
 
+    semester->sortCourse();
     auto courses = semester->courses;
 
     float current_y = 80;
@@ -550,8 +554,8 @@ void scene5(sf::RenderWindow& _window, App &_app) {
     Textbox slot_header("Slot", GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(950, current_y), sf::Vector2f(100, 50), sf::Color::White);
     slot_header.set_outline(sf::Color::Black);
 
-    Textbox status_header("Status", GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(1050, current_y), sf::Vector2f(150, 50), sf::Color::White);
-    status_header.set_outline(sf::Color::Black);
+    Textbox action_header("Action", GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(1050, current_y), sf::Vector2f(150, 50), sf::Color::White);
+    action_header.set_outline(sf::Color::Black);
 
     current_y += 50;
 
@@ -561,7 +565,7 @@ void scene5(sf::RenderWindow& _window, App &_app) {
     texts.push_back(sessions_header);
     texts.push_back(teacher_header);
     texts.push_back(slot_header);
-    texts.push_back(status_header);
+    texts.push_back(action_header);
 
 
     Interaction interaction;
@@ -575,8 +579,8 @@ void scene5(sf::RenderWindow& _window, App &_app) {
 
 
     if (n > 0) {
-        pages[num_page].for_each([&](const auto& Iter) {
-            auto course = Iter.template ptr<Course>();
+        pages[num_page].for_each([&](const DataIter& Iter) {
+            auto course = Iter.ptr<Course>();
 
             Textbox course_id(course->id, GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(0, current_y), sf::Vector2f(100, 100), sf::Color::White);
             course_id.set_outline(sf::Color::Black);
@@ -657,7 +661,7 @@ void scene5(sf::RenderWindow& _window, App &_app) {
     interaction.add_button_list(details_col);
 
 
-    while (window->isOpen() && !app->scenes.empty() && app->scenes.top() == SceneType::Scene5 && !app->scenes.refresh) {
+    while (window->isOpen() && !app->scenes.empty() && app->scenes.top() == current_scene && !app->scenes.refresh) {
         window->clear(sf::Color::White);
 
         texts.for_each([&](Textbox& textbox) {
@@ -668,5 +672,6 @@ void scene5(sf::RenderWindow& _window, App &_app) {
         window->display();
 
         auto event = interaction.interact(*window);
+        app->scenes.interact(event);
     }
 }

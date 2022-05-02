@@ -35,6 +35,7 @@ public:
 
         bool valid() const;
         bool inRange(const tm &time) const;
+        string toStr() const;
         bool operator==(const Session &s) const;
 
         friend std::ostream& operator<<(std::ostream &os, const Session &obj) {

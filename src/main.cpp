@@ -9,7 +9,6 @@
 #include "App/Account.h"
 #include "App/Class.h"
 #include "App/App.h"
-#include "App/List.h"
 #include "App/Utils.h"
 #include "App/CSV.h"
 #include "GUI/Scene0.h"
@@ -20,6 +19,7 @@
 #include "GUI/Scene3.h"
 #include "GUI/Scene10.h"
 #include "GUI/Scene11.h"
+#include "GUI/Scene7.h"
 #include "GUI/SceneManager.h"
 
 
@@ -117,7 +117,7 @@ int main() {
             app.semester()->reg_session.end = Utils::mktm(1, 10, 2022);
 
             /// Create courses
-            for (int i = 0; i < 9; i++) {
+            for (int i = 8; i >= 0; i--) {
                 auto course = make_shared<Course>("CS" + to_string(i),
                                                   "Intro to CS",
                                                   FullName("Ten", "Ho"),
@@ -146,6 +146,17 @@ int main() {
                 csvData = CSVIO::tryParse("./csv/CS4.csv");
                 app.addScores(csvData, app.semester()->getCourse("CS4"));
             }
+
+            app.enroll(app.getStudent("21280009"), "CS0");
+            app.enroll(app.getStudent("21280001"), "CS0");
+            app.enroll(app.getStudent("21280012"), "CS0");
+            app.enroll(app.getStudent("21280007"), "CS0");
+            app.enroll(app.getStudent("21280011"), "CS0");
+            app.enroll(app.getStudent("21280004"), "CS0");
+            app.enroll(app.getStudent("21280010"), "CS0");
+            app.enroll(app.getStudent("21280006"), "CS0");
+            app.enroll(app.getStudent("21280008"), "CS0");
+            app.enroll(app.getStudent("21280003"), "CS0");
         }
 
         output(app);
@@ -156,7 +167,7 @@ int main() {
     app.addStaff(make_shared<Staff>(ACCOUNT::ADMIN_USERNAME, ACCOUNT::ADMIN_PASS));
 
     //app.login("21280009", ACCOUNT::DEFAULT_PASS);
-    app.scenes.push(SceneType::Scene0);
+    app.scenes.push(SceneType::Scene5);
 
     while (!app.scenes.empty())
     {
@@ -183,6 +194,10 @@ int main() {
         {
             scene5(window, app);
         }
+        if (sceneNow == SceneType::Scene7)
+        {
+            scene7(window, app);
+        }
         if (sceneNow == SceneType::Scene9)
         {
             scene9(window, app);
@@ -202,6 +217,10 @@ int main() {
         if (sceneNow == SceneType::SceneAddCourse)
         {
             add_course_scene(window, app);
+        }
+        if (sceneNow == SceneType::SceneModifyCourse)
+        {
+            modify_course_scene(window, app);
         }
     }
 
