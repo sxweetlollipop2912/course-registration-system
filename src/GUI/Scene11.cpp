@@ -32,6 +32,7 @@ void scene11(sf::RenderWindow &window, App &_app) {
     app = &_app;
     auto student = app->user_iter.ptr<Student>();
     auto semester = app->default_semester_iter.ptr<Semester>();
+    semester->sortCourse();
 
     bool enrollable = semester->reg_session.isOngoing();
     auto courses = student->getCoursesInSemester(app->default_semester_iter.uid());

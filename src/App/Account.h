@@ -197,6 +197,8 @@ public:
     /// Returns nullptr if:\n
     /// > Student hasn't enrolled in the course.
     shared_ptr<const Score> getScore(const string &course_id) const;
+
+    void sortCourseByID();
 };
 
 

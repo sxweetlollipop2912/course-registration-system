@@ -171,3 +171,15 @@ void Student::load(Database &database) {
         e->course = database.get(e->course.uid());
     }
 }
+
+void Student::sortCourseByID() {
+    courses.sort([](const DataIter &ref1, const DataIter &ref2) {
+        auto id1 = ref1.ptr<Course>()->id;
+        auto id2 = ref2.ptr<Course>()->id;
+        return id1 < id2;
+    });
+
+    scores.sort([](const shared_ptr<Score> &s1, const shared_ptr<Score> &s2) {
+        return s1->course.ptr<Course>()->id < s2->course.ptr<Course>()->id;
+    });
+}

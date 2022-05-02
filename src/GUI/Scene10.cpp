@@ -27,6 +27,7 @@ static void next(int dummy) {
 void scene10(sf::RenderWindow &window, App &_app) {
     app = &_app;
     auto student = app->user_iter.ptr<Student>();
+    student->sortCourseByID();
 
     Textbox course_id("Course ID", 16, sf::Color::Black, sf::Vector2f(80, 100), sf::Vector2f(150, 50),
                       sf::Color::White);
@@ -96,23 +97,23 @@ void scene10(sf::RenderWindow &window, App &_app) {
         credits_cnt.set_outline(sf::Color::Black);
 
 
-        Textbox midterm_score(double_to_string(score->midterm), 16, sf::Color::Black,
+        Textbox midterm_score((score->valid()? double_to_string(score->midterm) : "X"), 16, sf::Color::Black,
                               sf::Vector2f(730, 100 + num_row * 50),
                               sf::Vector2f(100, 50), sf::Color::White);
         midterm_score.set_outline(sf::Color::Black);
 
 
-        Textbox other_score(double_to_string(score->other), 16, sf::Color::Black, sf::Vector2f(830, 100 + num_row * 50),
+        Textbox other_score((score->valid()? double_to_string(score->other) : "X"), 16, sf::Color::Black, sf::Vector2f(830, 100 + num_row * 50),
                             sf::Vector2f(100, 50), sf::Color::White);
         other_score.set_outline(sf::Color::Black);
 
 
-        Textbox final_score(double_to_string(score->final), 16, sf::Color::Black, sf::Vector2f(930, 100 + num_row * 50),
+        Textbox final_score((score->valid()? double_to_string(score->final) : "X"), 16, sf::Color::Black, sf::Vector2f(930, 100 + num_row * 50),
                             sf::Vector2f(100, 50), sf::Color::White);
         final_score.set_outline(sf::Color::Black);
 
 
-        Textbox total_score(double_to_string(score->total), 16, sf::Color::Black,
+        Textbox total_score((score->valid()? double_to_string(score->total) : "X"), 16, sf::Color::Black,
                             sf::Vector2f(1030, 100 + num_row * 50),
                             sf::Vector2f(100, 50), sf::Color::White);
         total_score.set_outline(sf::Color::Black);
@@ -127,14 +128,17 @@ void scene10(sf::RenderWindow &window, App &_app) {
         page.push_back(total_score);
 
         total_credit += course->credits;
-        GPA += score->total;
+        if (!score->valid())
+            GPA = -1;
+        if (GPA != -1)
+            GPA += score->total;
     });
     pages.push_back(page);
     num_page = 0;
     page_cnt = (n - 1) / page_size + 1;
 
-    std::string GPA_string;
-    if (n > 0) {
+    std::string GPA_string = "X";
+    if (GPA != -1 && n > 0) {
         GPA /= n;
         GPA_string = double_to_string(GPA);
     }
