@@ -115,8 +115,8 @@ void scene11(sf::RenderWindow& window, App &_app) {
 
 		if (n > 0) {
 			int current_y = 150;
-			pages[num_page].for_each([&](const auto& Iter) {
-				auto course = Iter.template ptr<Course>();
+			pages[num_page].for_each([&](const DataIter& Iter) {
+				auto course = Iter.ptr<Course>();
 
 				Textbox course_id(course->id, 16, sf::Color::Black, sf::Vector2f(0, current_y), sf::Vector2f(100, 100), sf::Color::White);
 				course_id.set_outline(sf::Color::Black);
@@ -186,10 +186,10 @@ void scene11(sf::RenderWindow& window, App &_app) {
 						if (!OverlappingCourses.empty()) {
 							conflict_message = "Conflict with: ";
 							int i = 0;
-							OverlappingCourses.for_each([&](const auto& Iter) {
+							OverlappingCourses.for_each([&](const DataIter& Iter) {
 								if (i)
 									conflict_message += ", ";
-								conflict_message += Iter.template ptr<Course>()->id;
+								conflict_message += Iter.ptr<Course>()->id;
 								i++;
 							});
 						}

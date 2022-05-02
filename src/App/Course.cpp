@@ -107,6 +107,8 @@ Course::Session::Session(const string &s) {
     }
     catch (std::exception &e) {
         std::cerr << e.what() << std::endl;
+
+        start = end = tm{};
     }
 }
 
@@ -125,9 +127,43 @@ bool Course::Session::valid() const {
     return mktime(&tmp_st) != -1 && mktime(&tmp_en) != -1;
 }
 
+string Course::Session::toStr() const {
+    if (!valid()) return {};
+
+    try {
+        string s;
+        tm tmp_st = start, tmp_en = end;
+        mktime(&tmp_st);
+        mktime(&tmp_en);
+
+        string wday_s[] = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
+        s += wday_s[tmp_st.tm_mday - 1] + " ";
+
+        if (tmp_st.tm_hour == 7)
+            s += "S1";
+        else if (tmp_st.tm_hour == 9)
+            s += "S2";
+        else if (tmp_st.tm_hour == 13)
+            s += "S3";
+        else if (tmp_st.tm_hour == 15)
+            s += "S4";
+
+        return s;
+    }
+    catch (std::exception &e) {
+        std::cerr << e.what() << std::endl;
+
+        return {};
+    }
+}
+
 void Course::load(Database &database) {
     semester = database.get(semester.uid());
 
     for(auto &e : students)
         e = database.get(e.uid());
+}
+
+bool Score::valid() const {
+    return midterm >= 0 && final >= 0 && total >= 0 && other >= 0;
 }

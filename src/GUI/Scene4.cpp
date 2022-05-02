@@ -1,6 +1,8 @@
 #include "Scene4.h"
 
 #include<iostream>
+#include <iomanip>
+
 using namespace std;
 
 static App* app;
@@ -287,7 +289,7 @@ void draw_score(List<DataIter>& students, List<Course>& allCourse, int numPage, 
 					{
 						auto studentPtr = stu.ptr<Student>();
 						auto scorePtr = studentPtr->getScore(cour.uid);
-						if (scorePtr == NULL)
+						if (scorePtr == nullptr || !scorePtr->valid())
 						{
 							courseBox.set_text("X");
 						}
@@ -318,10 +320,16 @@ void draw_score(List<DataIter>& students, List<Course>& allCourse, int numPage, 
 			courses.for_each([&](DataIter& cour)
 				{
 					auto coursePtr = cour.ptr<Course>();
-					sumScore += (studentPtr->getScore(coursePtr->uid)->total) * (double)(coursePtr->credits);
+                    auto score = studentPtr->getScore(coursePtr->uid);
+
+                    if (!score->valid())
+                        sumScore = -1;
+                    if (sumScore != -1)
+					    sumScore += (studentPtr->getScore(coursePtr->uid)->total) * (double)(coursePtr->credits);
+
 					sumCre += coursePtr->credits;
 				});
-			if (sumCre == 0)
+			if (sumScore == -1)
 			{
 				courseBox.set_text("!");
 			}
@@ -351,6 +359,9 @@ static void view_score()
 		});
 	
 	allCourse.unique();
+    allCourse.sort([](const Course &c1, const Course &c2) {
+        return c1.id < c2.id;
+    });
 	
 	sf::Texture texture;
 	texture.loadFromFile("assets/images/go_back.png");
@@ -428,11 +439,11 @@ static void view_score()
 	}
 }
 
-void scene4(sf::RenderWindow& window, App& _app, DataIter &cl)
+void scene4(sf::RenderWindow& window, App& _app)
 {
 	windowP = &window;
 	app = &_app;
-	clP = &cl;
+	clP = &app->scenes.arg;
 
 	Textbox headText("Student list", 40, sf::Color::Black, sf::Vector2f(windowWidth / 3 - 200, 100), sf::Vector2f(200, 50), sf::Color::Transparent);
 	Textbox headText2("Functions", 40, sf::Color::Black, sf::Vector2f(windowWidth / 3 * 2, 100), sf::Vector2f(200, 50), sf::Color::Transparent);
@@ -499,7 +510,7 @@ void scene4(sf::RenderWindow& window, App& _app, DataIter &cl)
 		else back_button.idle = true;
 		back_button.draw(window, app->default_font);
 
-		draw_student(cl);
+		draw_student(*clP);
 		headText.draw(window, app->default_font);
 		headText2.draw(window, app->default_font);
 
