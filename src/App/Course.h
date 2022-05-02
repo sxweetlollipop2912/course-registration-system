@@ -139,12 +139,14 @@ public:
 class Score {
 public:
     DataIter course;
-    double midterm{}, final{}, total{}, other{};
+    double midterm = -1, final = -1, total = -1, other = -1;
 
     Score() = default;
     Score(const DataIter &course): course{course} {}
     Score(const DataIter &course, const double midterm, const double final, const double total, const double other)
             : course{course}, midterm{midterm}, final{final}, total{total}, other{other} {}
+
+    bool valid() const;
 
     friend std::ostream& operator<<(std::ostream &os, const Score &obj) {
         os << obj.course << '\n';

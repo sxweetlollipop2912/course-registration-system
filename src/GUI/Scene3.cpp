@@ -45,7 +45,8 @@ static void clickClass(sf::Vector2i mousePos)
 			if (classBox.inside(mousePos.x, mousePos.y))
 			{
 				//app->scenes.push(4);
-				scene4(*windowP, *app, cl);
+                app->scenes.arg = cl;
+				scene4(*windowP, *app);
 				return;
 			}
 		});

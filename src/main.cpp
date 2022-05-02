@@ -167,7 +167,7 @@ int main() {
     app.addStaff(make_shared<Staff>(ACCOUNT::ADMIN_USERNAME, ACCOUNT::ADMIN_PASS));
 
     //app.login("21280009", ACCOUNT::DEFAULT_PASS);
-    app.scenes.push(SceneType::Scene5);
+    app.scenes.push(SceneType::Scene3);
 
     while (!app.scenes.empty())
     {
@@ -189,6 +189,10 @@ int main() {
         if (sceneNow == SceneType::Scene3)
         {
             scene3(window, app);
+        }
+        if (sceneNow == SceneType::Scene4)
+        {
+            scene4(window, app);
         }
         if (sceneNow == SceneType::Scene5)
         {

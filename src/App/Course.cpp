@@ -163,3 +163,7 @@ void Course::load(Database &database) {
     for(auto &e : students)
         e = database.get(e.uid());
 }
+
+bool Score::valid() const {
+    return midterm >= 0 && final >= 0 && total >= 0 && other >= 0;
+}
