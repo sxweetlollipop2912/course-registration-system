@@ -62,7 +62,7 @@ bool Semester::removeCourse(const string &course_id) {
 }
 
 void Semester::sortCourse() {
-    courses.sort([](const DataIter& ref1, const DataIter& ref2) {
+    courses.sort([](const DataIter &ref1, const DataIter &ref2) {
         auto id1 = ref1.ptr<Course>()->id;
         auto id2 = ref2.ptr<Course>()->id;
         return id1 < id2;
@@ -72,7 +72,7 @@ void Semester::sortCourse() {
 void Semester::load(Database &database) {
     school_year = database.get(school_year.uid());
 
-    for(auto &e : courses) {
+    for (auto &e: courses) {
         e = database.get(e.uid());
     }
 }

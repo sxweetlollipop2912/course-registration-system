@@ -33,10 +33,15 @@ public:
     SceneManager() = default;
 
     SceneType top() const;
+
     int size() const;
+
     bool empty() const;
+
     void push(SceneType);
+
     void pop();
+
     void clear();
 
     void interact(sf::Event event);

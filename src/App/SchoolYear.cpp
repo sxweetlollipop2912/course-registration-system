@@ -73,6 +73,6 @@ bool SchoolYear::removeSemester(const int no) {
 }
 
 void SchoolYear::load(Database &database) {
-    for(auto &e : semesters)
+    for (auto &e: semesters)
         e = database.get(e.uid());
 }

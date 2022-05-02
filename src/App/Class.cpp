@@ -56,7 +56,7 @@ bool Class::removeStudent(const string &student_id) {
 }
 
 void Class::sortStudent() {
-    students.sort([](const DataIter& ref1, const DataIter& ref2) {
+    students.sort([](const DataIter &ref1, const DataIter &ref2) {
         auto id1 = ref1.ptr<Student>()->student_id;
         auto id2 = ref2.ptr<Student>()->student_id;
         return id1 < id2;
@@ -64,6 +64,6 @@ void Class::sortStudent() {
 }
 
 void Class::load(Database &database) {
-    for(auto &e : students)
+    for (auto &e: students)
         e = database.get(e.uid());
 }

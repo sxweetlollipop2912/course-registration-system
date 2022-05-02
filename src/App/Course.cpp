@@ -38,7 +38,7 @@ bool Course::addStudent(const DataIter &student) {
     return false;
 }
 
-bool Course::removeStudent(const Data::UID& student_uid) {
+bool Course::removeStudent(const Data::UID &student_uid) {
     auto it = students.find_if([&](const DataIter &iter) {
         return iter.uid() == student_uid;
     });
@@ -77,7 +77,7 @@ Course::Session::Session(const string &s) {
         string session;
         ss >> session;
 
-        string wday_s[] = { "sun", "mon", "tue", "wed", "thu", "fri", "sat" };
+        string wday_s[] = {"sun", "mon", "tue", "wed", "thu", "fri", "sat"};
         Utils::toLowerStr(wday);
         int i;
         for (i = 0; i < 7 && wday != wday_s[i]; i++);
@@ -91,16 +91,13 @@ Course::Session::Session(const string &s) {
         if (session == "s1") {
             start = Utils::mksession(i + 1, 7, 30);
             end = Utils::mksession(i + 1, 9, 10);
-        }
-        else if (session == "s2") {
+        } else if (session == "s2") {
             start = Utils::mksession(i + 1, 9, 30);
             end = Utils::mksession(i + 1, 11, 10);
-        }
-        else if (session == "s3") {
+        } else if (session == "s3") {
             start = Utils::mksession(i + 1, 13, 30);
             end = Utils::mksession(i + 1, 15, 10);
-        }
-        else if (session == "s4") {
+        } else if (session == "s4") {
             start = Utils::mksession(i + 1, 15, 30);
             end = Utils::mksession(i + 1, 17, 10);
         }
@@ -160,7 +157,7 @@ string Course::Session::toStr() const {
 void Course::load(Database &database) {
     semester = database.get(semester.uid());
 
-    for(auto &e : students)
+    for (auto &e: students)
         e = database.get(e.uid());
 }
 

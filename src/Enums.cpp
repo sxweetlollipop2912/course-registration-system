@@ -7,7 +7,7 @@ FullName::FullName(const string &first_name, const string &last_name) : first{fi
 }
 
 FullName::FullName(const string &name) {
-    int pos = (int)name.find_last_of(' ');
+    int pos = (int) name.find_last_of(' ');
     if (pos == string::npos)
         pos = -1;
 

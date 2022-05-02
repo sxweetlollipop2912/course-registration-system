@@ -2,10 +2,10 @@
 
 #include "List.h"
 
-template <class T>
-void op(const std::string s, const List<T>& list) {
+template<class T>
+void op(const std::string s, const List<T> &list) {
     std::cout << s << ' ';
-    list.for_each([](const T& x) { std::cout << x << ' '; });
+    list.for_each([](const T &x) { std::cout << x << ' '; });
     std::cout << '\n';
 }
 
@@ -273,7 +273,7 @@ void list_examples() {
             //
             // Returns 3
             // list: 4 3 5
-            list.remove_if([](const int& x) { return x <= 2; });
+            list.remove_if([](const int &x) { return x <= 2; });
             op<int>("list: ", list);
             // Syntax: remove_if(function<bool(const T&)> func, iterator first, iterator
             // last);
@@ -282,7 +282,7 @@ void list_examples() {
             //
             // Notice how `4` doesn't get removed?
             // list: 4 5
-            list.remove_if([](const int& x) { return x <= 4; }, ++list.begin(),
+            list.remove_if([](const int &x) { return x <= 4; }, ++list.begin(),
                            list.end());
             op<int>("list: ", list);
         }
@@ -380,7 +380,7 @@ void list_examples() {
             //
             // Returns iterator to `3`.
             std::cout << "find_if: "
-                      << (*list.find_if([](const int& x) { return x != 2; })) << '\n';
+                      << (*list.find_if([](const int &x) { return x != 2; })) << '\n';
 
             // Syntax: count(T value);
             //
@@ -397,7 +397,7 @@ void list_examples() {
             //
             // 3
             std::cout << "count_if: "
-                      << list.count_if([](const int& x) { return x > 1; }) << '\n';
+                      << list.count_if([](const int &x) { return x > 1; }) << '\n';
 
             // Syntax: all_of(function<bool(const T&)> func));
             //
@@ -405,7 +405,7 @@ void list_examples() {
             // Returns true if all elements satisfies, otherwise false.
             //
             // false
-            std::cout << "all_of: " << list.all_of([](const int& x) { return x == 0; })
+            std::cout << "all_of: " << list.all_of([](const int &x) { return x == 0; })
                       << '\n';
 
             // Syntax: any_of(function<bool(const T&)> func));
@@ -415,7 +415,7 @@ void list_examples() {
             // otherwise false.
             //
             // true
-            std::cout << "any_of: " << list.any_of([](const int& x) { return x == 3; })
+            std::cout << "any_of: " << list.any_of([](const int &x) { return x == 3; })
                       << '\n';
 
             // Syntax: none_of(function<bool(const T&)> func));
@@ -424,7 +424,7 @@ void list_examples() {
             //
             // false
             std::cout << "none_of: "
-                      << list.none_of([](const int& x) { return x == 3; }) << '\n';
+                      << list.none_of([](const int &x) { return x == 3; }) << '\n';
 
             // Syntax: for_each(function<void(const T&)> func));
             //
@@ -433,7 +433,7 @@ void list_examples() {
             //
             // count == 2.
             int count = 0;
-            list.for_each([&](const int& x) {
+            list.for_each([&](const int &x) {
                 if (x % 2 == 0) ++count;
             });
             std::cout << "for each: " << count << '\n';
@@ -444,7 +444,7 @@ void list_examples() {
             // another list. Returns the new list.
             //
             // l2: c c d
-            List<char> l2 = list.map<char>([](const int& x) { return x + 'a'; });
+            List<char> l2 = list.map<char>([](const int &x) { return x + 'a'; });
             std::cout << "map: ";
             op("l2: ", l2);
 
@@ -454,7 +454,7 @@ void list_examples() {
             // Returns the new list.
             //
             // l3: 2 2
-            List<int> l3 = list.filter([](const int& x) { return x == 2; });
+            List<int> l3 = list.filter([](const int &x) { return x == 2; });
             std::cout << "filter: ";
             op("l3: ", l3);
 
@@ -464,7 +464,7 @@ void list_examples() {
             // Returns value of current data type.
             //
             // sum == 2 + 2 + 3 = 7
-            int sum = list.reduce([](const int& x, const int& y) { return x + y; });
+            int sum = list.reduce([](const int &x, const int &y) { return x + y; });
             std::cout << "reduce: sum: " << sum << '\n';
             // Syntax: reduce(function<T(const T&, const T&)> func), T initial_value);
             //
@@ -473,7 +473,7 @@ void list_examples() {
             //
             // product == 2 * 2 * 3 = 12
             int product =
-                    list.reduce([](const int& x, const int& y) { return x * y; }, 1);
+                    list.reduce([](const int &x, const int &y) { return x * y; }, 1);
             std::cout << "reduce: product: " << product << '\n';
         }
 

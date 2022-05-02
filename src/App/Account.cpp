@@ -163,11 +163,11 @@ UserType Account::getUserType() const {
 void Student::load(Database &database) {
     classroom = database.get(classroom.uid());
 
-    for(auto &e : courses) {
+    for (auto &e: courses) {
         e = database.get(e.uid());
     }
 
-    for(auto &e : scores) {
+    for (auto &e: scores) {
         e->course = database.get(e->course.uid());
     }
 }

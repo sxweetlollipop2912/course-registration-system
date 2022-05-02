@@ -16,22 +16,26 @@ public:
     tm end;
 
     RegistrationSession() = default;
+
     RegistrationSession(const tm &start, const tm &end) : start{start}, end{end} {}
 
     /// True if session is ongoing given current date, otherwise false.
-	bool isOngoing() const;
-	bool hasEnded() const;
-	bool hasNotStarted() const;
-	bool hasInit() const;
+    bool isOngoing() const;
 
-    friend std::ostream& operator<<(std::ostream &os, const RegistrationSession &obj) {
+    bool hasEnded() const;
+
+    bool hasNotStarted() const;
+
+    bool hasInit() const;
+
+    friend std::ostream &operator<<(std::ostream &os, const RegistrationSession &obj) {
         os << Utils::tmToStr(obj.start) << '\n';
         os << Utils::tmToStr(obj.end) << '\n';
 
         return os;
     }
 
-    friend std::istream& operator>>(std::istream &is, RegistrationSession &obj) {
+    friend std::istream &operator>>(std::istream &is, RegistrationSession &obj) {
         string s;
         Utils::getline(is, s);
         obj.start = Utils::strToTm(s);

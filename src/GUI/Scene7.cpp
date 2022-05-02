@@ -8,14 +8,14 @@
 
 using std::string, std::to_string, std::tm;
 
-static App* app;
-static sf::RenderWindow* window;
+static App *app;
+static sf::RenderWindow *window;
 static Input_Textbox *regStartInput, *regEndInput, *idInput, *nameInput, *teacherInput, *ss1Input, *ss2Input, *creditsInput, *maxStudentsInput;
 
 static int page_size;
 static int num_page = 0, page_cnt;
 
-static string double_to_string(const double& val, int d = 2) {
+static string double_to_string(const double &val, int d = 2) {
     std::stringstream stream;
     stream << std::fixed << std::setprecision(d) << val;
     return stream.str();
@@ -80,8 +80,8 @@ static void modify_course(int dummy) {
         if (new_course.sessions.all_of([](const Course::Session &s) {
             return s.valid();
         }) &&
-        credits > 0 &&
-        course->students.size() <= max_students) {
+            credits > 0 &&
+            course->students.size() <= max_students) {
             course->id = new_course.id;
             course->name = new_course.name;
             course->teacher_name = new_course.teacher_name;
@@ -97,7 +97,7 @@ static void modify_course(int dummy) {
     }
 }
 
-void modify_course_scene(sf::RenderWindow& _window, App &_app) {
+void modify_course_scene(sf::RenderWindow &_window, App &_app) {
     app = &_app;
     window = &_window;
     SceneType current_scene = SceneType::SceneModifyCourse;
@@ -278,7 +278,7 @@ void modify_course_scene(sf::RenderWindow& _window, App &_app) {
     while (window->isOpen() && !app->scenes.empty() && app->scenes.top() == current_scene && !app->scenes.refresh) {
         window->clear(sf::Color::White);
 
-        for(auto &box : boxes)
+        for (auto &box: boxes)
             box.draw(*window, app->default_font);
         interaction.draw(*window, app->default_font);
         window->display();
@@ -288,7 +288,7 @@ void modify_course_scene(sf::RenderWindow& _window, App &_app) {
     }
 }
 
-void scene7(sf::RenderWindow& _window, App &_app) {
+void scene7(sf::RenderWindow &_window, App &_app) {
     app = &_app;
     window = &_window;
     auto current_scene = SceneType::Scene7;
@@ -304,25 +304,32 @@ void scene7(sf::RenderWindow& _window, App &_app) {
     List<Textbox> texts;
 
 
-    Textbox course_id_header("Course ID", GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(0, current_y), sf::Vector2f(100, 50), sf::Color::White);
+    Textbox course_id_header("Course ID", GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(0, current_y),
+                             sf::Vector2f(100, 50), sf::Color::White);
     course_id_header.set_outline(sf::Color::Black);
 
-    Textbox course_name_header("Course Name", GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(100, current_y), sf::Vector2f(260, 50), sf::Color::White);
+    Textbox course_name_header("Course Name", GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(100, current_y),
+                               sf::Vector2f(260, 50), sf::Color::White);
     course_name_header.set_outline(sf::Color::Black);
 
-    Textbox credits_header("Credits", GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(360, current_y), sf::Vector2f(100, 50), sf::Color::White);
+    Textbox credits_header("Credits", GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(360, current_y),
+                           sf::Vector2f(100, 50), sf::Color::White);
     credits_header.set_outline(sf::Color::Black);
 
-    Textbox sessions_header("Sessions", GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(460, current_y), sf::Vector2f(200, 50), sf::Color::White);
+    Textbox sessions_header("Sessions", GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(460, current_y),
+                            sf::Vector2f(200, 50), sf::Color::White);
     sessions_header.set_outline(sf::Color::Black);
 
-    Textbox teacher_header("Teacher", GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(660, current_y), sf::Vector2f(210, 50), sf::Color::White);
+    Textbox teacher_header("Teacher", GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(660, current_y),
+                           sf::Vector2f(210, 50), sf::Color::White);
     teacher_header.set_outline(sf::Color::Black);
 
-    Textbox slot_header("Slot", GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(870, current_y), sf::Vector2f(100, 50), sf::Color::White);
+    Textbox slot_header("Slot", GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(870, current_y),
+                        sf::Vector2f(100, 50), sf::Color::White);
     slot_header.set_outline(sf::Color::Black);
 
-    Textbox course_action_header("Action", GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(970, current_y), sf::Vector2f(230, 50), sf::Color::White);
+    Textbox course_action_header("Action", GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(970, current_y),
+                                 sf::Vector2f(230, 50), sf::Color::White);
     course_action_header.set_outline(sf::Color::Black);
 
     current_y += 50;
@@ -336,50 +343,60 @@ void scene7(sf::RenderWindow& _window, App &_app) {
     texts.push_back(course_action_header);
 
 
-    Textbox course_id(course->id, GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(0, current_y), sf::Vector2f(100, 100), sf::Color::White);
+    Textbox course_id(course->id, GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(0, current_y),
+                      sf::Vector2f(100, 100), sf::Color::White);
     course_id.set_outline(sf::Color::Black);
     course_id.align_left();
     texts.push_back(course_id);
 
 
-    Textbox course_name(course->name, GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(100, current_y), sf::Vector2f(260, 100), sf::Color::White);
+    Textbox course_name(course->name, GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(100, current_y),
+                        sf::Vector2f(260, 100), sf::Color::White);
     course_name.set_outline(sf::Color::Black);
     course_name.align_left();
     texts.push_back(course_name);
 
 
     Textbox credits(std::to_string(course->credits),
-                    GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(360, current_y), sf::Vector2f(100, 100), sf::Color::White);
+                    GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(360, current_y), sf::Vector2f(100, 100),
+                    sf::Color::White);
     credits.set_outline(sf::Color::Black);
     texts.push_back(credits);
 
 
-    Textbox session1(Utils::sessionToStr(course->sessions[0].start) + " - " + Utils::sessionToStr(course->sessions[0].end).substr(4, 5),
-                     GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(460, current_y), sf::Vector2f(200, 50), sf::Color::White);
+    Textbox session1(Utils::sessionToStr(course->sessions[0].start) + " - " +
+                     Utils::sessionToStr(course->sessions[0].end).substr(4, 5),
+                     GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(460, current_y), sf::Vector2f(200, 50),
+                     sf::Color::White);
     session1.set_outline(sf::Color::Black);
     texts.push_back(session1);
 
 
-    Textbox session2(Utils::sessionToStr(course->sessions[1].start) + " - " + Utils::sessionToStr(course->sessions[1].end).substr(4, 5),
-                     GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(460, current_y + 50), sf::Vector2f(200, 50), sf::Color::White);
+    Textbox session2(Utils::sessionToStr(course->sessions[1].start) + " - " +
+                     Utils::sessionToStr(course->sessions[1].end).substr(4, 5),
+                     GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(460, current_y + 50),
+                     sf::Vector2f(200, 50), sf::Color::White);
     session2.set_outline(sf::Color::Black);
     texts.push_back(session2);
 
 
     Textbox teacher(course->teacher_name.last + " " + course->teacher_name.first,
-                    GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(660, current_y), sf::Vector2f(210, 100), sf::Color::White);
+                    GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(660, current_y), sf::Vector2f(210, 100),
+                    sf::Color::White);
     teacher.set_outline(sf::Color::Black);
     teacher.align_left();
     texts.push_back(teacher);
 
 
     Textbox slot(std::to_string(course->students.size()) + "/" + std::to_string(course->max_students),
-                 GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(870, current_y), sf::Vector2f(100, 100), sf::Color::White);
+                 GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(870, current_y), sf::Vector2f(100, 100),
+                 sf::Color::White);
     slot.set_outline(sf::Color::Black);
     texts.push_back(slot);
 
 
-    Textbox scores_text("Scores", GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(970, current_y), sf::Vector2f(80, 100), sf::Color::White);
+    Textbox scores_text("Scores", GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(970, current_y),
+                        sf::Vector2f(80, 100), sf::Color::White);
     scores_text.set_box_color(sf::Color::Green);
 
     scores_text.align_center();
@@ -387,7 +404,8 @@ void scene7(sf::RenderWindow& _window, App &_app) {
     scores_button.set_idle_outline(sf::Color::Black);
 
 
-    Textbox export_text("Export", GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(1050, current_y), sf::Vector2f(80, 100), sf::Color::White);
+    Textbox export_text("Export", GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(1050, current_y),
+                        sf::Vector2f(80, 100), sf::Color::White);
     export_text.set_box_color(sf::Color::Green);
 
     export_text.align_center();
@@ -395,7 +413,8 @@ void scene7(sf::RenderWindow& _window, App &_app) {
     export_button.set_idle_outline(sf::Color::Black);
 
 
-    Textbox delete_text("Delete", GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(1050 + 80, current_y), sf::Vector2f(70, 100), sf::Color::White);
+    Textbox delete_text("Delete", GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(1050 + 80, current_y),
+                        sf::Vector2f(70, 100), sf::Color::White);
     delete_text.set_box_color(sf::Color::Red);
 
     delete_text.align_center();
@@ -405,7 +424,8 @@ void scene7(sf::RenderWindow& _window, App &_app) {
     current_y += 100;
 
 
-    Textbox modify_course_text("Modify course", GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(0, current_y), sf::Vector2f(150, 40), sf::Color::White);
+    Textbox modify_course_text("Modify course", GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(0, current_y),
+                               sf::Vector2f(150, 40), sf::Color::White);
     modify_course_text.set_box_color(sf::Color::Green);
     modify_course_text.align_center();
     Button_Textbox modify_course_button(modify_course_text, sf::Color::Yellow);
@@ -431,7 +451,7 @@ void scene7(sf::RenderWindow& _window, App &_app) {
     int num_row = 0;
     List<DataIter> page;
     List<List<DataIter>> pages;
-    students.for_each([&](const auto& Iter) {
+    students.for_each([&](const auto &Iter) {
         ++num_row;
         if (num_row > page_size) {
             num_row -= page_size;
@@ -450,28 +470,35 @@ void scene7(sf::RenderWindow& _window, App &_app) {
         page_num_string = std::to_string(num_page + 1) + "/" + std::to_string(page_cnt);
     else
         page_num_string = "0/0";
-    Textbox page_num(page_num_string, GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(985, current_y - 5), sf::Vector2f(60, 40), sf::Color::White);
+    Textbox page_num(page_num_string, GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(985, current_y - 5),
+                     sf::Vector2f(60, 40), sf::Color::White);
     texts.push_back(page_num);
 
     current_y += 40;
 
 
-    Textbox stt_header("No.", GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(0, current_y), sf::Vector2f(100, 50), sf::Color::White);
+    Textbox stt_header("No.", GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(0, current_y),
+                       sf::Vector2f(100, 50), sf::Color::White);
     stt_header.set_outline(sf::Color::Black);
 
-    Textbox student_id_header("Student ID", GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(100, current_y), sf::Vector2f(200, 50), sf::Color::White);
+    Textbox student_id_header("Student ID", GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(100, current_y),
+                              sf::Vector2f(200, 50), sf::Color::White);
     student_id_header.set_outline(sf::Color::Black);
 
-    Textbox student_name_header("Name", GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(300, current_y), sf::Vector2f(400, 50), sf::Color::White);
+    Textbox student_name_header("Name", GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(300, current_y),
+                                sf::Vector2f(400, 50), sf::Color::White);
     student_name_header.set_outline(sf::Color::Black);
 
-    Textbox birth_header("Date of birth", GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(700, current_y), sf::Vector2f(200, 50), sf::Color::White);
+    Textbox birth_header("Date of birth", GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(700, current_y),
+                         sf::Vector2f(200, 50), sf::Color::White);
     birth_header.set_outline(sf::Color::Black);
 
-    Textbox class_name_header("Class", GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(900, current_y), sf::Vector2f(150, 50), sf::Color::White);
+    Textbox class_name_header("Class", GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(900, current_y),
+                              sf::Vector2f(150, 50), sf::Color::White);
     class_name_header.set_outline(sf::Color::Black);
 
-    Textbox student_action_header("Action", GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(1050, current_y), sf::Vector2f(150, 50), sf::Color::White);
+    Textbox student_action_header("Action", GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(1050, current_y),
+                                  sf::Vector2f(150, 50), sf::Color::White);
     student_action_header.set_outline(sf::Color::Black);
 
     current_y += 50;
@@ -497,42 +524,48 @@ void scene7(sf::RenderWindow& _window, App &_app) {
 
     if (n > 0) {
         int idx = num_page * page_size;
-        pages[num_page].for_each([&](const DataIter& Iter) {
+        pages[num_page].for_each([&](const DataIter &Iter) {
             auto student = Iter.ptr<Student>();
             auto classroom = student->classroom.ptr<Class>();
             ++idx;
 
-            Textbox stt(to_string(idx), GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(0, current_y), sf::Vector2f(100, height), sf::Color::White);
+            Textbox stt(to_string(idx), GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(0, current_y),
+                        sf::Vector2f(100, height), sf::Color::White);
             stt.set_outline(sf::Color::Black);
             stt.align_center();
             texts.push_back(stt);
 
-            Textbox student_id(student->student_id, GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(100, current_y), sf::Vector2f(200, height), sf::Color::White);
+            Textbox student_id(student->student_id, GUI::defaultSmallCharSize, sf::Color::Black,
+                               sf::Vector2f(100, current_y), sf::Vector2f(200, height), sf::Color::White);
             student_id.set_outline(sf::Color::Black);
             student_id.align_center();
             texts.push_back(student_id);
 
 
             Textbox name(student->name.toStr(),
-                            GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(300, current_y), sf::Vector2f(400, height), sf::Color::White);
+                         GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(300, current_y),
+                         sf::Vector2f(400, height), sf::Color::White);
             name.set_outline(sf::Color::Black);
             name.align_left();
             texts.push_back(name);
 
 
             Textbox birth(Utils::dateToStr(student->birth),
-                          GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(700, current_y), sf::Vector2f(200, height), sf::Color::White);
+                          GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(700, current_y),
+                          sf::Vector2f(200, height), sf::Color::White);
             birth.set_outline(sf::Color::Black);
             texts.push_back(birth);
 
 
-            Textbox class_name(classroom->name, GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(900, current_y), sf::Vector2f(150, height), sf::Color::White);
+            Textbox class_name(classroom->name, GUI::defaultSmallCharSize, sf::Color::Black,
+                               sf::Vector2f(900, current_y), sf::Vector2f(150, height), sf::Color::White);
             class_name.set_outline(sf::Color::Black);
             class_name.align_center();
             texts.push_back(class_name);
 
 
-            Textbox delete_text("Disenroll", GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(1050, current_y), sf::Vector2f(150, height), sf::Color::White);
+            Textbox delete_text("Disenroll", GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(1050, current_y),
+                                sf::Vector2f(150, height), sf::Color::White);
             delete_text.set_box_color(sf::Color::Red);
             delete_text.align_center();
             Button_Textbox delete_button(delete_text, sf::Color::Yellow);
@@ -550,7 +583,7 @@ void scene7(sf::RenderWindow& _window, App &_app) {
     while (window->isOpen() && !app->scenes.empty() && app->scenes.top() == current_scene && !app->scenes.refresh) {
         window->clear(sf::Color::White);
 
-        texts.for_each([&](Textbox& textbox) {
+        texts.for_each([&](Textbox &textbox) {
             textbox.draw(*window, app->default_font);
         });
 

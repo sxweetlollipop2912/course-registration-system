@@ -6,4 +6,4 @@
 using namespace GUI;
 using namespace sf;
 
-void scene2(sf::RenderWindow& window, App& _app);
+void scene2(sf::RenderWindow &window, App &_app);

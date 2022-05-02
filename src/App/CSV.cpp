@@ -47,7 +47,7 @@ void CSVData::clearData() {
 }
 
 void CSVData::normalizeList(List<string> &list) {
-    for(auto &s : list) {
+    for (auto &s: list) {
         Utils::toLowerStr(s);
         Utils::trimStr(s);
     }
@@ -61,9 +61,9 @@ namespace CSVIO {
             Parser file = Parser(file_path);
 
             data.setHeaders(file.getHeader());
-            for(int i = 0; i < file.rowCount(); i++) {
+            for (int i = 0; i < file.rowCount(); i++) {
                 List<string> row;
-                for(int j = 0; j < file.columnCount(); j++) {
+                for (int j = 0; j < file.columnCount(); j++) {
                     row.push_back(file[i][j]);
                 }
                 data.addRow(row);
@@ -96,13 +96,12 @@ namespace CSVIO {
 
             parseHeader();
             parseContent();
-        }
-        else
+        } else
             throw Error(string("Failed to open ").append(_file));
     }
 
     Parser::~Parser() {
-        for (auto &it : _content)
+        for (auto &it: _content)
             delete it;
     }
 
@@ -128,10 +127,10 @@ namespace CSVIO {
             for (; i != it->length(); i++) {
                 if (it->at(i) == '"')
                     quoted = !(quoted);
-                
+
                 else if (it->at(i) == _sep && !quoted) {
                     auto s = it->substr(tokenStart, i - tokenStart);
-                    while (s.size() > 1 &&s[0] == '"' &&s.back() == '"') {
+                    while (s.size() > 1 && s[0] == '"' && s.back() == '"') {
                         s.erase(0, 1);
                         s.pop_back();
                     }
@@ -147,7 +146,7 @@ namespace CSVIO {
             // if value(s) missing
             if (row->size() != _header.size())
                 throw Error("corrupted data !");
-            
+
             _content.push_back(row);
         }
     }
@@ -155,7 +154,7 @@ namespace CSVIO {
     Row &Parser::getRow(int rowPosition) const {
         if (rowPosition < _content.size())
             return *(_content[rowPosition]);
-        
+
         throw Error("can't return this row (doesn't exist)");
     }
 
@@ -194,7 +193,7 @@ namespace CSVIO {
 
     string Row::operator[](const string &key) const {
         int pos = 0;
-        for (const auto &it : _header) {
+        for (const auto &it: _header) {
             if (key == it)
                 return _values[pos];
             pos++;
@@ -210,31 +209,29 @@ namespace CSVIO {
         this->valueCount = 0;
     }
 
-    CSVWriter& CSVWriter::add(string str) {
+    CSVWriter &CSVWriter::add(string str) {
         //if " character was found, escape it
         size_t position = str.find('\"', 0);
         bool foundQuotationMarks = position != string::npos;
-        while(position != string::npos) {
+        while (position != string::npos) {
             str.insert(position, "\"");
             position = str.find('\"', position + 2);
         }
-        if(foundQuotationMarks) {
+        if (foundQuotationMarks) {
             str = "\"" + str + "\"";
-        }
-        else if (str.find(this->separator) != string::npos) {
+        } else if (str.find(this->separator) != string::npos) {
             //if separator was found and string was not escaped before, surround string with "
             str = "\"" + str + "\"";
         }
         return this->add<string>(str);
     }
 
-    string CSVWriter::toString() {return ss.str();}
+    string CSVWriter::toString() { return ss.str(); }
 
-    CSVWriter& CSVWriter::newRow() {
+    CSVWriter &CSVWriter::newRow() {
         if (!this->firstRow || this->columnNum > -1) {
             ss << endl;
-        }
-        else {
+        } else {
             //if the row is the first row, do not insert a new line
             this->firstRow = false;
         }
@@ -256,14 +253,13 @@ namespace CSVIO {
                     appendNewLine = true;
             }
             file.open(filename.c_str(), ios::out | ios::app);
-        }
-        else {
+        } else {
             file.open(filename.c_str(), ios::out | ios::trunc);
         }
-        if(!file.is_open())
+        if (!file.is_open())
             return false;
 
-        if(append && appendNewLine)
+        if (append && appendNewLine)
             file << endl;
         file << this->toString();
         file.close();

@@ -11,16 +11,20 @@
 using std::string, std::tm;
 
 class Course;
+
 class Score;
 
 class Course : public Data {
     friend class App;
+
     typedef Data super;
 private:
     /// False if a student with the same student_id is already added, otherwise true.
-    bool addStudent(const DataIter& student);
+    bool addStudent(const DataIter &student);
+
     /// False if no such student is found, otherwise true.
-    bool removeStudent(const Data::UID& student_uid);
+    bool removeStudent(const Data::UID &student_uid);
+
     /// False if no student with such student_id is found, otherwise true.
     bool removeStudent(const string &student_id);
 
@@ -28,23 +32,30 @@ public:
     class Session {
     public:
         tm start, end;
+
         Session() = default;
+
         Session(const tm &start, const tm &end) : start{start}, end{end} {}
+
         /// string example: mon s4 (case-insensitive).
         Session(const string &s);
 
         bool valid() const;
+
         bool inRange(const tm &time) const;
+
         string toStr() const;
+
         bool operator==(const Session &s) const;
 
-        friend std::ostream& operator<<(std::ostream &os, const Session &obj) {
+        friend std::ostream &operator<<(std::ostream &os, const Session &obj) {
             os << Utils::tmToStr(obj.start) << '\n';
             os << Utils::tmToStr(obj.end) << '\n';
 
             return os;
         }
-        friend std::istream& operator>>(std::istream &is, Session &obj) {
+
+        friend std::istream &operator>>(std::istream &is, Session &obj) {
             string s;
             Utils::getline(is, s);
             obj.start = Utils::strToTm(s);
@@ -65,6 +76,7 @@ public:
     Course() : semester{}, name{}, id{}, teacher_name{} {
         data_type = DataType::Course;
     }
+
     Course(const string &id,
            const string &name,
            const FullName &teacher_name,
@@ -82,15 +94,18 @@ public:
 
     /// Returns empty DataIter if no student is found.
     DataIter getStudent(const string &student_id);
+
     /// Returns number of successful parsing attempt (attempts without any exception).\n
     int tryParseScore(const CSVData &csv);
+
     /// True if succeeded, otherwise false.
     bool exportScore(CSVIO::CSVWriter &writer);
+
     /// Sorts student by student ID.
     void sortStudentsByID();
 
-    friend std::ostream& operator<<(std::ostream &os, const Course &obj) {
-        os << (super&)obj;
+    friend std::ostream &operator<<(std::ostream &os, const Course &obj) {
+        os << (super &) obj;
 
         os << obj.semester << '\n';
         os << obj.name << '\n';
@@ -101,17 +116,18 @@ public:
         os << obj.max_students << '\n';
 
         os << obj.sessions.size() << '\n';
-        for(const auto &e : obj.sessions)
+        for (const auto &e: obj.sessions)
             os << e << '\n';
 
         os << obj.students.size() << '\n';
-        for(const auto& e : obj.students)
+        for (const auto &e: obj.students)
             os << e << '\n';
 
         return os;
     }
-    friend std::istream& operator>>(std::istream &is, Course &obj) {
-        is >> (super&)obj;
+
+    friend std::istream &operator>>(std::istream &is, Course &obj) {
+        is >> (super &) obj;
 
         int sz;
 
@@ -123,12 +139,14 @@ public:
         is >> obj.credits;
         is >> obj.max_students;
 
-        is >> sz; obj.sessions.resize(sz);
-        for(auto &e : obj.sessions)
+        is >> sz;
+        obj.sessions.resize(sz);
+        for (auto &e: obj.sessions)
             is >> e;
 
-        is >> sz; obj.students.resize(sz);
-        for(auto &e : obj.students)
+        is >> sz;
+        obj.students.resize(sz);
+        for (auto &e: obj.students)
             is >> e;
 
         return is;
@@ -142,13 +160,15 @@ public:
     double midterm = -1, final = -1, total = -1, other = -1;
 
     Score() = default;
-    Score(const DataIter &course): course{course} {}
+
+    Score(const DataIter &course) : course{course} {}
+
     Score(const DataIter &course, const double midterm, const double final, const double total, const double other)
             : course{course}, midterm{midterm}, final{final}, total{total}, other{other} {}
 
     bool valid() const;
 
-    friend std::ostream& operator<<(std::ostream &os, const Score &obj) {
+    friend std::ostream &operator<<(std::ostream &os, const Score &obj) {
         os << obj.course << '\n';
         os << obj.midterm << '\n';
         os << obj.final << '\n';
@@ -157,7 +177,8 @@ public:
 
         return os;
     }
-    friend std::istream& operator>>(std::istream &is, Score &obj) {
+
+    friend std::istream &operator>>(std::istream &is, Score &obj) {
         is >> obj.course;
         is >> obj.midterm;
         is >> obj.final;

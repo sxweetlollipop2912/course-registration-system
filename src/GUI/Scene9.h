@@ -2,4 +2,4 @@
 
 #include "Interaction.h"
 
-void scene9(sf::RenderWindow& window, App &_app);
+void scene9(sf::RenderWindow &window, App &_app);

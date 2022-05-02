@@ -25,13 +25,13 @@ bool App::save() {
     ofs.close();
     ofs.clear();
 
-    for(const auto &e : database.data) {
+    for (const auto &e: database.data) {
         ofs.open(PATH::SAVES + e->uid.id + ".txt");
 
         if (!ofs.is_open())
             return false;
 
-        switch(e->data_type) {
+        switch (e->data_type) {
             case DataType::SchoolYear: {
                 ofs << *dynamic_pointer_cast<SchoolYear>(e);
                 break;
@@ -85,7 +85,7 @@ bool App::load() {
     ifs.close();
     ifs.clear();
 
-    for(auto &e : database.data) {
+    for (auto &e: database.data) {
         ifs.open(PATH::SAVES + e->uid.id + ".txt");
 
         if (!ifs.is_open()) {
@@ -94,7 +94,7 @@ bool App::load() {
             return false;
         }
 
-        switch(e->data_type) {
+        switch (e->data_type) {
             case DataType::SchoolYear: {
                 SchoolYear obj;
                 ifs >> obj;
@@ -141,7 +141,7 @@ bool App::load() {
         ifs.clear();
     }
 
-    for(auto &e : database.data)
+    for (auto &e: database.data)
         e->load(database);
 
     default_year_iter = database.get(default_year_iter.uid());
@@ -152,7 +152,8 @@ bool App::load() {
 
 DataIter App::addAccount(const shared_ptr<Account> &account) {
     if (database.data.find_if([&](const shared_ptr<Data> &ptr) {
-        return (ptr->data_type == DataType::Student || ptr->data_type == DataType::Staff) && dynamic_pointer_cast<Account>(ptr)->username == account->username;
+        return (ptr->data_type == DataType::Student || ptr->data_type == DataType::Staff) &&
+               dynamic_pointer_cast<Account>(ptr)->username == account->username;
     }) != database.data.end()) {
         return {};
     }
@@ -189,7 +190,8 @@ List<DataIter> App::getAllClasses() {
 
 DataIter App::login(const string &username, const string &password) {
     auto account = database.get([&](const shared_ptr<Data> &ptr) {
-        return (ptr->data_type == DataType::Student || ptr->data_type == DataType::Staff) && dynamic_pointer_cast<Account>(ptr)->username == username;
+        return (ptr->data_type == DataType::Student || ptr->data_type == DataType::Staff) &&
+               dynamic_pointer_cast<Account>(ptr)->username == username;
     });
 
     if (account && account.ptr<Account>()->checkPassword(password))
@@ -275,7 +277,7 @@ bool App::addDefaultSchoolYear(const shared_ptr<SchoolYear> &year) {
     }))
         return false;
 
-    for(const auto& y : years)
+    for (const auto &y: years)
         deleteSchoolYear(y);
 
     default_year_iter = database.add(year);
@@ -305,7 +307,7 @@ DataIter App::addClass(const shared_ptr<Class> &classroom) {
     if (getClass(classroom->name))
         return {};
 
-    for(const auto& student_iter : classroom->students) {
+    for (const auto &student_iter: classroom->students) {
         auto student = student_iter.ptr<Student>();
 
         /// If another student with the same student_id already exists in database.
@@ -321,7 +323,7 @@ DataIter App::addClass(const shared_ptr<Class> &classroom) {
     }
 
     /// Add students to database.
-    for(const auto& student_iter : classroom->students) {
+    for (const auto &student_iter: classroom->students) {
         auto student = student_iter.ptr<Student>();
         database.add(student);
     }
@@ -350,10 +352,10 @@ int App::addStudents(const CSVData &csv, const DataIter &classroom) {
     auto rows = csv.getData();
     auto headers = csv.getHeaders();
 
-    for(const auto& row : rows) {
+    for (const auto &row: rows) {
         auto student = make_shared<Student>(CSV::CSVToStudent(headers, row));
         if (student->valid())
-            count += (bool)addStudent(student, classroom);
+            count += (bool) addStudent(student, classroom);
     }
 
     return count;
@@ -365,10 +367,10 @@ int App::addStudents(const CSVData &csv, const string &class_name) {
     auto rows = csv.getData();
     auto headers = csv.getHeaders();
 
-    for(const auto& row : rows) {
+    for (const auto &row: rows) {
         auto student = make_shared<Student>(CSV::CSVToStudent(headers, row));
         if (student->valid())
-            count += (bool)addStudent(student, class_name);
+            count += (bool) addStudent(student, class_name);
     }
 
     return count;
@@ -380,10 +382,10 @@ int App::addStudents(const CSVData &csv, const Data::UID &class_uid) {
     auto rows = csv.getData();
     auto headers = csv.getHeaders();
 
-    for(const auto& row : rows) {
+    for (const auto &row: rows) {
         auto student = make_shared<Student>(CSV::CSVToStudent(headers, row));
         if (student->valid())
-            count += (bool)addStudent(student, class_uid);
+            count += (bool) addStudent(student, class_uid);
     }
 
     return count;
@@ -468,7 +470,7 @@ bool App::deleteStudent(const DataIter &student) {
     classroom_ptr->removeStudent(student.uid());
 
     /// Remove student from courses
-    for(const auto& course : student_ptr->courses) {
+    for (const auto &course: student_ptr->courses) {
         auto course_ptr = course.ptr<Course>();
         course_ptr->removeStudent(student.uid());
     }
@@ -522,7 +524,7 @@ bool App::removeClassFromYear(const DataIter &classroom) {
 
     auto class_ptr = classroom.ptr<Class>();
 
-    for(const auto& student_iter : class_ptr->students) {
+    for (const auto &student_iter: class_ptr->students) {
         auto student_ptr = student_iter.ptr<Student>();
 
         /// Remove student from courses on this year.
@@ -553,7 +555,7 @@ bool App::removeClassFromYear(const Data::UID &class_uid) {
     if (!class_ptr)
         return false;
 
-    for(const auto& student_iter : class_ptr->students) {
+    for (const auto &student_iter: class_ptr->students) {
         auto student_ptr = student_iter.ptr<Student>();
 
         /// Remove student from courses on this year.
@@ -681,7 +683,7 @@ void App::deleteSchoolYear(const DataIter &year) {
 
     auto year_ptr = year.ptr<SchoolYear>();
 
-    for(const auto& semester : year_ptr->semesters) {
+    for (const auto &semester: year_ptr->semesters) {
         deleteSemester(semester);
     }
 
@@ -695,7 +697,7 @@ void App::deleteSemester(const DataIter &semester) {
     auto semester_ptr = semester.ptr<Semester>();
 
     semester_ptr->school_year.ptr<SchoolYear>()->removeSemester(semester.uid());
-    for(const auto& course : semester_ptr->courses) {
+    for (const auto &course: semester_ptr->courses) {
         deleteCourse(course);
     }
 
@@ -709,7 +711,7 @@ bool App::deleteCourse(const DataIter &course) {
     auto course_ptr = course.ptr<Course>();
 
     course_ptr->semester.ptr<Semester>()->removeCourse(course.uid());
-    for(const auto& student : course_ptr->students) {
+    for (const auto &student: course_ptr->students) {
         student.ptr<Student>()->removeCourse(course.uid());
     }
 
@@ -765,20 +767,17 @@ Score App::CSV::CSVToScore(const List<string> &headers, const List<string> &row,
                     header.erase(pos, 1);
 
                 score.midterm = stod(data);
-            }
-            else if (header.find("final") != string::npos) {
+            } else if (header.find("final") != string::npos) {
                 for (int pos = (int) header.find(' '); pos != string::npos; pos = (int) header.find(' '))
                     header.erase(pos, 1);
 
                 score.final = stod(data);
-            }
-            else if (header.find("total") != string::npos) {
+            } else if (header.find("total") != string::npos) {
                 for (int pos = (int) header.find(' '); pos != string::npos; pos = (int) header.find(' '))
                     header.erase(pos, 1);
 
                 score.total = stod(data);
-            }
-            else if (header.find("other") != string::npos) {
+            } else if (header.find("other") != string::npos) {
                 for (int pos = (int) header.find(' '); pos != string::npos; pos = (int) header.find(' '))
                     header.erase(pos, 1);
 
@@ -806,17 +805,13 @@ Student App::CSV::CSVToStudent(const List<string> &headers, const List<string> &
 
             if (header.find("student") != string::npos && header.find("id") != string::npos) {
                 student_id = data;
-            }
-            else if (header.find("social") != string::npos) {
+            } else if (header.find("social") != string::npos) {
                 social_id = data;
-            }
-            else if (header.find("name") != string::npos && header.find("last") != string::npos) {
+            } else if (header.find("name") != string::npos && header.find("last") != string::npos) {
                 name.last = data;
-            }
-            else if (header.find("name") != string::npos && header.find("first") != string::npos) {
+            } else if (header.find("name") != string::npos && header.find("first") != string::npos) {
                 name.first = data;
-            }
-            else if (header.find("gender") != string::npos) {
+            } else if (header.find("gender") != string::npos) {
                 Utils::toLowerStr(data);
                 if (data == "male")
                     gender = Gender::Male;
@@ -824,8 +819,7 @@ Student App::CSV::CSVToStudent(const List<string> &headers, const List<string> &
                     gender = Gender::Female;
                 else if (data == "other")
                     gender = Gender::Other;
-            }
-            else if (header.find("birth") != string::npos) {
+            } else if (header.find("birth") != string::npos) {
                 for (int pos = (int) data.find(' '); pos != string::npos; pos = (int) data.find(' '))
                     data.erase(pos, 1);
 
@@ -856,7 +850,7 @@ Student App::CSV::CSVToStudent(const List<string> &headers, const List<string> &
         }
     }
 
-    return { student_id, social_id, name, gender, birth };
+    return {student_id, social_id, name, gender, birth};
 }
 
 void App::CSV::studentToCSV(const shared_ptr<Student> &student, CSVIO::CSVWriter &writer, const bool write_header) {
@@ -864,25 +858,27 @@ void App::CSV::studentToCSV(const shared_ptr<Student> &student, CSVIO::CSVWriter
         writer << "Student ID" << "Last Name" << "First Name" << "Gender" << "Date of Birth" << "Social ID";
 
     writer << student->student_id
-            << student->name.last
-            << student->name.first
-            << genderStr[(int)student->gender]
-            << Utils::dateToStr(student->birth)
-            << student->social_id;
+           << student->name.last
+           << student->name.first
+           << genderStr[(int) student->gender]
+           << Utils::dateToStr(student->birth)
+           << student->social_id;
 }
 
 void App::CSV::studentsToCSV(const List<DataIter> &students, CSVIO::CSVWriter &writer) {
     writer.resetContent();
-    writer.newRow() << "No" << "Student ID" << "Last Name" << "First Name" << "Gender" << "Date of Birth" << "Social ID";
+    writer.newRow() << "No" << "Student ID" << "Last Name" << "First Name" << "Gender" << "Date of Birth"
+                    << "Social ID";
 
     int no = 0;
-    for(const auto& iter : students) {
+    for (const auto &iter: students) {
         if (!iter) continue;
         auto student = iter.ptr<Student>();
 
         writer.newRow();
 
-        ++no; writer << no;
+        ++no;
+        writer << no;
         studentToCSV(student, writer);
     }
 }
@@ -896,7 +892,7 @@ int App::addScores(const CSVData &csv, const DataIter &course) {
     auto rows = csv.getData();
     auto headers = csv.getHeaders();
 
-    for(const auto &row : rows) {
+    for (const auto &row: rows) {
         string student_id;
         FullName student_name;
 
@@ -907,8 +903,7 @@ int App::addScores(const CSVData &csv, const DataIter &course) {
 
                 if (header.find("student") != string::npos && header.find("id") != string::npos) {
                     student_id = data;
-                }
-                else if (header.find("name") != string::npos && header.find("full") != string::npos) {
+                } else if (header.find("name") != string::npos && header.find("full") != string::npos) {
                     student_name.first = data;
                 }
 

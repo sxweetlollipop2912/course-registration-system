@@ -39,32 +39,34 @@ void output(App &app) {
         std::cout << "  Default semester: no. " << semester->no << ": ";
         std::cout << semester->courses.size() << " course(s):\n";
 
-        for (const auto& c: semester->courses) {
+        for (const auto &c: semester->courses) {
             auto c_ptr = c.ptr<Course>();
             std::cout << "      Course " << c_ptr->id << '\n';
             std::cout << "          name: " << c_ptr->name << '\n';
             std::cout << "          teacher: " << c_ptr->teacher_name.toStr() << '\n';
 
-            std::cout << "          1st session: " << Utils::sessionToStr(c_ptr->sessions[0].start) << " - " << Utils::sessionToStr(c_ptr->sessions[0].end) << '\n';
-            std::cout << "          2nd session: " << Utils::sessionToStr(c_ptr->sessions[1].start) << " - " << Utils::sessionToStr(c_ptr->sessions[1].end) << '\n';
+            std::cout << "          1st session: " << Utils::sessionToStr(c_ptr->sessions[0].start) << " - "
+                      << Utils::sessionToStr(c_ptr->sessions[0].end) << '\n';
+            std::cout << "          2nd session: " << Utils::sessionToStr(c_ptr->sessions[1].start) << " - "
+                      << Utils::sessionToStr(c_ptr->sessions[1].end) << '\n';
         }
     }
 
     if (app.year()) {
         std::cout << "Classes:\n";
-        for (const auto& c: app.getAllClasses()) {
+        for (const auto &c: app.getAllClasses()) {
             auto c_ptr = c.ptr<Class>();
             std::cout << "  " << c_ptr->name << ": " << c_ptr->students.size() << " student(s)\n";
 
-            for (const auto& s: c_ptr->students) {
+            for (const auto &s: c_ptr->students) {
                 auto s_ptr = s.ptr<Student>();
                 std::cout << "      " << s_ptr->student_id << " - " << s_ptr->name.toStr() << ", ";
-                std::cout << (s_ptr->gender == Gender::Male? "male, " : "female, ");
+                std::cout << (s_ptr->gender == Gender::Male ? "male, " : "female, ");
                 std::cout << "social: " << s_ptr->social_id << ", ";
                 std::cout << "birth: " << Utils::dateToStr(s_ptr->birth) << ", ";
 
                 std::cout << "enrolling in " << s_ptr->courses.size() << " course(s):\n";
-                for (const auto& course: s_ptr->courses) {
+                for (const auto &course: s_ptr->courses) {
                     auto course_ptr = course.ptr<Course>();
                     std::cout << "          " << course_ptr->id << '\n';
                 }
@@ -74,11 +76,11 @@ void output(App &app) {
 
     if (app.semester()) {
         std::cout << "Courses:\n";
-        for (const auto& c: app.semester()->courses) {
+        for (const auto &c: app.semester()->courses) {
             auto c_ptr = c.ptr<Course>();
             std::cout << "  " << c_ptr->id << ": " << c_ptr->students.size() << " student(s)\n";
 
-            for (const auto& s: c_ptr->students) {
+            for (const auto &s: c_ptr->students) {
                 auto s_ptr = s.ptr<Student>();
                 std::cout << "      " << s_ptr->student_id << " - " << s_ptr->name.last << ' ' << s_ptr->name.first
                           << ", ";
@@ -121,8 +123,10 @@ int main() {
                 auto course = make_shared<Course>("CS" + to_string(i),
                                                   "Intro to CS",
                                                   FullName("Ten", "Ho"),
-                                                  Course::Session(Utils::mksession(2, 7, 30), Utils::mksession(2, 9, 10)),
-                                                  Course::Session(Utils::mksession(7, 7, 30), Utils::mksession(7, 9, 10)),
+                                                  Course::Session(Utils::mksession(2, 7, 30),
+                                                                  Utils::mksession(2, 9, 10)),
+                                                  Course::Session(Utils::mksession(7, 7, 30),
+                                                                  Utils::mksession(7, 9, 10)),
                                                   4,
                                                   50);
                 app.addCourse(course);
@@ -169,61 +173,47 @@ int main() {
     //app.login("21280009", ACCOUNT::DEFAULT_PASS);
     app.scenes.push(SceneType::Scene3);
 
-    while (!app.scenes.empty())
-    {
+    while (!app.scenes.empty()) {
         app.scenes.refresh = false;
         auto sceneNow = app.scenes.top();
 
-        if (sceneNow == SceneType::Scene0)
-        {
+        if (sceneNow == SceneType::Scene0) {
             scene0(window, app);
         }
-        if (sceneNow == SceneType::Scene1)
-        {
+        if (sceneNow == SceneType::Scene1) {
             scene1(window, app);
         }
-        if (sceneNow == SceneType::Scene2)
-        {
+        if (sceneNow == SceneType::Scene2) {
             scene2(window, app);
         }
-        if (sceneNow == SceneType::Scene3)
-        {
+        if (sceneNow == SceneType::Scene3) {
             scene3(window, app);
         }
-        if (sceneNow == SceneType::Scene4)
-        {
+        if (sceneNow == SceneType::Scene4) {
             scene4(window, app);
         }
-        if (sceneNow == SceneType::Scene5)
-        {
+        if (sceneNow == SceneType::Scene5) {
             scene5(window, app);
         }
-        if (sceneNow == SceneType::Scene7)
-        {
+        if (sceneNow == SceneType::Scene7) {
             scene7(window, app);
         }
-        if (sceneNow == SceneType::Scene9)
-        {
+        if (sceneNow == SceneType::Scene9) {
             scene9(window, app);
         }
-        if (sceneNow == SceneType::Scene10)
-        {
+        if (sceneNow == SceneType::Scene10) {
             scene10(window, app);
         }
-        if (sceneNow == SceneType::Scene11)
-        {
+        if (sceneNow == SceneType::Scene11) {
             scene11(window, app);
         }
-        if (sceneNow == SceneType::SceneModifyReg)
-        {
+        if (sceneNow == SceneType::SceneModifyReg) {
             modify_registration_scene(window, app);
         }
-        if (sceneNow == SceneType::SceneAddCourse)
-        {
+        if (sceneNow == SceneType::SceneAddCourse) {
             add_course_scene(window, app);
         }
-        if (sceneNow == SceneType::SceneModifyCourse)
-        {
+        if (sceneNow == SceneType::SceneModifyCourse) {
             modify_course_scene(window, app);
         }
     }
