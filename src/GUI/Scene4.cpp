@@ -341,7 +341,8 @@ void draw_score(List<DataIter> &students, List<Course> &allCourse, int numPage, 
         });
         if (sumScore == -1) {
             courseBox.set_text("!");
-        } else courseBox.set_text(double_to_string(sumScore / sumCre));
+        } else if (sumCre == 0) courseBox.set_text("X");
+        else courseBox.set_text(double_to_string(sumScore / sumCre));
         courseBox.set_box_position(sf::Vector2f(500 + cnt * 150, 150 + indexStudent * 50));
         courseBox.draw(*windowP, app->default_font);
         indexStudent++;
@@ -362,11 +363,14 @@ static void view_score() {
             allCourse.push_back(*coursePtr);
         });
     });
-
-    allCourse.unique();
-    allCourse.sort([](const Course &c1, const Course &c2) {
-        return c1.id < c2.id;
-    });
+    if (allCourse.size() != 0)
+    {
+        allCourse.unique();
+        allCourse.sort([](const Course& c1, const Course& c2) {
+            return c1.id < c2.id;
+            });
+    }
+    
 
     sf::Texture texture;
     texture.loadFromFile("assets/images/go_back.png");

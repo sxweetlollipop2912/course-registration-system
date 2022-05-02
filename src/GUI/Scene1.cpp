@@ -6,6 +6,10 @@ static App *app;
 static sf::RenderWindow *windowP;
 static Button_Textbox *currentYearButtonP;
 static Interaction *interactionP;
+static Input_Textbox* studenIdInputBoxP;
+
+
+static bool inCreate;
 
 static string to_string(int x) {
     string res;
@@ -90,6 +94,47 @@ static void create_new_year(int dummy) {
 
 }
 
+void add_staff_function(int dummy)
+{
+    inCreate = false;
+    auto csvData = CSVIO::tryParse("csv/" + studenIdInputBoxP->text);
+    app->addStaffs(csvData);
+}
+
+void add_staff(int dummy)
+{
+    Interaction interaction;
+    Textbox mainBackground("", defaultMediumCharSize, sf::Color::White,
+        sf::Vector2f(windowWidth / 2 - 300, windowHeight / 2 - 250), sf::Vector2f(600, 300),
+        sf::Color::Black);
+    mainBackground.set_outline(sf::Color::Blue, 4);
+
+    Textbox studenIdText("file Name:", defaultMediumCharSize, sf::Color::White, sf::Vector2f(windowWidth / 4 + 20, 275),
+        sf::Vector2f(130, 50), sf::Color::Transparent);
+    Textbox studenIdBox("", defaultMediumCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 4 + 170, 275),
+        sf::Vector2f(410, 50), sf::Color::White);
+    Input_Textbox studenIdInputBox(studenIdBox, 25, sf::Color::Blue);
+    interaction.add_input_textbox(studenIdInputBox);
+
+    Textbox enterBox("ENTER", defaultMediumCharSize, sf::Color::White,
+        sf::Vector2f(windowWidth / 2 - 65, windowHeight / 2 - 50), sf::Vector2f(130, 50), sf::Color::Blue);
+    Button_Textbox enterButton(enterBox, sf::Color::White);
+    interaction.add_button(enterButton, add_staff_function);
+
+    studenIdInputBoxP = &studenIdInputBox;
+
+    inCreate = true;
+    while (windowP->isOpen() && inCreate) {
+
+        windowP->clear(sf::Color::White);
+        mainBackground.draw(*windowP, app->default_font);
+        interaction.draw(*windowP, app->default_font);
+        studenIdText.draw(*windowP, app->default_font);
+        windowP->display();
+        interaction.interact(*windowP);
+    }
+}
+
 void scene1(sf::RenderWindow &window, App &_app) {
     windowP = &window;
     app = &_app;
@@ -111,6 +156,13 @@ void scene1(sf::RenderWindow &window, App &_app) {
                           sf::Color::Black);
     Button_Textbox createYearButton(createYearBox, sf::Color::Blue);
     interaction2.add_button(createYearButton, create_new_year);
+
+    Textbox addStaffBox("Add staff", defaultMediumCharSize, sf::Color::White,
+        sf::Vector2f(windowWidth / 2 - 100, 200), sf::Vector2f(200, 50), sf::Color::Black);
+    Button_Textbox addStaffButton(addStaffBox, sf::Color::Blue);
+    interaction.add_button(addStaffButton, add_staff);
+    interaction2.add_button(addStaffButton, add_staff);
+
 
 
     sf::Texture texture;
