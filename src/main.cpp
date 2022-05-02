@@ -144,8 +144,8 @@ int main() {
                 csvData = CSVIO::tryParse("./csv/21CTT2.csv");
                 app.addStudents(csvData, "21CTT2");
 
-                csvData = CSVIO::tryParse("./csv/21CTT3.csv");
-                app.addStudents(csvData, "21CTT3");
+//                csvData = CSVIO::tryParse("./csv/21CTT3.csv");
+//                app.addStudents(csvData, "21CTT3");
 
                 csvData = CSVIO::tryParse("./csv/CS4.csv");
                 app.addScores(csvData, app.semester()->getCourse("CS4"));
@@ -171,7 +171,7 @@ int main() {
     app.addStaff(make_shared<Staff>(ACCOUNT::ADMIN_USERNAME, ACCOUNT::ADMIN_PASS));
 
     //app.login("21280009", ACCOUNT::DEFAULT_PASS);
-    app.scenes.push(SceneType::Scene3);
+    app.scenes.push(SceneType::Scene0);
 
     while (!app.scenes.empty()) {
         app.scenes.refresh = false;

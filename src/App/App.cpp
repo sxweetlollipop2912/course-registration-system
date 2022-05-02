@@ -165,6 +165,10 @@ DataIter App::addStaff(const shared_ptr<Staff> &staff) {
     return addAccount(static_pointer_cast<Account>(staff));
 }
 
+int App::addStaffs(const CSVData &csv) {
+    return 0;
+}
+
 bool App::isLoggedIn() const {
     return user_iter;
 }

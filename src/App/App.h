@@ -115,6 +115,13 @@ public:
     /// > username already exists.\n
     DataIter addStaff(const shared_ptr<Staff> &staff);
 
+    /// Add staff accounts from CSV.\n\n
+    /// Needs CSVData.\n\n
+    /// Returns number of staffs successfully added. Adding fail when:\n
+    /// > Username is taken.\n
+    /// > Parsing fails.
+    int addStaffs(const CSVData &csv);
+
     /// Adds a new schoolyear to database.\n
     /// Needs a shared ptr of that schoolyear.\n\n
     /// True if succeeded, false if:\n
