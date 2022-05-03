@@ -6,45 +6,46 @@
 
 
 enum class SceneType {
-    Scene0,
-    Scene1,
-    Scene2,
-    Scene3,
-    Scene4,
-    Scene5,
-    Scene6,
-    Scene7,
-    Scene8,
-    Scene9,
-    Scene10,
-    Scene11,
-    SceneModifyReg,
-    SceneAddCourse,
-    SceneModifyCourse,
-    SceneModifyScore,
-    ImportScoreScene,
+	Scene0,
+	Scene1,
+	Scene2,
+	Scene3,
+	Scene4,
+	Scene5,
+	Scene6,
+	Scene7,
+	Scene8,
+	Scene9,
+	Scene10,
+	Scene11,
+	Scene12,
+	SceneModifyReg,
+	SceneAddCourse,
+	SceneModifyCourse,
+	SceneModifyScore,
+	ImportScoreScene,
 };
 
 class SceneManager {
 private:
-    List<SceneType> stack;
+	List<SceneType> stack;
 public:
-    DataIter arg;
-    bool refresh = false;
+	DataIter arg;
+	bool refresh = false;
 
-    SceneManager() = default;
+	SceneManager() = default;
 
-    SceneType top() const;
+	SceneType top() const;
 
-    int size() const;
+	int size() const;
 
-    bool empty() const;
+	bool empty() const;
 
-    void push(SceneType);
+	void push(SceneType);
 
-    void pop();
+	void pop();
 
-    void clear();
+	void clear();
 
-    void interact(sf::Event event);
+	void interact(sf::Event event);
 };
