@@ -56,8 +56,10 @@ void scene12(sf::RenderWindow &window, App &_app) {
 		sf::Vector2f(400, 50), sf::Color::White);
 	success_change.set_outline(sf::Color::Black);
 
+	password_change = false;
+
 	while (window.isOpen() && !app->scenes.empty() && app->scenes.top() == SceneType::Scene12) {
-		if (!ChangePassword) {
+		if (!password_change) {
 			Interaction interaction;
 
 			interaction.add_input_textbox(_PasswordInputBox);
@@ -66,7 +68,7 @@ void scene12(sf::RenderWindow &window, App &_app) {
 			interaction.add_button(ChangeButton, ChangePassword);
 			interaction.add_button(back_button, go_back);
 
-			while (window.isOpen() && !app->scenes.empty() && app->scenes.top() == SceneType::Scene12 && !ChangePassword) {
+			while (window.isOpen() && !app->scenes.empty() && app->scenes.top() == SceneType::Scene12 && !password_change) {
 				window.clear(sf::Color::White);
 
 				mainBackground.draw(window, app->default_font);

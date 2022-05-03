@@ -146,6 +146,11 @@ void add_staff(int dummy) {
     }
 }
 
+static void go_to_scene12(int dummy) {
+    app->scenes.push(SceneType::Scene12);
+}
+
+
 void scene1(sf::RenderWindow &window, App &_app) {
     windowP = &window;
     app = &_app;
@@ -188,6 +193,13 @@ void scene1(sf::RenderWindow &window, App &_app) {
     interaction.add_button(addStaffButton, add_staff);
     interaction2.add_button(addStaffButton, add_staff);
 
+    Textbox change_password_box("Change password", 18, sf::Color::Black,
+        sf::Vector2f(900, 0), sf::Vector2f(300, 50), sf::Color::Cyan);
+    Button_Textbox change_password_button(change_password_box, sf::Color::Yellow);
+    change_password_button.set_idle_outline(sf::Color::Blue);
+
+    interaction.add_button(change_password_button, go_to_scene12);
+    interaction2.add_button(change_password_button, go_to_scene12);
 
     sf::Texture texture;
     texture.loadFromFile("assets/images/go_back.png");
