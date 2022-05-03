@@ -2,8 +2,8 @@
 #include <ctime>
 
 #include "Scene5.h"
-#include "Constants.h"
-#include "Course.h"
+#include "../Constants.h"
+#include "../App/Course.h"
 
 using std::string, std::to_string, std::tm;
 

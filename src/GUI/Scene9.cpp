@@ -1,6 +1,6 @@
 #include "Scene9.h"
 #include "../App/Utils.h"
-#include "Constants.h"
+#include "../Constants.h"
 
 static std::string to_string(const Gender &gender) {
     switch (gender) {
