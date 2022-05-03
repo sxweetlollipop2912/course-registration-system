@@ -52,8 +52,7 @@ static void create_class_function(int dummy) {
         inCreate = !app->addClass(make_shared<Class>(classNameInputBoxP->text));
 }
 
-void stop_create_class(int dummy)
-{
+static void stop_create(int dummy) {
     inCreate = false;
 }
 
@@ -80,7 +79,7 @@ static void create_class() {
     sf::Texture texture;
     texture.loadFromFile("assets/images/go_back.png");
     Button_Sprite back_button = Button_Sprite(texture, sf::Vector2f(10, 5), sf::Vector2f(40, 40));
-    interaction.add_button(back_button, stop_create_class);
+    interaction.add_button(back_button, stop_create);
 
     interaction.add_input_textbox(classNameInputBox);
     interaction.add_button(enterButton, create_class_function);

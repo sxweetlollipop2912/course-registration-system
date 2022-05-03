@@ -33,8 +33,8 @@ enum class Gender {
 const string genderStr[] = {"Male", "Female", "Other", "Unknown"};
 
 struct FullName {
-    string first;
-    string last;
+    string first = "First";
+    string last = "Last";
 
     FullName() = default;
 

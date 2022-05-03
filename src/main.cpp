@@ -100,7 +100,7 @@ int main() {
 
 
     /// Add admin account ("admin", "admin").
-    app.addStaff(make_shared<Staff>(ACCOUNT::ADMIN_USERNAME, ACCOUNT::ADMIN_PASS, FullName("Admin")));
+    app.addStaff(make_shared<Staff>(ACCOUNT::ADMIN_USERNAME, ACCOUNT::ADMIN_PASS));
 
     //app.login("21280009", ACCOUNT::DEFAULT_PASS);
     app.scenes.push(SceneType::Scene0);

@@ -57,8 +57,7 @@ static void create_semester_function(int dummy) {
     }
 }
 
-void stop_create_semester(int dummy)
-{
+static void stop_create(int dummy) {
     inCreate = false;
 }
 
@@ -128,7 +127,7 @@ static void create_semester() {
     sf::Texture texture;
     texture.loadFromFile("assets/images/go_back.png");
     Button_Sprite back_button = Button_Sprite(texture, sf::Vector2f(10, 5), sf::Vector2f(40, 40));
-    interaction.add_button(back_button, stop_create_semester);
+    interaction.add_button(back_button, stop_create);
 
     inCreate = true;
     while (windowP->isOpen() && inCreate) {

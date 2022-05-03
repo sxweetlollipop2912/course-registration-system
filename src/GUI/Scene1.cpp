@@ -16,6 +16,10 @@ static void go_back(int dummy) {
     app->scenes.pop();
 }
 
+static void stop_create(int dummy) {
+    inCreate = false;
+}
+
 static void go_to_scene2(int dummy) {
     app->scenes.push(SceneType::Scene2);
 }
@@ -68,9 +72,15 @@ static void create_new_year(int dummy) {
     interaction.add_input_textbox(startInputBox);
     interaction.add_input_textbox(endInputBox);
 
+    sf::Texture texture;
+    texture.loadFromFile("assets/images/go_back.png");
+    Button_Sprite back_button = Button_Sprite(texture, sf::Vector2f(10, 5), sf::Vector2f(40, 40));
+    interaction.add_button(back_button, stop_create);
+
 
     interaction.add_button(enterButton, create_new_year_function);
-    while (windowP->isOpen() && app->year() == nullptr) {
+    inCreate = true;
+    while (windowP->isOpen() && app->year() == nullptr && inCreate) {
         windowP->clear(sf::Color::White);
         mainBackground.draw(*windowP, app->default_font);
         interaction.draw(*windowP, app->default_font);
@@ -88,11 +98,6 @@ static void create_new_year(int dummy) {
         interactionP->add_button(*currentYearButtonP, go_to_scene2);
     }
 
-}
-
-void stop_add_staff(int dummy)
-{
-    inCreate = false;
 }
 
 void add_staff_function(int dummy) {
@@ -123,7 +128,7 @@ void add_staff(int dummy) {
     sf::Texture texture;
     texture.loadFromFile("assets/images/go_back.png");
     Button_Sprite back_button = Button_Sprite(texture, sf::Vector2f(10, 5), sf::Vector2f(40, 40));
-    interaction.add_button(back_button, stop_add_staff);
+    interaction.add_button(back_button, stop_create);
 
     studenIdInputBoxP = &studenIdInputBox;
 
@@ -147,11 +152,16 @@ void scene1(sf::RenderWindow &window, App &_app) {
     auto user = app->user();
     Interaction interaction, interaction2;
 
-    Textbox nameText(
-            "Welcome, " + (string) (user->gender == Gender::Female ? "Ms. " : "Mr. ") + user->name.toStr() + ".",
-            defaultMediumCharSize, sf::Color::Black,
-            sf::Vector2f(10, 100), sf::Vector2f(200, 50),
-            sf::Color::Transparent);
+    string s;
+    if (user->username == ACCOUNT::ADMIN_USERNAME) {
+        s = "This is the administrator account.";
+    } else {
+        s = "Welcome, " + (string) (user->gender == Gender::Female ? "Ms. " : "Mr. ") + user->name.toStr() + ".";
+    }
+    Textbox nameText(s,
+                     defaultMediumCharSize, sf::Color::Black,
+                     sf::Vector2f(10, 100), sf::Vector2f(200, 50),
+                     sf::Color::Transparent);
     nameText.align_left();
 
     Textbox currentYearText("Current year", defaultMediumCharSize, sf::Color::Black,

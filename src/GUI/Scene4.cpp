@@ -19,8 +19,7 @@ Input_Textbox *yearInputBoxP;
 
 DataIter *clP;
 
-void stop_create(int dummy)
-{
+static void stop_create(int dummy) {
     inCreate = false;
 }
 
@@ -178,14 +177,6 @@ static void add_student() {
     interaction.add_button(enterButton, add_student_function);
 
 
-    sf::Texture texture;
-    texture.loadFromFile(PATH::IMAGES + "go_back.png");
-    Button_Sprite back_button(texture,
-                              sf::Vector2f(10, 5),
-                              sf::Vector2f(40, 40));
-    interaction.add_button(back_button, go_back);
-
-
     inCreate = true;
     while (windowP->isOpen() && inCreate) {
         windowP->clear(sf::Color::White);
@@ -238,14 +229,6 @@ static void import_student() {
     studenIdInputBoxP = &studenIdInputBox;
 
 
-    sf::Texture texture;
-    texture.loadFromFile(PATH::IMAGES + "go_back.png");
-    Button_Sprite back_button(texture,
-                              sf::Vector2f(10, 5),
-                              sf::Vector2f(40, 40));
-    interaction.add_button(back_button, go_back);
-
-
     inCreate = true;
     while (windowP->isOpen() && inCreate) {
         windowP->clear(sf::Color::White);
@@ -291,14 +274,6 @@ static void revome_student() {
     interaction.add_button(back_button, stop_create);
 
     studenIdInputBoxP = &studenIdInputBox;
-
-
-    sf::Texture texture;
-    texture.loadFromFile(PATH::IMAGES + "go_back.png");
-    Button_Sprite back_button(texture,
-                              sf::Vector2f(10, 5),
-                              sf::Vector2f(40, 40));
-    interaction.add_button(back_button, go_back);
 
 
     inCreate = true;
