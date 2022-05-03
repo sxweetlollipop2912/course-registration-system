@@ -5,9 +5,8 @@ static sf::RenderWindow *windowP;
 static bool inCreate;
 static Input_Textbox *classNameInputBoxP;
 
-static void go_back(int dummy) {
-    if (inCreate) inCreate = false;
-    else app->scenes.pop();
+static void go_back() {
+    app->scenes.pop();
 }
 
 static void draw_class(sf::Vector2i mousePos) {
@@ -53,6 +52,11 @@ static void create_class_function(int dummy) {
         inCreate = !app->addClass(make_shared<Class>(classNameInputBoxP->text));
 }
 
+void stop_create_class(int dummy)
+{
+    inCreate = false;
+}
+
 static void create_class() {
     Interaction interaction;
     Textbox mainBackground("", defaultMediumCharSize, sf::Color::White, sf::Vector2f(windowWidth / 4, windowHeight / 3),
@@ -73,14 +77,10 @@ static void create_class() {
                      sf::Color::Blue);
     Button_Textbox enterButton(enterBox, sf::Color::White);
 
-
     sf::Texture texture;
-    texture.loadFromFile(PATH::IMAGES + "go_back.png");
-    Button_Sprite back_button(texture,
-                              sf::Vector2f(10, 5),
-                              sf::Vector2f(40, 40));
-    interaction.add_button(back_button, go_back);
-
+    texture.loadFromFile("assets/images/go_back.png");
+    Button_Sprite back_button = Button_Sprite(texture, sf::Vector2f(10, 5), sf::Vector2f(40, 40));
+    interaction.add_button(back_button, stop_create_class);
 
     interaction.add_input_textbox(classNameInputBox);
     interaction.add_button(enterButton, create_class_function);
@@ -126,7 +126,7 @@ void scene3(sf::RenderWindow &window, App &_app) {
                         create_class();
                     }
                     if (mousePos.x >= 10 && mousePos.x <= 50 && mousePos.y >= 5 && mousePos.y <= 45) {
-                        go_back(0);
+                        go_back();
                         return;
                     }
                     clickClass(mousePos);

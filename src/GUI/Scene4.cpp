@@ -19,6 +19,11 @@ Input_Textbox *yearInputBoxP;
 
 DataIter *clP;
 
+void stop_create(int dummy)
+{
+    inCreate = false;
+}
+
 static string double_to_string(const double &val, int d = 2) {
     std::stringstream stream;
     stream << std::fixed << std::setprecision(d) << val;
@@ -147,6 +152,12 @@ static void add_student() {
     Input_Textbox monthInputBox(monthBox, 2, sf::Color::Blue);
     Input_Textbox yearInputBox(yearBox, 4, sf::Color::Blue);
 
+    sf::Texture texture;
+    texture.loadFromFile("assets/images/go_back.png");
+    Button_Sprite back_button = Button_Sprite(texture, sf::Vector2f(10, 5), sf::Vector2f(40, 40));
+
+    interaction.add_button(back_button, stop_create);
+
     interaction.add_input_textbox(dayInputBox);
     interaction.add_input_textbox(monthInputBox);
     interaction.add_input_textbox(yearInputBox);
@@ -219,6 +230,11 @@ static void import_student() {
     Button_Textbox enterButton(enterBox, sf::Color::White);
     interaction.add_button(enterButton, import_student_function);
 
+    sf::Texture texture;
+    texture.loadFromFile("assets/images/go_back.png");
+    Button_Sprite back_button = Button_Sprite(texture, sf::Vector2f(10, 5), sf::Vector2f(40, 40));
+    interaction.add_button(back_button, stop_create);
+
     studenIdInputBoxP = &studenIdInputBox;
 
 
@@ -268,6 +284,11 @@ static void revome_student() {
                      sf::Vector2f(windowWidth / 2 - 65, windowHeight / 2 - 50), sf::Vector2f(130, 50), sf::Color::Blue);
     Button_Textbox enterButton(enterBox, sf::Color::White);
     interaction.add_button(enterButton, revome_student_function);
+
+    sf::Texture texture;
+    texture.loadFromFile("assets/images/go_back.png");
+    Button_Sprite back_button = Button_Sprite(texture, sf::Vector2f(10, 5), sf::Vector2f(40, 40));
+    interaction.add_button(back_button, stop_create);
 
     studenIdInputBoxP = &studenIdInputBox;
 

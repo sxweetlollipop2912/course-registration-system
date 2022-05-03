@@ -9,11 +9,11 @@ static sf::RenderWindow *windowP;
 static Button_Textbox *currentYearButtonP;
 static Interaction *interactionP;
 static Input_Textbox *studenIdInputBoxP;
+
 static bool inCreate;
 
 static void go_back(int dummy) {
-    if (inCreate) inCreate = false;
-    else app->scenes.pop();
+    app->scenes.pop();
 }
 
 static void go_to_scene2(int dummy) {
@@ -69,17 +69,8 @@ static void create_new_year(int dummy) {
     interaction.add_input_textbox(endInputBox);
 
 
-    sf::Texture texture;
-    texture.loadFromFile(PATH::IMAGES + "go_back.png");
-    Button_Sprite back_button(texture,
-                              sf::Vector2f(10, 5),
-                              sf::Vector2f(40, 40));
-    interaction.add_button(back_button, go_back);
-
-
     interaction.add_button(enterButton, create_new_year_function);
-    inCreate = true;
-    while (windowP->isOpen() && inCreate) {
+    while (windowP->isOpen() && app->year() == nullptr) {
         windowP->clear(sf::Color::White);
         mainBackground.draw(*windowP, app->default_font);
         interaction.draw(*windowP, app->default_font);
@@ -97,6 +88,11 @@ static void create_new_year(int dummy) {
         interactionP->add_button(*currentYearButtonP, go_to_scene2);
     }
 
+}
+
+void stop_add_staff(int dummy)
+{
+    inCreate = false;
 }
 
 void add_staff_function(int dummy) {
@@ -124,17 +120,16 @@ void add_staff(int dummy) {
     Button_Textbox enterButton(enterBox, sf::Color::White);
     interaction.add_button(enterButton, add_staff_function);
 
-    studenIdInputBoxP = &studenIdInputBox;
-
     sf::Texture texture;
-    texture.loadFromFile(PATH::IMAGES + "go_back.png");
-    Button_Sprite back_button(texture,
-                              sf::Vector2f(10, 5),
-                              sf::Vector2f(40, 40));
-    interaction.add_button(back_button, go_back);
+    texture.loadFromFile("assets/images/go_back.png");
+    Button_Sprite back_button = Button_Sprite(texture, sf::Vector2f(10, 5), sf::Vector2f(40, 40));
+    interaction.add_button(back_button, stop_add_staff);
+
+    studenIdInputBoxP = &studenIdInputBox;
 
     inCreate = true;
     while (windowP->isOpen() && inCreate) {
+
         windowP->clear(sf::Color::White);
         mainBackground.draw(*windowP, app->default_font);
         interaction.draw(*windowP, app->default_font);
