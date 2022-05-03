@@ -31,6 +31,9 @@ public:
         data_type = DataType::Unknown;
     }
 
+    /// Checks if username is initialized.
+    bool valid() const;
+
     friend std::ostream &operator<<(std::ostream &os, const Account &obj) {
         os << (super &) obj;
 
@@ -160,7 +163,7 @@ public:
         return is;
     }
 
-    /// Basically checks if student_id and social_id is initiated.
+    /// Checks if student_id, social_id and username is initialized.
     bool valid() const;
 
     /// Returns a default Student if an exception was thrown.\n

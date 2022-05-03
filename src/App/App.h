@@ -47,6 +47,8 @@ private:
 
         static Student CSVToStudent(const List<string> &headers, const List<string> &row);
 
+        static Staff CSVToStaff(const List<string> &headers, const List<string> &row);
+
         static void
         studentToCSV(const shared_ptr<Student> &student, CSVIO::CSVWriter &writer, const bool write_header = false);
 

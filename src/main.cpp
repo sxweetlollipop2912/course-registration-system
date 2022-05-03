@@ -30,7 +30,7 @@ using std::make_shared, std::tm, std::dynamic_pointer_cast, std::to_string;
 int main() {
     sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight), "Courses", sf::Style::Close);
     App app;
-    app.load();
+    std::cout << "loading " << app.load() << '\n';
 //    {
 //        /// Add admin account ("admin", "admin").
 //        app.addStaff(make_shared<Staff>(ACCOUNT::ADMIN_USERNAME, ACCOUNT::ADMIN_PASS));
@@ -100,7 +100,7 @@ int main() {
 
 
     /// Add admin account ("admin", "admin").
-    app.addStaff(make_shared<Staff>(ACCOUNT::ADMIN_USERNAME, ACCOUNT::ADMIN_PASS));
+    app.addStaff(make_shared<Staff>(ACCOUNT::ADMIN_USERNAME, ACCOUNT::ADMIN_PASS, FullName("Admin")));
 
     //app.login("21280009", ACCOUNT::DEFAULT_PASS);
     app.scenes.push(SceneType::Scene0);

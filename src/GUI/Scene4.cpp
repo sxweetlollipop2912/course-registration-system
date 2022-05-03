@@ -25,14 +25,9 @@ static string double_to_string(const double &val, int d = 2) {
     return stream.str();
 }
 
-static string int_to_string(int x) {
-    string res = "";
-    while (x > 0) {
-        res.push_back(char(x % 10 + 48));
-        x /= 10;
-    }
-    reverse(res.begin(), res.end());
-    return res;
+static void go_back(int dummy) {
+    if (inCreate) inCreate = false;
+    else app->scenes.pop();
 }
 
 static void draw_student(DataIter &cl) {
@@ -170,9 +165,18 @@ static void add_student() {
                      sf::Color::Blue);
     Button_Textbox enterButton(enterBox, sf::Color::White);
     interaction.add_button(enterButton, add_student_function);
+
+
+    sf::Texture texture;
+    texture.loadFromFile(PATH::IMAGES + "go_back.png");
+    Button_Sprite back_button(texture,
+                              sf::Vector2f(10, 5),
+                              sf::Vector2f(40, 40));
+    interaction.add_button(back_button, go_back);
+
+
     inCreate = true;
     while (windowP->isOpen() && inCreate) {
-
         windowP->clear(sf::Color::White);
         mainBackground.draw(*windowP, app->default_font);
         interaction.draw(*windowP, app->default_font);
@@ -183,7 +187,9 @@ static void add_student() {
         genderText.draw(*windowP, app->default_font);
         birthText.draw(*windowP, app->default_font);
         windowP->display();
-        interaction.interact(*windowP);
+
+        auto event = interaction.interact(*windowP);
+        app->scenes.interact(event);
     }
 }
 
@@ -215,15 +221,25 @@ static void import_student() {
 
     studenIdInputBoxP = &studenIdInputBox;
 
+
+    sf::Texture texture;
+    texture.loadFromFile(PATH::IMAGES + "go_back.png");
+    Button_Sprite back_button(texture,
+                              sf::Vector2f(10, 5),
+                              sf::Vector2f(40, 40));
+    interaction.add_button(back_button, go_back);
+
+
     inCreate = true;
     while (windowP->isOpen() && inCreate) {
-
         windowP->clear(sf::Color::White);
         mainBackground.draw(*windowP, app->default_font);
         interaction.draw(*windowP, app->default_font);
         studenIdText.draw(*windowP, app->default_font);
         windowP->display();
-        interaction.interact(*windowP);
+
+        auto event = interaction.interact(*windowP);
+        app->scenes.interact(event);
     }
 }
 
@@ -255,15 +271,25 @@ static void revome_student() {
 
     studenIdInputBoxP = &studenIdInputBox;
 
+
+    sf::Texture texture;
+    texture.loadFromFile(PATH::IMAGES + "go_back.png");
+    Button_Sprite back_button(texture,
+                              sf::Vector2f(10, 5),
+                              sf::Vector2f(40, 40));
+    interaction.add_button(back_button, go_back);
+
+
     inCreate = true;
     while (windowP->isOpen() && inCreate) {
-
         windowP->clear(sf::Color::White);
         mainBackground.draw(*windowP, app->default_font);
         interaction.draw(*windowP, app->default_font);
         studenIdText.draw(*windowP, app->default_font);
         windowP->display();
-        interaction.interact(*windowP);
+
+        auto event = interaction.interact(*windowP);
+        app->scenes.interact(event);
     }
 }
 
@@ -396,7 +422,7 @@ static void view_score() {
 
     int numPage = 1;
     int totalPage = (allCourse.size() + 1 + 3) / 4;
-    Textbox numPageBox(int_to_string(numPage) + "/" + int_to_string(totalPage), defaultMediumCharSize, sf::Color::Black,
+    Textbox numPageBox(to_string(numPage) + "/" + to_string(totalPage), defaultMediumCharSize, sf::Color::Black,
                        sf::Vector2f(1000, 40), sf::Vector2f(50, 50), sf::Color::Transparent);
     while (windowP->isOpen()) {
         sf::Event event;
@@ -414,11 +440,11 @@ static void view_score() {
                     }
                     if (previous_button.inside(mousePos.x, mousePos.y)) {
                         numPage = max(numPage - 1, 1);
-                        numPageBox.set_text(int_to_string(numPage) + "/" + int_to_string(totalPage));
+                        numPageBox.set_text(to_string(numPage) + "/" + to_string(totalPage));
                     }
                     if (next_button.inside(mousePos.x, mousePos.y)) {
                         numPage = min(numPage + 1, totalPage);
-                        numPageBox.set_text(int_to_string(numPage) + "/" + int_to_string(totalPage));
+                        numPageBox.set_text(to_string(numPage) + "/" + to_string(totalPage));
                     }
                 }
             }

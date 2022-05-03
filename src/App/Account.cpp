@@ -149,7 +149,7 @@ shared_ptr<const Score> Student::getScore(const string &course_id) const {
 }
 
 bool Student::valid() const {
-    return !student_id.empty() && !social_id.empty();
+    return Account::valid() && !student_id.empty() && !social_id.empty();
 }
 
 bool Account::checkPassword(const string &input) const {
@@ -158,6 +158,10 @@ bool Account::checkPassword(const string &input) const {
 
 UserType Account::getUserType() const {
     return user_type;
+}
+
+bool Account::valid() const {
+    return !username.empty();
 }
 
 void Student::load(Database &database) {

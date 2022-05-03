@@ -8,8 +8,6 @@ namespace fs = std::filesystem;
 using std::shared_ptr, std::dynamic_pointer_cast, std::static_pointer_cast, std::min, std::stoi, std::exception, std::cerr;
 
 bool App::save() {
-    database.clean();
-
     fs::remove_all(PATH::SAVES);
     fs::create_directories(PATH::SAVES);
 
@@ -154,6 +152,9 @@ bool App::load() {
 }
 
 DataIter App::addAccount(const shared_ptr<Account> &account) {
+    if (!account->valid())
+        return {};
+
     if (database.data.find_if([&](const shared_ptr<Data> &ptr) {
         return (ptr->data_type == DataType::Student || ptr->data_type == DataType::Staff) &&
                dynamic_pointer_cast<Account>(ptr)->username == account->username;
@@ -169,7 +170,17 @@ DataIter App::addStaff(const shared_ptr<Staff> &staff) {
 }
 
 int App::addStaffs(const CSVData &csv) {
-    return 0;
+    int count = 0;
+
+    auto rows = csv.getData();
+    auto headers = csv.getHeaders();
+
+    for (const auto &row: rows) {
+        auto staff = make_shared<Staff>(CSV::CSVToStaff(headers, row));
+        count += (bool) addStaff(staff);
+    }
+
+    return count;
 }
 
 bool App::isLoggedIn() const {
@@ -371,8 +382,7 @@ int App::addStudents(const CSVData &csv, const DataIter &classroom) {
 
     for (const auto &row: rows) {
         auto student = make_shared<Student>(CSV::CSVToStudent(headers, row));
-        if (student->valid())
-            count += (bool) addStudent(student, classroom);
+        count += (bool) addStudent(student, classroom);
     }
 
     return count;
@@ -386,8 +396,7 @@ int App::addStudents(const CSVData &csv, const string &class_name) {
 
     for (const auto &row: rows) {
         auto student = make_shared<Student>(CSV::CSVToStudent(headers, row));
-        if (student->valid())
-            count += (bool) addStudent(student, class_name);
+        count += (bool) addStudent(student, class_name);
     }
 
     return count;
@@ -401,8 +410,7 @@ int App::addStudents(const CSVData &csv, const Data::UID &class_uid) {
 
     for (const auto &row: rows) {
         auto student = make_shared<Student>(CSV::CSVToStudent(headers, row));
-        if (student->valid())
-            count += (bool) addStudent(student, class_uid);
+        count += (bool) addStudent(student, class_uid);
     }
 
     return count;
@@ -422,8 +430,11 @@ DataIter App::addStudent(const shared_ptr<Student> &student, const DataIter &cla
     }) != database.data.end())
         return {};
 
+    auto data = addAccount(static_pointer_cast<Account>(student));
+    if (!data)
+        return {};
+
     student->classroom = classroom;
-    auto data = database.add(student);
     classroom.ptr<Class>()->addStudent(data);
 
     return data;
@@ -444,8 +455,11 @@ DataIter App::addStudent(const shared_ptr<Student> &student, const string &class
     }) != database.data.end())
         return {};
 
+    auto data = addAccount(static_pointer_cast<Account>(student));
+    if (!data)
+        return {};
+
     student->classroom = classroom;
-    auto data = database.add(student);
     classroom.ptr<Class>()->addStudent(data);
 
     return data;
@@ -466,8 +480,11 @@ DataIter App::addStudent(const shared_ptr<Student> &student, const Data::UID &cl
     }) != database.data.end())
         return {};
 
+    auto data = addAccount(static_pointer_cast<Account>(student));
+    if (!data)
+        return {};
+
     student->classroom = classroom;
-    auto data = database.add(student);
     classroom.ptr<Class>()->addStudent(data);
 
     return data;
@@ -868,6 +885,42 @@ Student App::CSV::CSVToStudent(const List<string> &headers, const List<string> &
     }
 
     return {student_id, social_id, name, gender, birth};
+}
+
+Staff App::CSV::CSVToStaff(const List<string> &headers, const List<string> &row) {
+    string username = {};
+    FullName name = {};
+    Gender gender = Gender::Unknown;
+
+    for (int i = 0; i < min(headers.size(), row.size()); i++) {
+        try {
+            auto header = headers[i];
+            auto data = row[i];
+
+            if (header.find("username") != string::npos) {
+                username = data;
+            } else if (header.find("name") != string::npos && header.find("last") != string::npos) {
+                name.last = data;
+            } else if (header.find("name") != string::npos && header.find("first") != string::npos) {
+                name.first = data;
+            } else if (header.find("gender") != string::npos) {
+                Utils::toLowerStr(data);
+                if (data == "male")
+                    gender = Gender::Male;
+                else if (data == "female")
+                    gender = Gender::Female;
+                else if (data == "other")
+                    gender = Gender::Other;
+            }
+        }
+        catch (exception &e) {
+            cerr << e.what() << std::endl;
+
+            return {};
+        }
+    }
+
+    return {username, name, gender};
 }
 
 void App::CSV::studentToCSV(const shared_ptr<Student> &student, CSVIO::CSVWriter &writer, const bool write_header) {

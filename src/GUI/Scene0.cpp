@@ -64,7 +64,7 @@ void scene0(sf::RenderWindow &window, App &app) {
             }
             return;
         }
-        window.clear(sf::Color::Green);
+        window.clear(sf::Color::White);
 
         mainBackground.draw(window, app.default_font);
 

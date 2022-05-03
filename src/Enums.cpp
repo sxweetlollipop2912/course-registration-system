@@ -20,5 +20,9 @@ FullName::FullName(const string &name) {
 }
 
 string FullName::toStr() const {
+    if (last.empty()) return first;
+    if (first.empty()) return last;
+    if (last.empty() && first.empty()) return {};
+
     return last + " " + first;
 }

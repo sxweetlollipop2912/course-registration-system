@@ -1,4 +1,6 @@
-#include "scene2.h"
+#include "Scene2.h"
+
+using std::to_string;
 
 static App *app;
 static sf::RenderWindow *windowP;
@@ -12,18 +14,9 @@ static Input_Textbox *dayInputBox2P;
 static Input_Textbox *monthInputBox2P;
 static Input_Textbox *yearInputBox2P;
 
-static string to_string(int x) {
-    string res = "";
-    while (x > 0) {
-        res.push_back(char(x % 10 + 48));
-        x /= 10;
-    }
-    reverse(res.begin(), res.end());
-    return res;
-}
-
-static void go_back() {
-    app->scenes.pop();
+static void go_back(int dummy) {
+    if (inCreate) inCreate = false;
+    else app->scenes.pop();
 }
 
 static void draw_semester(sf::RenderWindow &window, sf::Vector2i mousePos) {
@@ -128,6 +121,13 @@ static void create_semester() {
 
     interaction.add_button(enterButton, create_semester_function);
 
+    sf::Texture texture;
+    texture.loadFromFile(PATH::IMAGES + "go_back.png");
+    Button_Sprite back_button(texture,
+                              sf::Vector2f(10, 5),
+                              sf::Vector2f(40, 40));
+    interaction.add_button(back_button, go_back);
+
     inCreate = true;
     while (windowP->isOpen() && inCreate) {
         windowP->clear(sf::Color::White);
@@ -141,7 +141,9 @@ static void create_semester() {
 
         interaction.draw(*windowP, app->default_font);
         windowP->display();
-        interaction.interact(*windowP);
+
+        auto event = interaction.interact(*windowP);
+        app->scenes.interact(event);
     }
 }
 
@@ -160,7 +162,7 @@ static void clickSemester(sf::Vector2i mousePos) {
 
 static void remove_year() {
     app->deleteDefaultSchoolYear();
-    go_back();
+    go_back(0);
 }
 
 void scene2(sf::RenderWindow &window, App &_app) {
@@ -201,7 +203,7 @@ void scene2(sf::RenderWindow &window, App &_app) {
                         return;
                     }
                     if (mousePos.x >= 10 && mousePos.x <= 50 && mousePos.y >= 5 && mousePos.y <= 45) {
-                        go_back();
+                        go_back(0);
                         return;
                     }
                     if (mousePos.x >= windowWidth / 2 - 100 && mousePos.x <= windowWidth / 2 + 100 &&

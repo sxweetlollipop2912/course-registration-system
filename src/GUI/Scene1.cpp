@@ -1,5 +1,7 @@
 #include "Scene1.h"
 
+using std::to_string;
+
 static Input_Textbox *startInputBoxP;
 static Input_Textbox *endInputBoxP;
 static App *app;
@@ -7,22 +9,11 @@ static sf::RenderWindow *windowP;
 static Button_Textbox *currentYearButtonP;
 static Interaction *interactionP;
 static Input_Textbox *studenIdInputBoxP;
-
-
 static bool inCreate;
 
-static string to_string(int x) {
-    string res;
-    while (x > 0) {
-        res.push_back(char(x % 10 + 48));
-        x /= 10;
-    }
-    reverse(res.begin(), res.end());
-    return res;
-}
-
 static void go_back(int dummy) {
-    app->scenes.pop();
+    if (inCreate) inCreate = false;
+    else app->scenes.pop();
 }
 
 static void go_to_scene2(int dummy) {
@@ -30,10 +21,17 @@ static void go_to_scene2(int dummy) {
 }
 
 static void create_new_year_function(int dummy) {
-    int start_year = std::stoi(startInputBoxP->text);
-    int end_year = std::stoi(endInputBoxP->text);
-    auto default_year = make_shared<SchoolYear>(start_year, end_year);
-    app->addDefaultSchoolYear(default_year);
+    try {
+        int start_year = std::stoi(startInputBoxP->text);
+        int end_year = std::stoi(endInputBoxP->text);
+        auto default_year = make_shared<SchoolYear>(start_year, end_year);
+
+        inCreate = !app->addDefaultSchoolYear(default_year);
+    }
+    catch (std::exception &e) {
+        std::cerr << e.what() << std::endl;
+        inCreate = true;
+    }
 }
 
 static void create_new_year(int dummy) {
@@ -71,18 +69,33 @@ static void create_new_year(int dummy) {
     interaction.add_input_textbox(endInputBox);
 
 
+    sf::Texture texture;
+    texture.loadFromFile(PATH::IMAGES + "go_back.png");
+    Button_Sprite back_button(texture,
+                              sf::Vector2f(10, 5),
+                              sf::Vector2f(40, 40));
+    interaction.add_button(back_button, go_back);
+
+
     interaction.add_button(enterButton, create_new_year_function);
-    while (windowP->isOpen() && app->year() == nullptr) {
+    inCreate = true;
+    while (windowP->isOpen() && inCreate) {
         windowP->clear(sf::Color::White);
         mainBackground.draw(*windowP, app->default_font);
         interaction.draw(*windowP, app->default_font);
         startText.draw(*windowP, app->default_font);
         endText.draw(*windowP, app->default_font);
         windowP->display();
-        interaction.interact(*windowP);
+
+        auto event = interaction.interact(*windowP);
+        app->scenes.interact(event);
     }
-    currentYearButtonP->textbox.set_text(to_string(app->year()->start_year) + "-" + to_string(app->year()->end_year));
-    interactionP->add_button(*currentYearButtonP, go_to_scene2);
+
+    if (app->year()) {
+        currentYearButtonP->textbox.set_text(
+                to_string(app->year()->start_year) + "-" + to_string(app->year()->end_year));
+        interactionP->add_button(*currentYearButtonP, go_to_scene2);
+    }
 
 }
 
@@ -113,22 +126,39 @@ void add_staff(int dummy) {
 
     studenIdInputBoxP = &studenIdInputBox;
 
+    sf::Texture texture;
+    texture.loadFromFile(PATH::IMAGES + "go_back.png");
+    Button_Sprite back_button(texture,
+                              sf::Vector2f(10, 5),
+                              sf::Vector2f(40, 40));
+    interaction.add_button(back_button, go_back);
+
     inCreate = true;
     while (windowP->isOpen() && inCreate) {
-
         windowP->clear(sf::Color::White);
         mainBackground.draw(*windowP, app->default_font);
         interaction.draw(*windowP, app->default_font);
         studenIdText.draw(*windowP, app->default_font);
         windowP->display();
-        interaction.interact(*windowP);
+
+        auto event = interaction.interact(*windowP);
+        app->scenes.interact(event);
     }
 }
 
 void scene1(sf::RenderWindow &window, App &_app) {
     windowP = &window;
     app = &_app;
+    auto user = app->user();
     Interaction interaction, interaction2;
+
+    Textbox nameText(
+            "Welcome, " + (string) (user->gender == Gender::Female ? "Ms. " : "Mr. ") + user->name.toStr() + ".",
+            defaultMediumCharSize, sf::Color::Black,
+            sf::Vector2f(10, 100), sf::Vector2f(200, 50),
+            sf::Color::Transparent);
+    nameText.align_left();
+
     Textbox currentYearText("Current year", defaultMediumCharSize, sf::Color::Black,
                             sf::Vector2f(windowWidth / 2 - 100, windowHeight / 2 - 100), sf::Vector2f(200, 50),
                             sf::Color::Transparent);
@@ -158,6 +188,8 @@ void scene1(sf::RenderWindow &window, App &_app) {
     texture.loadFromFile("assets/images/go_back.png");
     Button_Sprite back_button = Button_Sprite(texture, sf::Vector2f(10, 5), sf::Vector2f(40, 40));
     interaction.add_button(back_button, go_back);
+    interaction2.add_button(back_button, go_back);
+
     interactionP = &interaction;
 
     if (app->year() != nullptr) {
@@ -177,14 +209,12 @@ void scene1(sf::RenderWindow &window, App &_app) {
         } else {
             window.clear(sf::Color::White);
             noCurrentYearText.draw(window, app->default_font);
+            nameText.draw(window, app->default_font);
             interaction2.draw(window, app->default_font);
             window.display();
 
             auto event = interaction2.interact(window);
             app->scenes.interact(event);
         }
-
     }
-
-
 }
