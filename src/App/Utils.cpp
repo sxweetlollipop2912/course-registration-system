@@ -111,34 +111,35 @@ tm Utils::strToSession(const string &s) {
 
 string Utils::tmToStr(const tm &time) {
     tm tmp = time;
-    mktime(&tmp);
-    string s = asctime(&tmp); // Mon Jan  1 00:00:00 1900\n
+    if (mktime(&tmp) == -1)
+        return {};
 
-    Utils::trimStr(s);
-    s.pop_back();
+    string wday_s[] = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
+    string mon_s[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
 
     // Mon Jan 1 00:00:00 1900
+    string s = wday_s[tmp.tm_wday] + " ";
+    s += mon_s[tmp.tm_mon] + " ";
+    s += (tmp.tm_hour < 10? "0" : "") + to_string(tmp.tm_hour) + ":";
+    s += (tmp.tm_min < 10? "0" : "") + to_string(tmp.tm_min) + ":";
+    s += (tmp.tm_sec < 10? "0" : "") + to_string(tmp.tm_sec) + " ";
+    s += to_string(tmp.tm_year + 1900);
+
     return s;
 }
 
 string Utils::sessionToStr(const tm &session) {
     tm tmp = session;
-    mktime(&tmp);
-    string s = asctime(&tmp); // Mon Jan  1 00:00:00 1900\n
+    if (mktime(&tmp) == -1)
+        return {};
 
-    auto pos = s.find("Jan");
-    if (pos != string::npos) s.erase(pos, 7);
-
-    pos = s.find(":00 1900");
-    if (pos != string::npos) s.erase(pos, 8);
-    else {
-        pos = s.find("1900");
-        if (pos != string::npos) s.erase(pos, 4);
-    }
-
-    s.pop_back();
+    string wday_s[] = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
 
     // Mon 00:00
+    string s = wday_s[tmp.tm_wday] + " ";
+    s += (tmp.tm_hour < 10? "0" : "") + to_string(tmp.tm_hour) + ":";
+    s += (tmp.tm_min < 10? "0" : "") + to_string(tmp.tm_min);
+
     return s;
 }
 
