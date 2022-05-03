@@ -8,6 +8,9 @@ namespace fs = std::filesystem;
 using std::shared_ptr, std::dynamic_pointer_cast, std::static_pointer_cast, std::min, std::stoi, std::exception, std::cerr;
 
 bool App::save() {
+    database.clean();
+
+    fs::remove_all(PATH::SAVES);
     fs::create_directories(PATH::SAVES);
 
     std::ofstream ofs(PATH::APP);

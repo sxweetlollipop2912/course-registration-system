@@ -6,7 +6,7 @@ static App *app;
 static sf::RenderWindow *windowP;
 static Button_Textbox *currentYearButtonP;
 static Interaction *interactionP;
-static Input_Textbox* studenIdInputBoxP;
+static Input_Textbox *studenIdInputBoxP;
 
 
 static bool inCreate;
@@ -21,14 +21,6 @@ static string to_string(int x) {
     return res;
 }
 
-static int to_int(string s) {
-    int sum = 0;
-    for (int i = 0; i < s.size(); i++) {
-        sum = sum * 10 + int(s[i]) - 48;
-    }
-    return sum;
-}
-
 static void go_back(int dummy) {
     app->scenes.pop();
 }
@@ -38,8 +30,8 @@ static void go_to_scene2(int dummy) {
 }
 
 static void create_new_year_function(int dummy) {
-    int start_year = to_int(startInputBoxP->text);
-    int end_year = to_int(endInputBoxP->text);
+    int start_year = std::stoi(startInputBoxP->text);
+    int end_year = std::stoi(endInputBoxP->text);
     auto default_year = make_shared<SchoolYear>(start_year, end_year);
     app->addDefaultSchoolYear(default_year);
 }
@@ -94,30 +86,28 @@ static void create_new_year(int dummy) {
 
 }
 
-void add_staff_function(int dummy)
-{
-    inCreate = false;
+void add_staff_function(int dummy) {
     auto csvData = CSVIO::tryParse("csv/" + studenIdInputBoxP->text);
-    app->addStaffs(csvData);
+    if (!csvData.empty() && app->addStaffs(csvData))
+        inCreate = false;
 }
 
-void add_staff(int dummy)
-{
+void add_staff(int dummy) {
     Interaction interaction;
     Textbox mainBackground("", defaultMediumCharSize, sf::Color::White,
-        sf::Vector2f(windowWidth / 2 - 300, windowHeight / 2 - 250), sf::Vector2f(600, 300),
-        sf::Color::Black);
+                           sf::Vector2f(windowWidth / 2 - 300, windowHeight / 2 - 250), sf::Vector2f(600, 300),
+                           sf::Color::Black);
     mainBackground.set_outline(sf::Color::Blue, 4);
 
     Textbox studenIdText("file Name:", defaultMediumCharSize, sf::Color::White, sf::Vector2f(windowWidth / 4 + 20, 275),
-        sf::Vector2f(130, 50), sf::Color::Transparent);
+                         sf::Vector2f(130, 50), sf::Color::Transparent);
     Textbox studenIdBox("", defaultMediumCharSize, sf::Color::Black, sf::Vector2f(windowWidth / 4 + 170, 275),
-        sf::Vector2f(410, 50), sf::Color::White);
+                        sf::Vector2f(410, 50), sf::Color::White);
     Input_Textbox studenIdInputBox(studenIdBox, 25, sf::Color::Blue);
     interaction.add_input_textbox(studenIdInputBox);
 
     Textbox enterBox("ENTER", defaultMediumCharSize, sf::Color::White,
-        sf::Vector2f(windowWidth / 2 - 65, windowHeight / 2 - 50), sf::Vector2f(130, 50), sf::Color::Blue);
+                     sf::Vector2f(windowWidth / 2 - 65, windowHeight / 2 - 50), sf::Vector2f(130, 50), sf::Color::Blue);
     Button_Textbox enterButton(enterBox, sf::Color::White);
     interaction.add_button(enterButton, add_staff_function);
 
@@ -158,11 +148,10 @@ void scene1(sf::RenderWindow &window, App &_app) {
     interaction2.add_button(createYearButton, create_new_year);
 
     Textbox addStaffBox("Add staff", defaultMediumCharSize, sf::Color::White,
-        sf::Vector2f(windowWidth / 2 - 100, 200), sf::Vector2f(200, 50), sf::Color::Black);
+                        sf::Vector2f(windowWidth / 2 - 100, 200), sf::Vector2f(200, 50), sf::Color::Black);
     Button_Textbox addStaffButton(addStaffBox, sf::Color::Blue);
     interaction.add_button(addStaffButton, add_staff);
     interaction2.add_button(addStaffButton, add_staff);
-
 
 
     sf::Texture texture;

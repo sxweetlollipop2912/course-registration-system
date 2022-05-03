@@ -97,23 +97,25 @@ void scene10(sf::RenderWindow &window, App &_app) {
         credits_cnt.set_outline(sf::Color::Black);
 
 
-        Textbox midterm_score((score->valid()? double_to_string(score->midterm) : "X"), 16, sf::Color::Black,
+        Textbox midterm_score((score->valid() ? double_to_string(score->midterm) : "X"), 16, sf::Color::Black,
                               sf::Vector2f(730, 100 + num_row * 50),
                               sf::Vector2f(100, 50), sf::Color::White);
         midterm_score.set_outline(sf::Color::Black);
 
 
-        Textbox other_score((score->valid()? double_to_string(score->other) : "X"), 16, sf::Color::Black, sf::Vector2f(830, 100 + num_row * 50),
+        Textbox other_score((score->valid() ? double_to_string(score->other) : "X"), 16, sf::Color::Black,
+                            sf::Vector2f(830, 100 + num_row * 50),
                             sf::Vector2f(100, 50), sf::Color::White);
         other_score.set_outline(sf::Color::Black);
 
 
-        Textbox final_score((score->valid()? double_to_string(score->final) : "X"), 16, sf::Color::Black, sf::Vector2f(930, 100 + num_row * 50),
+        Textbox final_score((score->valid() ? double_to_string(score->final) : "X"), 16, sf::Color::Black,
+                            sf::Vector2f(930, 100 + num_row * 50),
                             sf::Vector2f(100, 50), sf::Color::White);
         final_score.set_outline(sf::Color::Black);
 
 
-        Textbox total_score((score->valid()? double_to_string(score->total) : "X"), 16, sf::Color::Black,
+        Textbox total_score((score->valid() ? double_to_string(score->total) : "X"), 16, sf::Color::Black,
                             sf::Vector2f(1030, 100 + num_row * 50),
                             sf::Vector2f(100, 50), sf::Color::White);
         total_score.set_outline(sf::Color::Black);

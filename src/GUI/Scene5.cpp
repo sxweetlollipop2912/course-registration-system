@@ -27,7 +27,6 @@ static void go_back(int dummy) {
 static void go_to_scene7(int dummy) {
     dummy += num_page * page_size;
     app->scenes.arg = app->semester()->courses[dummy];
-    std::cout << "move to scene 7: " << dummy << '\n';
 
     app->scenes.push(SceneType::Scene7);
 }
@@ -53,13 +52,16 @@ static void go_to_modify_reg_scene(int dummy) {
 }
 
 static void modify_reg(int dummy) {
+    auto semester = app->semester();
+
     try {
         tm start = Utils::strToDate(regStartInput->text);
         tm end = Utils::strToDate(regEndInput->text);
 
         time_t mkstart = mktime(&start), mkend = mktime(&end);
 
-        if (mkstart != -1 && mkend != -1 && mkstart < mkend) {
+        if (mkstart != -1 && mkend != -1 && mkstart < mkend && mkstart >= mktime(&semester->start) &&
+            mkend <= mktime(&semester->end)) {
             auto &reg = app->semester()->reg_session;
             reg.start = start;
             reg.end = end;
@@ -94,9 +96,9 @@ static void add_course(int dummy) {
         }) &&
             credits >= 0 &&
             max_students >= 0) {
-            app->addCourse(course);
 
-            go_back(0);
+            if (app->addCourse(course))
+                go_back(0);
         }
     }
     catch (std::exception &e) {
@@ -110,9 +112,9 @@ static void delete_semester(int dummy) {
     app->scenes.push(SceneType::Scene2);
 }
 
-void addCourseScene(sf::RenderWindow &window, App &_app) {
+void addCourseScene(sf::RenderWindow &_window, App &_app) {
     app = &_app;
-    window = &window;
+    window = &_window;
     SceneType current_scene = SceneType::SceneAddCourse;
 
     auto year = app->year();
@@ -300,9 +302,9 @@ void addCourseScene(sf::RenderWindow &window, App &_app) {
     }
 }
 
-void modifyRegistrationScene(sf::RenderWindow &window, App &_app) {
+void modifyRegistrationScene(sf::RenderWindow &_window, App &_app) {
     app = &_app;
-    window = &window;
+    window = &_window;
     SceneType current_scene = SceneType::SceneModifyReg;
 
     auto year = app->year();
