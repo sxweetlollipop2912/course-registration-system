@@ -178,7 +178,7 @@ void modifyScoreScene(sf::RenderWindow &_window, App &_app) {
                        sf::Vector2f(padding_left + 170, midtermText.box.getPosition().y),
                        sf::Vector2f(410, 50),
                        sf::Color::White);
-    Input_Textbox midtermInputBox(midtermBox, 20, sf::Color::Blue);
+    Input_Textbox midtermInputBox(midtermBox, 4, sf::Color::Blue);
     interaction.add_input_textbox(midtermInputBox);
     midtermInput = &midtermInputBox;
 
@@ -196,7 +196,7 @@ void modifyScoreScene(sf::RenderWindow &_window, App &_app) {
                      sf::Vector2f(padding_left + 170, finalText.box.getPosition().y),
                      sf::Vector2f(410, 50),
                      sf::Color::White);
-    Input_Textbox finalInputBox(finalBox, 20, sf::Color::Blue);
+    Input_Textbox finalInputBox(finalBox, 4, sf::Color::Blue);
     interaction.add_input_textbox(finalInputBox);
     finalInput = &finalInputBox;
 
@@ -214,7 +214,7 @@ void modifyScoreScene(sf::RenderWindow &_window, App &_app) {
                      sf::Vector2f(padding_left + 170, totalText.box.getPosition().y),
                      sf::Vector2f(410, 50),
                      sf::Color::White);
-    Input_Textbox teacherInputBox(totalBox, 20, sf::Color::Blue);
+    Input_Textbox teacherInputBox(totalBox, 4, sf::Color::Blue);
     interaction.add_input_textbox(teacherInputBox);
     totalInput = &teacherInputBox;
 
@@ -232,7 +232,7 @@ void modifyScoreScene(sf::RenderWindow &_window, App &_app) {
                      sf::Vector2f(padding_left + 170, otherText.box.getPosition().y),
                      sf::Vector2f(410, 50),
                      sf::Color::White);
-    Input_Textbox otherInputBox(otherBox, 20, sf::Color::Blue);
+    Input_Textbox otherInputBox(otherBox, 4, sf::Color::Blue);
     interaction.add_input_textbox(otherInputBox);
     otherInput = &otherInputBox;
 

@@ -159,7 +159,7 @@ void modifyCourseScene(sf::RenderWindow &_window, App &_app) {
                   sf::Vector2f(padding_left + 170, idText.box.getPosition().y),
                   sf::Vector2f(410, 50),
                   sf::Color::White);
-    Input_Textbox idInputBox(idBox, 20, sf::Color::Blue);
+    Input_Textbox idInputBox(idBox, 10, sf::Color::Blue);
     interaction.add_input_textbox(idInputBox);
     idInput = &idInputBox;
 
@@ -177,7 +177,7 @@ void modifyCourseScene(sf::RenderWindow &_window, App &_app) {
                     sf::Vector2f(padding_left + 170, nameText.box.getPosition().y),
                     sf::Vector2f(410, 50),
                     sf::Color::White);
-    Input_Textbox nameInputBox(nameBox, 20, sf::Color::Blue);
+    Input_Textbox nameInputBox(nameBox, 50, sf::Color::Blue);
     interaction.add_input_textbox(nameInputBox);
     nameInput = &nameInputBox;
 
@@ -195,7 +195,7 @@ void modifyCourseScene(sf::RenderWindow &_window, App &_app) {
                        sf::Vector2f(padding_left + 170, teacherText.box.getPosition().y),
                        sf::Vector2f(410, 50),
                        sf::Color::White);
-    Input_Textbox teacherInputBox(teacherBox, 20, sf::Color::Blue);
+    Input_Textbox teacherInputBox(teacherBox, 30, sf::Color::Blue);
     interaction.add_input_textbox(teacherInputBox);
     teacherInput = &teacherInputBox;
 
@@ -213,7 +213,7 @@ void modifyCourseScene(sf::RenderWindow &_window, App &_app) {
                    sf::Vector2f(padding_left + 170, ss1Text.box.getPosition().y),
                    sf::Vector2f(410, 50),
                    sf::Color::White);
-    Input_Textbox ss1InputBox(ss1Box, 20, sf::Color::Blue);
+    Input_Textbox ss1InputBox(ss1Box, 10, sf::Color::Blue);
     interaction.add_input_textbox(ss1InputBox);
     ss1Input = &ss1InputBox;
 
@@ -231,7 +231,7 @@ void modifyCourseScene(sf::RenderWindow &_window, App &_app) {
                    sf::Vector2f(padding_left + 170, ss2Text.box.getPosition().y),
                    sf::Vector2f(410, 50),
                    sf::Color::White);
-    Input_Textbox ss2InputBox(ss2Box, 20, sf::Color::Blue);
+    Input_Textbox ss2InputBox(ss2Box, 10, sf::Color::Blue);
     interaction.add_input_textbox(ss2InputBox);
     ss2Input = &ss2InputBox;
 
@@ -249,7 +249,7 @@ void modifyCourseScene(sf::RenderWindow &_window, App &_app) {
                       sf::Vector2f(padding_left + 170, creditText.box.getPosition().y),
                       sf::Vector2f(410, 50),
                       sf::Color::White);
-    Input_Textbox creditInputBox(creditBox, 20, sf::Color::Blue);
+    Input_Textbox creditInputBox(creditBox, 2, sf::Color::Blue);
     interaction.add_input_textbox(creditInputBox);
     creditsInput = &creditInputBox;
 
@@ -267,7 +267,7 @@ void modifyCourseScene(sf::RenderWindow &_window, App &_app) {
                            sf::Vector2f(padding_left + 170, maxStudentsText.box.getPosition().y),
                            sf::Vector2f(410, 50),
                            sf::Color::White);
-    Input_Textbox maxStudentsInputBox(maxStudentsBox, 20, sf::Color::Blue);
+    Input_Textbox maxStudentsInputBox(maxStudentsBox, 3, sf::Color::Blue);
     interaction.add_input_textbox(maxStudentsInputBox);
     maxStudentsInput = &maxStudentsInputBox;
 

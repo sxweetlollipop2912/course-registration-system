@@ -112,7 +112,7 @@ tm Utils::strToSession(const string &s) {
 string Utils::tmToStr(const tm &time) {
     tm tmp = time;
     if (mktime(&tmp) == -1)
-        return {};
+        return "Mon Jan 0 00:00:00 1900";
 
     string wday_s[] = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
     string mon_s[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
@@ -120,6 +120,7 @@ string Utils::tmToStr(const tm &time) {
     // Mon Jan 1 00:00:00 1900
     string s = wday_s[tmp.tm_wday] + " ";
     s += mon_s[tmp.tm_mon] + " ";
+    s += to_string(tmp.tm_mday) + " ";
     s += (tmp.tm_hour < 10? "0" : "") + to_string(tmp.tm_hour) + ":";
     s += (tmp.tm_min < 10? "0" : "") + to_string(tmp.tm_min) + ":";
     s += (tmp.tm_sec < 10? "0" : "") + to_string(tmp.tm_sec) + " ";
@@ -131,7 +132,7 @@ string Utils::tmToStr(const tm &time) {
 string Utils::sessionToStr(const tm &session) {
     tm tmp = session;
     if (mktime(&tmp) == -1)
-        return {};
+        return "Mon 00:00";
 
     string wday_s[] = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
 
