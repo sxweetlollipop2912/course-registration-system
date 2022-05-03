@@ -8,7 +8,6 @@ static Button_Textbox *currentYearButtonP;
 static Interaction *interactionP;
 static Input_Textbox *studenIdInputBoxP;
 
-
 static bool inCreate;
 
 static string to_string(int x) {
@@ -86,6 +85,11 @@ static void create_new_year(int dummy) {
 
 }
 
+void stop_add_staff(int dummy)
+{
+    inCreate = false;
+}
+
 void add_staff_function(int dummy) {
     auto csvData = CSVIO::tryParse("csv/" + studenIdInputBoxP->text);
     if (!csvData.empty() && app->addStaffs(csvData))
@@ -110,6 +114,11 @@ void add_staff(int dummy) {
                      sf::Vector2f(windowWidth / 2 - 65, windowHeight / 2 - 50), sf::Vector2f(130, 50), sf::Color::Blue);
     Button_Textbox enterButton(enterBox, sf::Color::White);
     interaction.add_button(enterButton, add_staff_function);
+
+    sf::Texture texture;
+    texture.loadFromFile("assets/images/go_back.png");
+    Button_Sprite back_button = Button_Sprite(texture, sf::Vector2f(10, 5), sf::Vector2f(40, 40));
+    interaction.add_button(back_button, stop_add_staff);
 
     studenIdInputBoxP = &studenIdInputBox;
 

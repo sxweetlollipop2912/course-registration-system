@@ -52,6 +52,11 @@ static void create_class_function(int dummy) {
         inCreate = !app->addClass(make_shared<Class>(classNameInputBoxP->text));
 }
 
+void stop_create_class(int dummy)
+{
+    inCreate = false;
+}
+
 static void create_class() {
     Interaction interaction;
     Textbox mainBackground("", defaultMediumCharSize, sf::Color::White, sf::Vector2f(windowWidth / 4, windowHeight / 3),
@@ -71,6 +76,11 @@ static void create_class() {
                      sf::Vector2f(windowWidth / 2 - 65, windowHeight / 3 + 235), sf::Vector2f(130, 50),
                      sf::Color::Blue);
     Button_Textbox enterButton(enterBox, sf::Color::White);
+
+    sf::Texture texture;
+    texture.loadFromFile("assets/images/go_back.png");
+    Button_Sprite back_button = Button_Sprite(texture, sf::Vector2f(10, 5), sf::Vector2f(40, 40));
+    interaction.add_button(back_button, stop_create_class);
 
     interaction.add_input_textbox(classNameInputBox);
     interaction.add_button(enterButton, create_class_function);
