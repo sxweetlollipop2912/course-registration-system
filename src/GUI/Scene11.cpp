@@ -21,7 +21,7 @@ static void next(int dummy) {
 static void toggle_enroll_course(int i) {
     int offset = num_page * page_size;
     auto student = app->user_iter;
-    auto course = app->default_semester_iter.ptr<Semester>()->courses[offset + i].ptr<Course>();
+    auto course = app->semester()->courses[offset + i].ptr<Course>();
     if (course->getStudent(student.ptr<Student>()->student_id).empty())
         data_change = app->enroll(student, course->id);
     else
@@ -31,11 +31,17 @@ static void toggle_enroll_course(int i) {
 void scene11(sf::RenderWindow &window, App &_app) {
     app = &_app;
     auto student = app->user_iter.ptr<Student>();
-    auto semester = app->default_semester_iter.ptr<Semester>();
+    auto semester = app->semester();
+
+    if (!semester) {
+        go_back(0);
+        return;
+    }
+
     semester->sortCourse();
 
     bool enrollable = semester->reg_session.isOngoing();
-    auto courses = student->getCoursesInSemester(app->default_semester_iter.uid());
+    auto courses = student->getCoursesInSemester(app->semester()->uid);
     if (enrollable)
         courses = semester->courses;
 

@@ -57,10 +57,11 @@ static void export_students(int dummy) {
 }
 
 static void delete_course(int dummy) {
-    app->deleteCourse(app->scenes.arg);
-    app->scenes.arg.clear();
+    if (app->deleteCourse(app->scenes.arg)) {
+        app->scenes.arg.clear();
 
-    app->scenes.pop();
+        app->scenes.pop();
+    }
 }
 
 static void erase_score(int dummy) {
@@ -82,10 +83,10 @@ static void modify_score(int dummy) {
         double total = std::stod(totalInput->text);
         double other = std::stod(otherInput->text);
 
-        score->midterm = std::max((double)-1, midterm);
-        score->final = std::max((double)-1, final);
-        score->total = std::max((double)-1, total);
-        score->other = std::max((double)-1, other);
+        score->midterm = std::max((double) -1, midterm);
+        score->final = std::max((double) -1, final);
+        score->total = std::max((double) -1, total);
+        score->other = std::max((double) -1, other);
 
         go_back(0);
     }
@@ -97,15 +98,14 @@ static void modify_score(int dummy) {
 static void import_score(int dummy) {
     auto csvData = CSVIO::tryParse("./csv/" + importSource->text);
 
-    if (!csvData.empty()) {
-        app->addScores(csvData, app->scenes.arg);
+    if (!csvData.empty() && app->addScores(csvData, app->scenes.arg)) {
         go_back(0);
     }
 }
 
-void modifyScoreScene(sf::RenderWindow &window, App &_app) {
+void modifyScoreScene(sf::RenderWindow &_window, App &_app) {
     app = &_app;
-    window = &window;
+    window = &_window;
     SceneType current_scene = SceneType::SceneModifyScore;
 
     auto year = app->year();
@@ -172,7 +172,7 @@ void modifyScoreScene(sf::RenderWindow &window, App &_app) {
                         sf::Vector2f(130, 50),
                         sf::Color::Cyan);
     texts.push_back(midtermText);
-    Textbox midtermBox((score->valid()? double_to_string(score->midterm) : "0"),
+    Textbox midtermBox((score->valid() ? double_to_string(score->midterm) : "0"),
                        GUI::defaultSmallCharSize,
                        sf::Color::Black,
                        sf::Vector2f(padding_left + 170, midtermText.box.getPosition().y),
@@ -190,7 +190,7 @@ void modifyScoreScene(sf::RenderWindow &window, App &_app) {
                       sf::Vector2f(130, 50),
                       sf::Color::Cyan);
     texts.push_back(finalText);
-    Textbox finalBox((score->valid()? double_to_string(score->final) : "0"),
+    Textbox finalBox((score->valid() ? double_to_string(score->final) : "0"),
                      GUI::defaultSmallCharSize,
                      sf::Color::Black,
                      sf::Vector2f(padding_left + 170, finalText.box.getPosition().y),
@@ -208,7 +208,7 @@ void modifyScoreScene(sf::RenderWindow &window, App &_app) {
                       sf::Vector2f(130, 50),
                       sf::Color::Cyan);
     texts.push_back(totalText);
-    Textbox totalBox((score->valid()? double_to_string(score->total) : "0"),
+    Textbox totalBox((score->valid() ? double_to_string(score->total) : "0"),
                      GUI::defaultSmallCharSize,
                      sf::Color::Black,
                      sf::Vector2f(padding_left + 170, totalText.box.getPosition().y),
@@ -226,7 +226,7 @@ void modifyScoreScene(sf::RenderWindow &window, App &_app) {
                       sf::Vector2f(130, 50),
                       sf::Color::Cyan);
     texts.push_back(otherText);
-    Textbox otherBox((score->valid()? double_to_string(score->other) : "0"),
+    Textbox otherBox((score->valid() ? double_to_string(score->other) : "0"),
                      GUI::defaultSmallCharSize,
                      sf::Color::Black,
                      sf::Vector2f(padding_left + 170, otherText.box.getPosition().y),
@@ -267,9 +267,9 @@ void modifyScoreScene(sf::RenderWindow &window, App &_app) {
     }
 }
 
-void importScoreScene(sf::RenderWindow &window, App &_app) {
+void importScoreScene(sf::RenderWindow &_window, App &_app) {
     app = &_app;
-    window = &window;
+    window = &_window;
     SceneType current_scene = SceneType::ImportScoreScene;
 
     shared_ptr<Course> course;
@@ -313,18 +313,18 @@ void importScoreScene(sf::RenderWindow &window, App &_app) {
 
 
     Textbox pathText("Filename",
-                        GUI::defaultSmallCharSize,
-                        sf::Color::Black,
-                        sf::Vector2f(padding_left + 20, padding_top + (current_y += diff_y)),
-                        sf::Vector2f(130, 50),
-                        sf::Color::Cyan);
+                     GUI::defaultSmallCharSize,
+                     sf::Color::Black,
+                     sf::Vector2f(padding_left + 20, padding_top + (current_y += diff_y)),
+                     sf::Vector2f(130, 50),
+                     sf::Color::Cyan);
     texts.push_back(pathText);
     Textbox pathBox({},
-                       GUI::defaultSmallCharSize,
-                       sf::Color::Black,
-                       sf::Vector2f(padding_left + 170, pathText.box.getPosition().y),
-                       sf::Vector2f(410, 50),
-                       sf::Color::White);
+                    GUI::defaultSmallCharSize,
+                    sf::Color::Black,
+                    sf::Vector2f(padding_left + 170, pathText.box.getPosition().y),
+                    sf::Vector2f(410, 50),
+                    sf::Color::White);
     Input_Textbox pathInputBox(pathBox, 20, sf::Color::Blue);
     interaction.add_input_textbox(pathInputBox);
     importSource = &pathInputBox;
@@ -521,7 +521,7 @@ void scene8(sf::RenderWindow &_window, App &_app) {
     Button_Sprite next_button(texture, sf::Vector2f(950, current_y), sf::Vector2f(40, 40));
 
     Textbox import_text("Import score", GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(0, current_y),
-                               sf::Vector2f(150, 40), sf::Color::White);
+                        sf::Vector2f(150, 40), sf::Color::White);
     import_text.set_box_color(sf::Color::Green);
     import_text.align_center();
     Button_Textbox import_button(import_text, sf::Color::Yellow);
@@ -572,19 +572,19 @@ void scene8(sf::RenderWindow &_window, App &_app) {
     student_name_header.set_outline(sf::Color::Black);
 
     Textbox midterm_header("Midterm", GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(650, current_y),
-                         sf::Vector2f(100, 50), sf::Color::White);
+                           sf::Vector2f(100, 50), sf::Color::White);
     midterm_header.set_outline(sf::Color::Black);
 
     Textbox final_header("Final", GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(750, current_y),
-                              sf::Vector2f(100, 50), sf::Color::White);
+                         sf::Vector2f(100, 50), sf::Color::White);
     final_header.set_outline(sf::Color::Black);
 
     Textbox total_header("Total", GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(850, current_y),
-                              sf::Vector2f(100, 50), sf::Color::White);
+                         sf::Vector2f(100, 50), sf::Color::White);
     total_header.set_outline(sf::Color::Black);
 
     Textbox other_header("Other", GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(950, current_y),
-                              sf::Vector2f(100, 50), sf::Color::White);
+                         sf::Vector2f(100, 50), sf::Color::White);
     other_header.set_outline(sf::Color::Black);
 
     Textbox student_action_header("Action", GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(1050, current_y),
@@ -642,28 +642,28 @@ void scene8(sf::RenderWindow &_window, App &_app) {
             texts.push_back(name);
 
 
-            Textbox midterm((score->valid()? double_to_string(score->midterm) : "X"),
-                          GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(650, current_y),
-                          sf::Vector2f(100, height), sf::Color::White);
+            Textbox midterm((score->valid() ? double_to_string(score->midterm) : "X"),
+                            GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(650, current_y),
+                            sf::Vector2f(100, height), sf::Color::White);
             midterm.set_outline(sf::Color::Black);
             texts.push_back(midterm);
 
 
-            Textbox final((score->valid()? double_to_string(score->final) : "X"),
-                            GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(750, current_y),
-                            sf::Vector2f(100, height), sf::Color::White);
+            Textbox final((score->valid() ? double_to_string(score->final) : "X"),
+                          GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(750, current_y),
+                          sf::Vector2f(100, height), sf::Color::White);
             final.set_outline(sf::Color::Black);
             texts.push_back(final);
 
-            Textbox total((score->valid()? double_to_string(score->total) : "X"),
-                            GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(850, current_y),
-                            sf::Vector2f(100, height), sf::Color::White);
+            Textbox total((score->valid() ? double_to_string(score->total) : "X"),
+                          GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(850, current_y),
+                          sf::Vector2f(100, height), sf::Color::White);
             total.set_outline(sf::Color::Black);
             texts.push_back(total);
 
-            Textbox other((score->valid()? double_to_string(score->other) : "X"),
-                            GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(950, current_y),
-                            sf::Vector2f(100, height), sf::Color::White);
+            Textbox other((score->valid() ? double_to_string(score->other) : "X"),
+                          GUI::defaultSmallCharSize, sf::Color::Black, sf::Vector2f(950, current_y),
+                          sf::Vector2f(100, height), sf::Color::White);
             other.set_outline(sf::Color::Black);
             texts.push_back(other);
 

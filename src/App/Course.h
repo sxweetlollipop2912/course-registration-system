@@ -159,13 +159,12 @@ public:
     DataIter course;
     double midterm{}, final{}, total{}, other{};
 
-    Score() {erase();}
+    Score() { erase(); }
 
-    Score(const DataIter &course) : course{course} {erase();}
+    Score(const DataIter &course) : course{course} { erase(); }
 
     Score(const DataIter &course, const double midterm, const double final, const double total, const double other)
-            : course{course}, midterm{midterm}, final{final}, total{total}, other{other}
-            {erase();}
+            : course{course}, midterm{midterm}, final{final}, total{total}, other{other} { erase(); }
 
     bool valid() const;
 

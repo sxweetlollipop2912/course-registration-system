@@ -48,8 +48,8 @@ static void clickClass(sf::Vector2i mousePos) {
 }
 
 static void create_class_function(int dummy) {
-    inCreate = false;
-    if (classNameInputBoxP->text.size() > 0) app->addClass(make_shared<Class>(classNameInputBoxP->text));
+    if (!classNameInputBoxP->text.empty())
+        inCreate = !app->addClass(make_shared<Class>(classNameInputBoxP->text));
 }
 
 static void create_class() {

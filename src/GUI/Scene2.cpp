@@ -22,14 +22,6 @@ static string to_string(int x) {
     return res;
 }
 
-static int to_int(string s) {
-    int sum = 0;
-    for (int i = 0; i < s.size(); i++) {
-        sum = sum * 10 + int(s[i]) - 48;
-    }
-    return sum;
-}
-
 static void go_back() {
     app->scenes.pop();
 }
@@ -49,19 +41,28 @@ static void draw_semester(sf::RenderWindow &window, sf::Vector2i mousePos) {
 }
 
 static void create_semester_function(int dummy) {
-    inCreate = false;
-    int maxNo = 0;
-    for (auto &semester: app->year()->semesters) {
-        auto ptr = semester.ptr<Semester>(); // ptr cua semester
-        if (ptr->no > maxNo) maxNo = ptr->no;
+    try {
+        int maxNo = 0;
+        for (auto &semester: app->year()->semesters) {
+            auto ptr = semester.ptr<Semester>(); // ptr cua semester
+            if (ptr->no > maxNo) maxNo = ptr->no;
+        }
+        maxNo++;
+        auto semesterTmp = make_shared<Semester>(maxNo,
+                                                 Utils::mktm(std::stoi(dayInputBoxP->text),
+                                                             std::stoi(monthInputBoxP->text),
+                                                             std::stoi(yearInputBoxP->text)),
+                                                 Utils::mktm(std::stoi(dayInputBox2P->text),
+                                                             std::stoi(monthInputBox2P->text),
+                                                             std::stoi(yearInputBox2P->text)));
+
+        inCreate = !app->addDefaultSemester(semesterTmp);
     }
-    maxNo++;
-    auto semesterTmp = make_shared<Semester>(maxNo,
-                                             Utils::mktm(to_int(dayInputBoxP->text), to_int(monthInputBoxP->text),
-                                                         to_int(yearInputBoxP->text)),
-                                             Utils::mktm(to_int(dayInputBox2P->text), to_int(monthInputBox2P->text),
-                                                         to_int(yearInputBox2P->text)));
-    app->addDefaultSemester(semesterTmp);
+    catch (std::exception &e) {
+        std::cerr << e.what() << std::endl;
+
+        inCreate = true;
+    }
 }
 
 static void create_semester() {

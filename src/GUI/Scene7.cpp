@@ -98,9 +98,9 @@ static void modify_course(int dummy) {
     }
 }
 
-void modifyCourseScene(sf::RenderWindow &window, App &_app) {
+void modifyCourseScene(sf::RenderWindow &_window, App &_app) {
     app = &_app;
-    window = &window;
+    window = &_window;
     SceneType current_scene = SceneType::SceneModifyCourse;
 
     auto year = app->year();

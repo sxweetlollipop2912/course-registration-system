@@ -222,7 +222,6 @@ sf::Event Interaction::interact(sf::RenderWindow &window) {
     sf::Event event{};
     window.waitEvent(event);
     if (event.type == sf::Event::Closed) {
-        std::cout << "closing\n";
         window.close();
     } else if (event.type == sf::Event::MouseMoved) {
         int x = event.mouseMove.x;

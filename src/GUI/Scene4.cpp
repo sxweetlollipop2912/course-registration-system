@@ -35,14 +35,6 @@ static string int_to_string(int x) {
     return res;
 }
 
-static int to_int(string s) {
-    int sum = 0;
-    for (int i = 0; i < (int) s.size(); i++) {
-        sum = sum * 10 + int(s[i]) - 48;
-    }
-    return sum;
-}
-
 static void draw_student(DataIter &cl) {
     Textbox studentBox("", defaultMediumCharSize, sf::Color::White, sf::Vector2f(0, 0), sf::Vector2f(350, 50),
                        sf::Color::Black);
@@ -68,22 +60,42 @@ static void draw_student(DataIter &cl) {
 }
 
 static void add_student_function(int dummy) {
-    inCreate = false;
-    string firstName = firstNameInputBoxP->text;
-    string lastName = lastNameInputBoxP->text;
-    string studentId = studenIdInputBoxP->text;
-    string socialId = socialIdInputBoxP->text;
-    string genderStr = genderIdInputBoxP->text;
-    tm birth = Utils::mktm(to_int(dayInputBoxP->text), to_int(monthInputBoxP->text), to_int(yearInputBoxP->text));
-    Gender gender;
-    if (genderStr == "male") gender = Gender::Male;
-    else if (genderStr == "female") gender = Gender::Female;
-    else if (genderStr == "other") gender = Gender::Other;
-    else gender = Gender::Unknown;
+    try {
+        string firstName = firstNameInputBoxP->text;
+        Utils::trimStr(firstName);
 
-    Student stu(studentId, socialId, FullName(firstName, lastName), gender, birth);
-    auto ptr = clP->ptr<Class>();
-    app->addStudent(make_shared<Student>(stu), ptr->name);
+        string lastName = lastNameInputBoxP->text;
+        Utils::trimStr(lastName);
+
+        string studentId = studenIdInputBoxP->text;
+        Utils::trimStr(studentId);
+
+        string socialId = socialIdInputBoxP->text;
+        Utils::trimStr(socialId);
+
+        string genderStr = genderIdInputBoxP->text;
+        Utils::toLowerStr(genderStr);
+        Utils::trimStr(genderStr);
+
+        tm birth = Utils::mktm(std::stoi(dayInputBoxP->text), std::stoi(monthInputBoxP->text),
+                               std::stoi(yearInputBoxP->text));
+
+        Gender gender;
+        if (genderStr == "male") gender = Gender::Male;
+        else if (genderStr == "female") gender = Gender::Female;
+        else if (genderStr == "other") gender = Gender::Other;
+        else gender = Gender::Unknown;
+
+        Student stu(studentId, socialId, FullName(firstName, lastName), gender, birth);
+        auto ptr = clP->ptr<Class>();
+
+        inCreate = !app->addStudent(make_shared<Student>(stu), ptr->name);
+    }
+    catch (std::exception &e) {
+        inCreate = true;
+
+        std::cerr << e.what() << std::endl;
+    }
 }
 
 static void add_student() {
@@ -257,6 +269,7 @@ static void revome_student() {
 
 static void remove_class() {
     app->deleteClass(*clP);
+    app->scenes.arg.clear();
 }
 
 void draw_score(List<DataIter> &students, List<Course> &allCourse, int numPage, int totalPage) {
@@ -363,14 +376,13 @@ static void view_score() {
             allCourse.push_back(*coursePtr);
         });
     });
-    if (allCourse.size() != 0)
-    {
+    if (allCourse.size() != 0) {
         allCourse.unique();
-        allCourse.sort([](const Course& c1, const Course& c2) {
+        allCourse.sort([](const Course &c1, const Course &c2) {
             return c1.id < c2.id;
-            });
+        });
     }
-    
+
 
     sf::Texture texture;
     texture.loadFromFile("assets/images/go_back.png");
