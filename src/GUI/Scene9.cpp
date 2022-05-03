@@ -85,7 +85,7 @@ void scene9(sf::RenderWindow &window, App &_app) {
 
 	Textbox change_password_box("Change password", 18, sf::Color::Black,
 		sf::Vector2f(900, 0), sf::Vector2f(300, 50), sf::Color::Cyan);
-	Button_Textbox change_password_button(course_box, sf::Color::Yellow);
+	Button_Textbox change_password_button(change_password_box, sf::Color::Yellow);
 	change_password_button.set_idle_outline(sf::Color::Blue);
 
 	Interaction interaction;
