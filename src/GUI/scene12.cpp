@@ -11,7 +11,7 @@ static void go_back(int dummy) {
 
 static void ChangePassword(int dummy) {
 	if (PasswordInputBox->text == ConfirmPasswordInputBox->text) {
-		app->user_iter.ptr<Student>()->password = PasswordInputBox->text;
+		app->changePassword(PasswordInputBox->text);
 		password_change = true;
 	}
 }
@@ -32,7 +32,7 @@ void scene12(sf::RenderWindow &window, App &_app) {
 	_PasswordInputBox.set_hide_text();
 	PasswordInputBox = &_PasswordInputBox;
 
-	Textbox ConfirmPasswordText("Confirm password:", defaultMediumCharSize, sf::Color::White,
+	Textbox ConfirmPasswordText("Confirm:", defaultMediumCharSize, sf::Color::White,
 		sf::Vector2f(windowWidth / 4 + 20, windowHeight / 3 + 100), sf::Vector2f(130, 50),
 		sf::Color::Blue);
 	Textbox ConfirmPasswordBox("", defaultMediumCharSize, sf::Color::Black,
