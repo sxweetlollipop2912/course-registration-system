@@ -56,7 +56,7 @@ void scene12(sf::RenderWindow &window, App &_app) {
 		sf::Vector2f(400, 50), sf::Color::White);
 	success_change.set_outline(sf::Color::Black);
 
-	password_change = false
+	password_change = false;
 
 	while (window.isOpen() && !app->scenes.empty() && app->scenes.top() == SceneType::Scene12) {
 		if (!password_change) {
