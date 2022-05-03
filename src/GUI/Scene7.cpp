@@ -3,8 +3,8 @@
 #include <stdexcept>
 
 #include "Scene7.h"
-#include "Constants.h"
-#include "Account.h"
+#include "../Constants.h"
+#include "../App/Account.h"
 
 using std::string, std::to_string, std::tm;
 
