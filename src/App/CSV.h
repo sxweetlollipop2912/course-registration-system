@@ -27,6 +27,8 @@ public:
 
     List<List<string>> getData() const;
 
+    bool empty() const;
+
     void clearData();
 
     void setHeaders(const List<string> &list);

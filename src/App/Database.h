@@ -88,9 +88,11 @@ public:
 
     Data::UID uid() const;
 
+    void clear();
+
     template<class T>
     shared_ptr<T> ptr() const {
-        if ((bool) iterator)
+        if (*this)
             return dynamic_pointer_cast<T>(*iterator);
         return shared_ptr<T>(nullptr);
     }
@@ -103,7 +105,7 @@ public:
 
     template<class T>
     operator shared_ptr<T>() {
-        if ((bool) iterator)
+        if (*this)
             return dynamic_pointer_cast<T>(*iterator);
         return shared_ptr<T>(nullptr);
     }

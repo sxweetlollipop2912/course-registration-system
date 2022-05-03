@@ -157,16 +157,19 @@ public:
 class Score {
 public:
     DataIter course;
-    double midterm = -1, final = -1, total = -1, other = -1;
+    double midterm{}, final{}, total{}, other{};
 
-    Score() = default;
+    Score() {erase();}
 
-    Score(const DataIter &course) : course{course} {}
+    Score(const DataIter &course) : course{course} {erase();}
 
     Score(const DataIter &course, const double midterm, const double final, const double total, const double other)
-            : course{course}, midterm{midterm}, final{final}, total{total}, other{other} {}
+            : course{course}, midterm{midterm}, final{final}, total{total}, other{other}
+            {erase();}
 
     bool valid() const;
+
+    void erase();
 
     friend std::ostream &operator<<(std::ostream &os, const Score &obj) {
         os << obj.course << '\n';

@@ -110,9 +110,9 @@ static void delete_semester(int dummy) {
     app->scenes.push(SceneType::Scene2);
 }
 
-void add_course_scene(sf::RenderWindow &_window, App &_app) {
+void addCourseScene(sf::RenderWindow &window, App &_app) {
     app = &_app;
-    window = &_window;
+    window = &window;
     SceneType current_scene = SceneType::SceneAddCourse;
 
     auto year = app->year();
@@ -300,9 +300,9 @@ void add_course_scene(sf::RenderWindow &_window, App &_app) {
     }
 }
 
-void modify_registration_scene(sf::RenderWindow &_window, App &_app) {
+void modifyRegistrationScene(sf::RenderWindow &window, App &_app) {
     app = &_app;
-    window = &_window;
+    window = &window;
     SceneType current_scene = SceneType::SceneModifyReg;
 
     auto year = app->year();

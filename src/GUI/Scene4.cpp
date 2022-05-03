@@ -439,6 +439,7 @@ void scene4(sf::RenderWindow &window, App &_app) {
     windowP = &window;
     app = &_app;
     clP = &app->scenes.arg;
+    clP->ptr<Class>()->sortStudent();
 
     Textbox headText("Student list", 40, sf::Color::Black, sf::Vector2f(windowWidth / 3 - 200, 100),
                      sf::Vector2f(200, 50), sf::Color::Transparent);
