@@ -20,6 +20,7 @@
 #include "GUI/Scene10.h"
 #include "GUI/Scene11.h"
 #include "GUI/Scene7.h"
+#include "GUI/Scene8.h"
 #include "GUI/SceneManager.h"
 
 
@@ -171,7 +172,7 @@ int main() {
     app.addStaff(make_shared<Staff>(ACCOUNT::ADMIN_USERNAME, ACCOUNT::ADMIN_PASS));
 
     //app.login("21280009", ACCOUNT::DEFAULT_PASS);
-    app.scenes.push(SceneType::Scene0);
+    app.scenes.push(SceneType::Scene5);
 
     while (!app.scenes.empty()) {
         app.scenes.refresh = false;
@@ -198,6 +199,9 @@ int main() {
         if (sceneNow == SceneType::Scene7) {
             scene7(window, app);
         }
+        if (sceneNow == SceneType::Scene8) {
+            scene8(window, app);
+        }
         if (sceneNow == SceneType::Scene9) {
             scene9(window, app);
         }
@@ -208,13 +212,19 @@ int main() {
             scene11(window, app);
         }
         if (sceneNow == SceneType::SceneModifyReg) {
-            modify_registration_scene(window, app);
+            modifyRegistrationScene(window, app);
         }
         if (sceneNow == SceneType::SceneAddCourse) {
-            add_course_scene(window, app);
+            addCourseScene(window, app);
         }
         if (sceneNow == SceneType::SceneModifyCourse) {
-            modify_course_scene(window, app);
+            modifyCourseScene(window, app);
+        }
+        if (sceneNow == SceneType::SceneModifyScore) {
+            modifyScoreScene(window, app);
+        }
+        if (sceneNow == SceneType::ImportScoreScene) {
+            importScoreScene(window, app);
         }
     }
 

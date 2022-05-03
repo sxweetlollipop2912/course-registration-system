@@ -1,8 +1,8 @@
 #include <iomanip>
 #include <ctime>
+#include <stdexcept>
 
 #include "Scene7.h"
-#include "Scene5.h"
 #include "Constants.h"
 #include "Account.h"
 
@@ -32,6 +32,7 @@ static void export_students(int dummy) {
 
 static void delete_course(int dummy) {
     app->deleteCourse(app->scenes.arg);
+    app->scenes.arg.clear();
 
     app->scenes.pop();
 }
@@ -97,14 +98,27 @@ static void modify_course(int dummy) {
     }
 }
 
-void modify_course_scene(sf::RenderWindow &_window, App &_app) {
+void modifyCourseScene(sf::RenderWindow &window, App &_app) {
     app = &_app;
-    window = &_window;
+    window = &window;
     SceneType current_scene = SceneType::SceneModifyCourse;
 
     auto year = app->year();
     auto semester = app->semester();
-    auto course = app->scenes.arg.ptr<Course>();
+
+    shared_ptr<Course> course;
+    try {
+        course = app->scenes.arg.ptr<Course>();
+
+        if (!course)
+            throw std::out_of_range("scene7: scenes.arg is null.");
+    }
+    catch (std::exception &e) {
+        std::cerr << e.what() << std::endl;
+
+        app->scenes.pop();
+        return;
+    }
 
     float diff_y = 60, current_y = -20, padding_left = GUI::windowWidth / 4, padding_top = GUI::windowHeight / 6;
     sf::Texture texture;
@@ -295,7 +309,19 @@ void scene7(sf::RenderWindow &_window, App &_app) {
 
     auto year = app->year();
     auto semester = app->semester();
-    auto course = app->scenes.arg.ptr<Course>();
+
+    shared_ptr<Course> course;
+    try {
+        course = app->scenes.arg.ptr<Course>();
+        if (!course)
+            throw std::out_of_range("scene7: scenes.arg is null.");
+    }
+    catch (std::exception &e) {
+        std::cerr << e.what() << std::endl;
+
+        app->scenes.pop();
+        return;
+    }
 
     course->sortStudentsByID();
     auto students = course->students;

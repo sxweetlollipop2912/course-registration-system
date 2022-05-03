@@ -33,13 +33,21 @@ Data::UID DataIter::uid() const {
     return !iterator ? tmp_uid : (*iterator)->uid;
 }
 
+void DataIter::clear() {
+    data_ptr = nullptr;
+    iterator = nullptr;
+    tmp_uid = Data::UID();
+}
+
 void Database::remove(const DataIter &data_iter) {
-    data.remove(data_iter.iterator);
+    if (data_iter)
+        data.remove(data_iter.iterator);
 }
 
 void Database::remove(const List<DataIter> &data_iters) {
     for (const auto &data_iter: data_iters)
-        remove(data_iter);
+        if (data_iter)
+            remove(data_iter);
 }
 
 DataIter Database::get(const Data::UID &uid) {

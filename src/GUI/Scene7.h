@@ -4,4 +4,4 @@
 
 void scene7(sf::RenderWindow &window, App &_app);
 
-void modify_course_scene(sf::RenderWindow &window, App &_app);
+void modifyCourseScene(sf::RenderWindow &window, App &_app);

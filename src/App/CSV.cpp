@@ -53,6 +53,10 @@ void CSVData::normalizeList(List<string> &list) {
     }
 }
 
+bool CSVData::empty() const {
+    return headers.empty() || data.empty();
+}
+
 namespace CSVIO {
     CSVData tryParse(const string &file_path) {
         CSVData data;

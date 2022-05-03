@@ -181,15 +181,25 @@ UserType App::userType() const {
 }
 
 List<DataIter> App::getAllYears() {
-    return database.getAll([](const shared_ptr<Data> &ptr) {
+    auto list = database.getAll([](const shared_ptr<Data> &ptr) {
         return ptr->data_type == DataType::SchoolYear;
     });
+    list.sort([](const DataIter &iter1, const DataIter &iter2) {
+        return iter1.ptr<SchoolYear>()->start_year < iter2.ptr<SchoolYear>()->start_year;
+    });
+
+    return list;
 }
 
 List<DataIter> App::getAllClasses() {
-    return database.getAll([](const shared_ptr<Data> &ptr) {
+    auto list = database.getAll([](const shared_ptr<Data> &ptr) {
         return ptr->data_type == DataType::Class;
     });
+    list.sort([](const DataIter &iter1, const DataIter &iter2) {
+        return iter1.ptr<Class>()->name < iter2.ptr<Class>()->name;
+    });
+
+    return list;
 }
 
 DataIter App::login(const string &username, const string &password) {
@@ -859,20 +869,21 @@ Student App::CSV::CSVToStudent(const List<string> &headers, const List<string> &
 
 void App::CSV::studentToCSV(const shared_ptr<Student> &student, CSVIO::CSVWriter &writer, const bool write_header) {
     if (write_header)
-        writer << "Student ID" << "Last Name" << "First Name" << "Gender" << "Date of Birth" << "Social ID";
+        writer << "Student ID" << "Last Name" << "First Name" << "Gender" << "Date of Birth" << "Social ID" << "Class";
 
     writer << student->student_id
            << student->name.last
            << student->name.first
            << genderStr[(int) student->gender]
            << Utils::dateToStr(student->birth)
-           << student->social_id;
+           << student->social_id
+           << student->classroom.ptr<Class>()->name;
 }
 
 void App::CSV::studentsToCSV(const List<DataIter> &students, CSVIO::CSVWriter &writer) {
     writer.resetContent();
     writer.newRow() << "No" << "Student ID" << "Last Name" << "First Name" << "Gender" << "Date of Birth"
-                    << "Social ID";
+                    << "Social ID" << "Class";
 
     int no = 0;
     for (const auto &iter: students) {
