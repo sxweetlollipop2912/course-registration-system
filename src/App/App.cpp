@@ -641,6 +641,9 @@ bool App::enroll(const DataIter &student, const Data::UID &course_uid) {
     auto course = semester()->getCourse(course_uid);
     if (!course)
         return false;
+    /// If course is full
+    if (course.ptr<Course>()->full())
+        return false;
     /// If there are overlapping courses.
     if (!student.ptr<Student>()->getOverlappingCourses(course.ptr<Course>()->sessions).empty())
         return false;
@@ -656,6 +659,9 @@ bool App::enroll(const DataIter &student, const string &course_id) {
     /// If no such course is found in default semester.
     auto course = semester()->getCourse(course_id);
     if (!course)
+        return false;
+    /// If course is full
+    if (course.ptr<Course>()->full())
         return false;
     /// If there are overlapping courses.
     if (!student.ptr<Student>()->getOverlappingCourses(course.ptr<Course>()->sessions).empty())

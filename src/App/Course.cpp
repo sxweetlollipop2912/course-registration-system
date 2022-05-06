@@ -161,6 +161,10 @@ void Course::load(Database &database) {
         e = database.get(e.uid());
 }
 
+bool Course::full() const {
+    return students.size() >= max_students;
+}
+
 bool Score::valid() const {
     return midterm >= 0 && final >= 0 && total >= 0 && other >= 0;
 }

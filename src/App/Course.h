@@ -90,6 +90,8 @@ public:
         data_type = DataType::Course;
     }
 
+    bool full() const;
+
     void load(Database &database) override;
 
     /// Returns empty DataIter if no student is found.
