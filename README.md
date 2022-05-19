@@ -5,7 +5,7 @@ This repo is the fine result of a 3-member final project in CS162, worth about 1
 [Project requirements (assignment).](https://docs.google.com/document/d/1EXQDAvl1hbWw5FImVf2zJE33aTCnS1ZVcAACebu697E/edit) <br>
 [SFML](https://www.sfml-dev.org) is required to build this repo.<br>
 
-As required by the assignment, linked list is the only container type used in this project. Here is [our repo of a linked list implementation, coded from scratch](https://github.com/sxweetlollipop2912/linked-list-template).
+Linked list is the only container type used in this project, as required by the assignment. Here is [our repo of a linked list implementation, coded from scratch](https://github.com/sxweetlollipop2912/linked-list-template).
 
 ## Screenshots
 The gorgeous look of this app includes but not limited to:<br>
